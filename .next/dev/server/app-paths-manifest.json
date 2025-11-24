@@ -1,4 +1,5 @@
 {
+  "/admin/alunos/page": "app/admin/alunos/page.js",
   "/admin/templates/[id]/page": "app/admin/templates/[id]/page.js",
   "/login/page": "app/login/page.js"
 }
