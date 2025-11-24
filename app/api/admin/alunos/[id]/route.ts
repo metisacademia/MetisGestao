@@ -1,15 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function PUT(
+export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    const aluno = await prisma.aluno.findUnique({
+      where: { id },
+      include: { turma: true },
+    });
+
+    if (!aluno) {
+      return NextResponse.json({ error: 'Aluno não encontrado' }, { status: 404 });
+    }
+
+    return NextResponse.json(aluno);
+  } catch (error) {
+    console.error('Erro ao buscar aluno:', error);
+    return NextResponse.json(
+      { error: 'Erro ao buscar aluno' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
     const { nome, turmaId, data_nascimento, observacoes } = await request.json();
 
     const aluno = await prisma.aluno.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(nome && { nome }),
         ...(turmaId && { turmaId }),
@@ -31,11 +57,12 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.aluno.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });
