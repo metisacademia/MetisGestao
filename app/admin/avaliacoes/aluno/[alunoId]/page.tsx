@@ -80,6 +80,11 @@ export default function AdminAvaliarAlunoPage() {
 
         if (avaliacaoRes.ok) {
           const avaliacaoData = await avaliacaoRes.json();
+          if (avaliacaoData.data_aplicacao) {
+            setDataRealizacao(
+              new Date(avaliacaoData.data_aplicacao).toISOString().split('T')[0]
+            );
+          }
           if (avaliacaoData.respostas) {
             const respostasMap: Record<string, string> = {};
             avaliacaoData.respostas.forEach((r: any) => {

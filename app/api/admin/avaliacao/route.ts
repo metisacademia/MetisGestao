@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { alunoId, templateId, mes_referencia, ano_referencia, respostas } =
+    const { alunoId, templateId, mes_referencia, ano_referencia, data_aplicacao, respostas } =
       await request.json();
 
     const aluno = await prisma.aluno.findUnique({
@@ -131,6 +131,7 @@ export async function POST(request: NextRequest) {
       templateId,
       mes_referencia,
       ano_referencia,
+      data_aplicacao: data_aplicacao ? new Date(data_aplicacao) : new Date(),
       status: 'CONCLUIDA' as const,
       ...scores,
     };
