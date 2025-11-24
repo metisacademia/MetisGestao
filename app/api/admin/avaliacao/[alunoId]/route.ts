@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ alunoId: string }> }
 ) {
   try {
-    const user = await getUserFromToken();
+    const user = await getUserFromToken(request);
     if (!user || user.perfil !== 'ADMIN') {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
@@ -45,7 +45,7 @@ export async function POST(
   { params }: { params: Promise<{ alunoId: string }> }
 ) {
   try {
-    const user = await getUserFromToken();
+    const user = await getUserFromToken(request);
     if (!user || user.perfil !== 'ADMIN') {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
