@@ -209,6 +209,24 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../../app/api/admin/avaliacao/[alunoId]/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/avaliacao/[alunoId]">> = Specific
+  const handler = {} as typeof import("../../../app/api/admin/avaliacao/[alunoId]/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/admin/avaliacao/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/avaliacao">> = Specific
+  const handler = {} as typeof import("../../../app/api/admin/avaliacao/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../app/api/admin/relatorios/aluno/[alunoId]/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/relatorios/aluno/[alunoId]">> = Specific
@@ -222,6 +240,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/relatorios/turma/[turmaId]">> = Specific
   const handler = {} as typeof import("../../../app/api/admin/relatorios/turma/[turmaId]/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/admin/template-ativo/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/template-ativo">> = Specific
+  const handler = {} as typeof import("../../../app/api/admin/template-ativo/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
