@@ -1,3 +1,7 @@
 {
+  "/admin/relatorios/page": "app/admin/relatorios/page.js",
+  "/api/admin/alunos/route": "app/api/admin/alunos/route.js",
+  "/api/admin/relatorios/aluno/[alunoId]/route": "app/api/admin/relatorios/aluno/[alunoId]/route.js",
+  "/api/admin/turmas/route": "app/api/admin/turmas/route.js",
   "/login/page": "app/login/page.js"
 }
