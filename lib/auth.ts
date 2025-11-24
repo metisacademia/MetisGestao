@@ -68,8 +68,16 @@ export async function getAuthToken(): Promise<string | undefined> {
   return cookieStore.get('auth-token')?.value;
 }
 
-export async function getUserFromToken(): Promise<JWTPayload | null> {
-  const token = await getAuthToken();
+export async function getUserFromToken(request?: any): Promise<JWTPayload | null> {
+  let token = await getAuthToken();
+  
+  if (!token && request) {
+    const authHeader = request.headers?.get?.('authorization') || request.headers?.['authorization'];
+    if (authHeader?.startsWith('Bearer ')) {
+      token = authHeader.slice(7);
+    }
+  }
+  
   if (!token) return null;
   return verifyToken(token);
 }

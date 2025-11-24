@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Save } from 'lucide-react';
+import { apiCall } from '@/lib/api-client';
 
 interface ItemTemplate {
   id: string;
@@ -110,10 +111,9 @@ export default function AdminAvaliarAlunoPage() {
     setError('');
 
     try {
-      const response = await fetch(`/api/admin/avaliacao/${alunoId}`, {
+      const response = await apiCall(`/api/admin/avaliacao/${alunoId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           alunoId,
           templateId: template!.id,

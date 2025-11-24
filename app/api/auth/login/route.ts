@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     await setAuthCookie(token);
 
     return NextResponse.json({
+      token,
       usuario: {
         id: usuario.id,
         nome: usuario.nome,

@@ -34,6 +34,11 @@ export default function LoginPage() {
         return;
       }
 
+      // Armazena token em localStorage
+      if (data.token) {
+        localStorage.setItem('auth-token', data.token);
+      }
+
       // Redireciona e aguarda um pouco para garantir que a navegação foi iniciada
       await router.push(data.redirectTo);
       // Não resetar loading aqui - deixar o router navegar

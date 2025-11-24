@@ -162,8 +162,14 @@ async function getAuthToken() {
     const cookieStore = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["cookies"])();
     return cookieStore.get('auth-token')?.value;
 }
-async function getUserFromToken() {
-    const token = await getAuthToken();
+async function getUserFromToken(request) {
+    let token = await getAuthToken();
+    if (!token && request) {
+        const authHeader = request.headers?.get?.('authorization') || request.headers?.['authorization'];
+        if (authHeader?.startsWith('Bearer ')) {
+            token = authHeader.slice(7);
+        }
+    }
     if (!token) return null;
     return verifyToken(token);
 }
