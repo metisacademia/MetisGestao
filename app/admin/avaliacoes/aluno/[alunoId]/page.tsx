@@ -51,6 +51,9 @@ export default function AdminAvaliarAlunoPage() {
   const [aluno, setAluno] = useState<Aluno | null>(null);
   const [template, setTemplate] = useState<TemplateAvaliacao | null>(null);
   const [respostas, setRespostas] = useState<Record<string, string>>({});
+  const [dataRealizacao, setDataRealizacao] = useState(
+    new Date().toISOString().split('T')[0]
+  );
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -110,6 +113,7 @@ export default function AdminAvaliarAlunoPage() {
           templateId: template!.id,
           mes_referencia: mes,
           ano_referencia: ano,
+          data_aplicacao: dataRealizacao,
           respostas,
         }),
       });
@@ -244,6 +248,20 @@ export default function AdminAvaliarAlunoPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="p-4 bg-muted rounded-lg border">
+              <Label htmlFor="data_realizacao" className="text-base font-medium">
+                Data de Realização do Exame
+              </Label>
+              <Input
+                id="data_realizacao"
+                type="date"
+                value={dataRealizacao}
+                onChange={(e) => setDataRealizacao(e.target.value)}
+                required
+                className="mt-2 max-w-xs"
+              />
+            </div>
+
             {itensOrdenados.map((item) => (
               <div key={item.id} className="space-y-2 p-4 border rounded-lg">
                 <div className="flex items-start justify-between">
