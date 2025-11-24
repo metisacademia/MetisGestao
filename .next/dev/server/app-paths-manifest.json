@@ -1,3 +1,4 @@
 {
+  "/admin/turmas/page": "app/admin/turmas/page.js",
   "/login/page": "app/login/page.js"
 }
