@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum PerfilUsuario {
+  ADMIN
+  MODERADOR
+}
+
+enum Turno {
+  MANHA
+  TARDE
+  NOITE
+}
+
+enum TipoResposta {
+  NUMERO
+  SIM_NAO
+  OPCAO_UNICA
+  ESCALA
+  TEXTO
+}
+
+enum StatusAvaliacao {
+  RASCUNHO
+  CONCLUIDA
+}
+
+model Usuario {
+  id           String         @id @default(uuid())
+  nome         String
+  email        String         @unique
+  senha_hash   String
+  perfil       PerfilUsuario
+  criado_em    DateTime       @default(now())
+  atualizado_em DateTime      @updatedAt
+  turmas       Turma[]
+}
+
+model Turma {
+  id            String   @id @default(uuid())
+  nome_turma    String
+  dia_semana    String
+  horario       String
+  turno         Turno
+  moderadorId   String
+  moderador     Usuario  @relation(fields: [moderadorId], references: [id])
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+  alunos        Aluno[]
+  avaliacoes    Avaliacao[]
+}
+
+model Aluno {
+  id              String   @id @default(uuid())
+  nome            String
+  data_nascimento DateTime?
+  turmaId         String
+  turma           Turma    @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+  observacoes     String?
+  criado_em       DateTime @default(now())
+  atualizado_em   DateTime @updatedAt
+  avaliacoes      Avaliacao[]
+}
+
+model DominioCognitivo {
+  id                String   @id @default(uuid())
+  nome              String
+  descricao         String?
+  pontuacao_maxima  Float    @default(10)
+  criado_em         DateTime @default(now())
+  atualizado_em     DateTime @updatedAt
+  itens             ItemTemplate[]
+  respostas         RespostaItem[]
+}
+
+model TemplateAvaliacao {
+  id              String   @id @default(uuid())
+  nome            String
+  mes_referencia  Int
+  ano_referencia  Int
+  ativo           Boolean  @default(false)
+  observacoes     String?
+  criado_em       DateTime @default(now())
+  atualizado_em   DateTime @updatedAt
+  itens           ItemTemplate[]
+  avaliacoes      Avaliacao[]
+  
+  @@unique([mes_referencia, ano_referencia, ativo])
+}
+
+model ItemTemplate {
+  id               String            @id @default(uuid())
+  templateId       String
+  template         TemplateAvaliacao @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  dominioId        String
+  dominio          DominioCognitivo  @relation(fields: [dominioId], references: [id])
+  codigo_item      String
+  titulo           String
+  descricao        String?
+  tipo_resposta    TipoResposta
+  ordem            Int               @default(0)
+  config_opcoes    String?
+  regra_pontuacao  String
+  ativo            Boolean           @default(true)
+  criado_em        DateTime          @default(now())
+  atualizado_em    DateTime          @updatedAt
+  respostas        RespostaItem[]
+}
+
+model Avaliacao {
+  id                          String            @id @default(uuid())
+  alunoId                     String
+  aluno                       Aluno             @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  turmaId                     String
+  turma                       Turma             @relation(fields: [turmaId], references: [id])
+  templateId                  String
+  template                    TemplateAvaliacao @relation(fields: [templateId], references: [id])
+  data_aplicacao              DateTime          @default(now())
+  mes_referencia              Int
+  ano_referencia              Int
+  status                      StatusAvaliacao   @default(RASCUNHO)
+  score_total                 Float             @default(0)
+  score_fluencia              Float             @default(0)
+  score_cultura               Float             @default(0)
+  score_interpretacao         Float             @default(0)
+  score_atencao               Float             @default(0)
+  score_auto_percepcao        Float             @default(0)
+  score_fluencia_0a10         Float             @default(0)
+  score_cultura_0a10          Float             @default(0)
+  score_interpretacao_0a10    Float             @default(0)
+  score_atencao_0a10          Float             @default(0)
+  score_auto_percepcao_0a10   Float             @default(0)
+  criado_em                   DateTime          @default(now())
+  atualizado_em               DateTime          @updatedAt
+  respostas                   RespostaItem[]
+  
+  @@unique([alunoId, mes_referencia, ano_referencia])
+}
+
+model RespostaItem {
+  id              String           @id @default(uuid())
+  avaliacaoId     String
+  avaliacao       Avaliacao        @relation(fields: [avaliacaoId], references: [id], onDelete: Cascade)
+  itemId          String
+  item            ItemTemplate     @relation(fields: [itemId], references: [id])
+  dominioId       String
+  dominio         DominioCognitivo @relation(fields: [dominioId], references: [id])
+  valor_bruto     String
+  valor_numerico  Float?
+  pontuacao_item  Float            @default(0)
+  criado_em       DateTime         @default(now())
+  atualizado_em   DateTime         @updatedAt
+}

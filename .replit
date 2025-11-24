@@ -1,0 +1,38 @@
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+DATABASE_URL = "file:./dev.db"
+JWT_SECRET = "metis-academia-mente-secret-key-2024-change-in-production"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Next.js Server"
+
+[[workflows.workflow]]
+name = "Next.js Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx next dev -p 5000"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80

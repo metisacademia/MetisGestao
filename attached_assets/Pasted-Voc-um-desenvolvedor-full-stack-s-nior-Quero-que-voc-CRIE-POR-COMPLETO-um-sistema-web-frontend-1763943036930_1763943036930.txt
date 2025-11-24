@@ -1,0 +1,365 @@
+Você é um desenvolvedor full-stack sênior. Quero que você CRIE POR COMPLETO um sistema web (frontend + backend + banco) para gestão das avaliações cognitivas mensais da Métis – Academia da Mente.
+
+## 1. Objetivo geral do sistema
+
+Criar um sistema web onde:
+
+- A COORDENAÇÃO (admin):
+  - Cadastra turmas, alunos e moderadores.
+  - Define e edita o MODELO DE AVALIAÇÃO de cada mês (template), sem precisar mudar código.
+  - Acompanha relatórios e gráficos mensais de desempenho por aluno, turma e domínios cognitivos.
+
+- O MODERADOR:
+  - Acessa suas turmas.
+  - Seleciona a turma e o aluno.
+  - Seleciona o mês (o sistema já sugere automaticamente o template ativo daquele mês).
+  - Preenche a avaliação do aluno num formulário dinâmico gerado a partir do template.
+  - Salva a avaliação, que é automaticamente pontuada e agregada por domínios cognitivos.
+
+As avaliações são MENSAlS e podem MUDAR ao longo do tempo (novas questões, ajustes de pontuação etc.). O sistema DEVE SER FLEXÍVEL: o modelo de avaliação (itens, domínios, regras de pontuação) precisa ser configurável via painel administrativo.
+
+Toda a interface (labels, textos) deve ser em PORTUGUÊS do Brasil.
+
+---
+
+## 2. Stack sugerida
+
+Use uma stack moderna e simples de rodar no Replit:
+
+- **Frontend**: React com TypeScript
+- **Framework**: Next.js (App Router)
+- **Estilo**: Tailwind CSS
+- **Componentes UI**: shadcn/ui
+- **Gráficos**: Recharts
+- **Backend**: API Routes do próprio Next.js
+- **ORM**: Prisma
+- **Banco de dados**: SQLite (rodando no próprio Replit)
+- **Autenticação**: simples, baseada em email + senha, com JWT ou auth baseado em sessão (o que for mais fácil dentro do Next.js). Não precisa ser super robusto, mas deve existir separação clara de perfis.
+
+Se achar que outra stack similar facilita no Replit/Lovable, você pode adaptar, mas mantenha:
+- React + TypeScript
+- Algum ORM (Prisma, por exemplo)
+- Banco local simples (SQLite)
+
+---
+
+## 3. Perfis de usuário
+
+Crie controle de acesso com dois perfis:
+
+1. **Admin (Coordenação):**
+   - Gerencia usuários, turmas, alunos.
+   - Configura templates de avaliação mensais.
+   - Acessa dashboards e relatórios.
+
+2. **Moderador:**
+   - Visualiza apenas suas turmas.
+   - Insere avaliações para os alunos das suas turmas.
+   - Visualiza relatórios simplificados da turma (não vê tudo do sistema).
+
+### Tabela `Usuario`
+Campos:
+- id
+- nome
+- email (único)
+- senha_hash
+- perfil (enum: "ADMIN", "MODERADOR")
+- criado_em
+- atualizado_em
+
+---
+
+## 4. Modelo de dados (tabelas principais)
+
+Quero que você crie o schema Prisma com as seguintes entidades (pode adaptar nomes para inglês, mas mantenha o sentido):
+
+### 4.1. `Turma`
+- id
+- nome_turma (ex.: "Aurora – Segunda 18h")
+- dia_semana (string ou enum)
+- horario (string)
+- turno (enum: MANHÃ, TARDE, NOITE)
+- moderadorId (FK para Usuario)
+- criado_em
+- atualizado_em
+
+### 4.2. `Aluno`
+- id
+- nome
+- data_nascimento (opcional)
+- turmaId (FK Turma)
+- observacoes (texto)
+- criado_em
+- atualizado_em
+
+### 4.3. `DominioCognitivo`
+Domínios para agrupar itens de avaliação. Exemplos:
+- "Fluência verbal"
+- "Cultura & memória semântica"
+- "Interpretação"
+- "Atenção visual"
+- "Auto-percepção"
+
+Campos:
+- id
+- nome
+- descricao
+- pontuacao_maxima (para facilitar escala 0–10)
+- criado_em
+- atualizado_em
+
+### 4.4. `TemplateAvaliacao`
+Modelo de avaliação por mês/ano.
+
+- id
+- nome (ex.: "Avaliação Cognitiva Padrão – Jan/2026")
+- mes_referencia (1–12)
+- ano_referencia (ex.: 2026)
+- ativo (boolean)
+- observacoes (texto)
+- criado_em
+- atualizado_em
+
+**Regra importante**: pode haver vários templates no histórico, mas idealmente apenas UM template ativo por mês/ano.
+
+### 4.5. `ItemTemplate`
+Cada questão ou campo do modelo de avaliação.
+
+- id
+- templateId (FK TemplateAvaliacao)
+- dominioId (FK DominioCognitivo)
+- codigo_item (string curta tipo “Q1_escritores_qtd”)
+- titulo (texto curto exibido no formulário)
+- descricao (texto de apoio para o moderador, opcional)
+- tipo_resposta (enum: NUMERO, SIM_NAO, OPCAO_UNICA, ESCALA, TEXTO)
+- ordem (número para ordenar os itens na tela)
+- config_opcoes (JSON, para opções de múltipla escolha ou escalas, ex.: ["Excelente","Boa","Regular","Ruim","Muito ruim"])
+- regra_pontuacao (JSON com a lógica de pontuação, veja abaixo)
+- ativo (boolean)
+- criado_em
+- atualizado_em
+
+#### Exemplos de `regra_pontuacao` (JSON)
+Quero que o backend tenha uma função que lê este JSON e calcula `pontuacao_item`:
+
+1. **Faixas numéricas (ex.: quantidade de escritores, pintores, cantores)**  
+   ```json
+   {
+     "tipo": "faixas",
+     "faixas": [
+       { "ate": 5, "pontos": 1 },
+       { "ate": 10, "pontos": 2 },
+       { "acima": 10, "pontos": 3 }
+     ]
+   }
+2.	Sim/Não (ex.: acertos de cultura geral)
+{
+  "tipo": "sim_nao",
+  "sim": 1,
+  "nao": 0
+}
+2.	
+3.	Mapa de opções (ex.: auto-percepção de memória)
+{
+  "tipo": "mapa",
+  "mapa": {
+    "Excelente": 5,
+    "Boa": 4,
+    "Regular": 3,
+    "Ruim": 2,
+    "Muito ruim": 1
+  }
+}
+3.	
+4.	Múltipla escolha com alternativas corretas
+{
+  "tipo": 'alternativa_correta',
+  "correta": "A",
+  "pontos_correta": 1,
+  "pontos_errada": 0
+}
+
+
+4.6. 
+Avaliacao
+
+Um registro de avaliação de um aluno em um determinado mês.
+•	id
+•	alunoId (FK Aluno)
+•	turmaId (FK Turma – redundante mas útil para filtros)
+•	templateId (FK TemplateAvaliacao)
+•	data_aplicacao
+•	mes_referencia
+•	ano_referencia
+•	status (enum: RASCUNHO, CONCLUIDA)
+
+Scores agregados:
+•	score_total
+•	score_fluencia
+•	score_cultura
+•	score_interpretacao
+•	score_atencao
+•	score_auto_percepcao
+•	score_fluencia_0a10
+•	score_cultura_0a10
+•	score_interpretacao_0a10
+•	score_atencao_0a10
+•	score_auto_percepcao_0a10
+
+(O backend deve somar os itens por domínio e converter para escala 0–10 com base em pontuacao_maxima do domínio.)
+
+4.7. 
+RespostaItem
+
+Respostas individuais de cada item da avaliação.
+•	id
+•	avaliacaoId (FK Avaliacao)
+•	itemId (FK ItemTemplate)
+•	dominioId (FK DominioCognitivo – duplicado para facilitar somas)
+•	valor_bruto (string – ex.: “7”, “Sim”, “Excelente”)
+•	valor_numerico (number – ex.: 7, 1, 5)
+•	pontuacao_item (number – já calculada com base em regra_pontuacao)
+•	criado_em
+•	atualizado_em
+ 
+5. Fluxos principais (funcionalidade)
+
+Implemente os seguintes fluxos:
+
+5.1. Autenticação e perfis
+•	Página de login (/login) com email + senha.
+•	Middleware/guard para proteger rotas autenticadas.
+•	Se perfil = ADMIN, redirecionar para /admin.
+•	Se perfil = MODERADOR, redirecionar para /moderador.
+
+5.2. Painel Admin
+
+Rotas sugeridas (pode agrupar em uma sidebar):
+1.	/admin/usuarios
+o	Listar usuários.
+o	Criar/editar/deletar usuários.
+o	Definir perfil (Admin ou Moderador).
+2.	/admin/turmas
+o	Listar turmas.
+o	Criar/editar/deletar.
+o	Atribuir moderador responsável.
+o	Ver alunos da turma.
+3.	/admin/alunos
+o	Listar alunos.
+o	Criar/editar/deletar.
+o	Vincular turma.
+o	Campo de observações.
+4.	/admin/dominios
+o	CRUD de domínios cognitivos.
+o	Definir pontuacao_maxima.
+5.	/admin/templates
+o	Listar templates de avaliação.
+o	Criar novo template a partir de um anterior (botão “Duplicar template”).
+o	Marcar template como ativo para um determinado mês/ano.
+o	Tela de edição de itens do template:
+	Listar ItensTemplate daquele template.
+	Adicionar novo item.
+	Editar item (título, tipo_resposta, domínio, config_opcoes, regra_pontuacao).
+	Reordenar itens (ordem).
+	Ativar/desativar item.
+o	Validar para que não haja mais de um template ativo por mês/ano (pode avisar ao usuário).
+6.	/admin/relatorios
+o	Filtros:
+	mês/ano
+	turma
+	aluno
+o	Mostrar:
+	tabela com média dos scores por turma.
+	tabela com scores individuais por aluno.
+	gráficos:
+	gráfico de linha com evolução de um aluno (Total + domínios) ao longo dos meses;
+	gráfico de barras comparando alunos da mesma turma no mês selecionado;
+	gráfico radar com domínios da turma vs média da Métis.
+
+5.3. Painel Moderador
+
+Rotas:
+1.	/moderador/turmas
+o	Lista apenas as turmas onde moderadorId = usuario_logado.
+o	Ao clicar em uma turma, vai para /moderador/turmas/[id].
+2.	/moderador/turmas/[id]
+o	Mostra:
+	nome da turma
+	lista de alunos
+o	Para cada aluno:
+	botão “Lançar avaliação” do mês atual.
+	botão “Histórico” que abre gráfico simples de evolução daquele aluno.
+3.	/moderador/avaliar/[alunoId]?mes=MM&ano=AAAA
+o	Backend identifica o templateId ativo para aquele mês/ano.
+o	Renderiza dinamicamente um formulário baseado em ItensTemplate:
+	Se tipo_resposta = NUMERO → input number
+	SIM_NAO → radio ou select (“Sim”/“Não”)
+	OPCAO_UNICA → radio/select com opções definidas em config_opcoes
+	ESCALA → radio ou slider com base em config_opcoes
+	TEXTO → textarea
+o	Ao salvar:
+	cria ou atualiza registro em Avaliacao.
+	grava todas as RespostaItem.
+	aplica regra_pontuacao para calcular pontuacao_item.
+	soma por dominioId e atualiza os scores agregados de Avaliacao.
+o	Após salvar, mostrar um pequeno resumo:
+	Total cognitivo
+	Mini gráfico radar com os domínios
+	Comparativo rápido com a avaliação anterior (se existir).
+ 
+6. Interface e UX
+•	Use Tailwind + shadcn/ui para uma UI limpa e moderna.
+•	Layout com sidebar para as áreas admin e moderador.
+•	Use textos e labels em português, por exemplo:
+o	“Turmas”, “Alunos”, “Avaliações”, “Domínios cognitivos”, “Templates de avaliação”.
+•	Nos formulários de avaliação, deixe claro:
+o	Nome do aluno
+o	Turma
+o	Mês/Ano
+o	Nome do template
+ 
+7. Gráficos e dashboards
+
+Use Recharts para:
+1.	Evolução do aluno (linha):
+o	X: meses
+o	Y: scores (total e/ou domínios)
+2.	Comparação dos alunos da turma (barras):
+o	X: alunos
+o	Y: score_total_0a10 ou score de um domínio específico.
+3.	Radar por domínios:
+o	Eixo: domínios cognitivos
+o	Valores: score_0a10
+o	Mostrar:
+	aluno vs média da turma
+	ou turma vs média geral.
+
+Crie componentes reutilizáveis para esses gráficos.
+ 
+8. Seeds e README
+
+Crie:
+1.	Seed do banco (via Prisma):
+o	1 admin padrão (ex.: email: admin@metis.com, senha: “admin123”).
+o	1 moderador.
+o	2 turmas.
+o	Alguns alunos.
+o	Alguns domínios cognitivos básicos.
+o	1 template de avaliação de exemplo com alguns itens.
+2.	README.md explicando:
+o	Como rodar o projeto localmente (incluindo comandos de migração Prisma).
+o	Como configurar variáveis de ambiente (.env).
+o	Login e senha de teste.
+ 
+9. Qualidade do código
+•	Use TypeScript em todo o projeto.
+•	Organize o código em pastas bem separadas: app/, components/, lib/, prisma/, etc.
+•	Crie serviços/funções separadas para:
+o	Calcular pontuação de um item com base em regra_pontuacao.
+o	Agregar scores por domínio e total.
+•	Evite lógica pesada dentro dos componentes React; use funções utilitárias no backend ou em libs.
+ 
+Resumo: quero sair deste projeto com um sistema funcional e navegável, pronto para eu adaptar visualmente com a identidade da Métis, onde:
+•	Admin configura templates mensais de avaliação com itens, domínios e regras de pontuação.
+•	Moderadores lançam avaliações de forma simples e rápida.
+•	O sistema guarda o histórico e gera relatórios e gráficos de acompanhamento mensal e longitudinal por aluno e turma.
