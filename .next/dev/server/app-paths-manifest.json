@@ -1,4 +1,3 @@
 {
-  "/api/admin/avaliacao/[alunoId]/route": "app/api/admin/avaliacao/[alunoId]/route.js",
   "/login/page": "app/login/page.js"
 }
