@@ -116,52 +116,36 @@ export async function POST(
           itemId: item.id,
           dominioId: item.dominioId,
           valor_bruto,
-          valor_numerico: isNaN(valor_numerico) ? null : valor_numerico,
+          valor_numerico,
           pontuacao_item: pontuacao,
         };
       });
 
-    const scoresPorDominio = calcularScoresPorDominio(
-      respostasComPontuacao,
-      template.itens.map((item) => item.dominio)
-    );
-    const scoreTotal = calcularScoreTotal(scoresPorDominio);
+    const scores = calcularScoresPorDominio(template.itens, respostasComPontuacao);
+    const scoreTotal = calcularScoreTotal(scores);
 
-    const scores: any = {
+    const scoresToSave: any = {
       score_total: scoreTotal,
-      score_fluencia: 0,
-      score_cultura: 0,
-      score_interpretacao: 0,
-      score_atencao: 0,
-      score_auto_percepcao: 0,
-      score_fluencia_0a10: 0,
-      score_cultura_0a10: 0,
-      score_interpretacao_0a10: 0,
-      score_atencao_0a10: 0,
-      score_auto_percepcao_0a10: 0,
     };
 
-    Object.entries(scoresPorDominio).forEach(([dominioId, score]) => {
-      const dominio = template.itens.find((i) => i.dominioId === dominioId)?.dominio;
-      if (!dominio) return;
-
+    scores.forEach(({ dominio, score }) => {
       const nomeDominio = dominio.nome.toLowerCase();
 
       if (nomeDominio.includes('fluência') || nomeDominio.includes('fluencia')) {
-        scores.score_fluencia = score.total;
-        scores.score_fluencia_0a10 = score.score_0a10;
+        scoresToSave.score_fluencia = score.total;
+        scoresToSave.score_fluencia_0a10 = score.score_0a10;
       } else if (nomeDominio.includes('cultura')) {
-        scores.score_cultura = score.total;
-        scores.score_cultura_0a10 = score.score_0a10;
+        scoresToSave.score_cultura = score.total;
+        scoresToSave.score_cultura_0a10 = score.score_0a10;
       } else if (nomeDominio.includes('interpretação') || nomeDominio.includes('interpretacao')) {
-        scores.score_interpretacao = score.total;
-        scores.score_interpretacao_0a10 = score.score_0a10;
+        scoresToSave.score_interpretacao = score.total;
+        scoresToSave.score_interpretacao_0a10 = score.score_0a10;
       } else if (nomeDominio.includes('atenção') || nomeDominio.includes('atencao')) {
-        scores.score_atencao = score.total;
-        scores.score_atencao_0a10 = score.score_0a10;
+        scoresToSave.score_atencao = score.total;
+        scoresToSave.score_atencao_0a10 = score.score_0a10;
       } else if (nomeDominio.includes('auto')) {
-        scores.score_auto_percepcao = score.total;
-        scores.score_auto_percepcao_0a10 = score.score_0a10;
+        scoresToSave.score_auto_percepcao = score.total;
+        scoresToSave.score_auto_percepcao_0a10 = score.score_0a10;
       }
     });
 
@@ -173,7 +157,7 @@ export async function POST(
       ano_referencia,
       data_aplicacao: data_aplicacao ? new Date(data_aplicacao) : new Date(),
       status: 'CONCLUIDA' as const,
-      ...scores,
+      ...scoresToSave,
     };
 
     const avaliacao = avaliacaoExistente
