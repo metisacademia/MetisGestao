@@ -3,11 +3,12 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { templateId: string } }
+  { params }: { params: Promise<{ templateId: string }> }
 ) {
   try {
+    const { templateId } = await params;
     const itens = await prisma.itemTemplate.findMany({
-      where: { templateId: params.templateId },
+      where: { templateId },
       include: { dominio: true },
       orderBy: { ordem: 'asc' },
     });
@@ -21,9 +22,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { templateId: string } }
+  { params }: { params: Promise<{ templateId: string }> }
 ) {
   try {
+    const { templateId } = await params;
     const {
       codigo_item,
       titulo,
@@ -48,7 +50,7 @@ export async function POST(
         descricao,
         tipo_resposta,
         dominioId,
-        templateId: params.templateId,
+        templateId,
         ordem: ordem || 0,
         ativo: ativo ?? true,
         regra_pontuacao: JSON.stringify({}),

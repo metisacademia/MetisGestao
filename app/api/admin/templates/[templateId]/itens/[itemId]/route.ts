@@ -3,9 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { templateId: string; itemId: string } }
+  { params }: { params: Promise<{ templateId: string; itemId: string }> }
 ) {
   try {
+    const { itemId } = await params;
     const {
       codigo_item,
       titulo,
@@ -17,7 +18,7 @@ export async function PUT(
     } = await request.json();
 
     const item = await prisma.itemTemplate.update({
-      where: { id: params.itemId },
+      where: { id: itemId },
       data: {
         ...(codigo_item && { codigo_item }),
         ...(titulo && { titulo }),
@@ -42,11 +43,12 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { templateId: string; itemId: string } }
+  { params }: { params: Promise<{ templateId: string; itemId: string }> }
 ) {
   try {
+    const { itemId } = await params;
     await prisma.itemTemplate.delete({
-      where: { id: params.itemId },
+      where: { id: itemId },
     });
 
     return NextResponse.json({ success: true });
