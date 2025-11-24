@@ -7,10 +7,11 @@ import { notFound } from 'next/navigation';
 export default async function TemplateDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const template = await prisma.templateAvaliacao.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       itens: {
         include: { dominio: true },
