@@ -34,8 +34,9 @@ export default function LoginPage() {
         return;
       }
 
-      router.push(data.redirectTo);
-      router.refresh();
+      // Redireciona e aguarda um pouco para garantir que a navegação foi iniciada
+      await router.push(data.redirectTo);
+      // Não resetar loading aqui - deixar o router navegar
     } catch (err) {
       setError('Erro ao conectar com o servidor');
       setLoading(false);
