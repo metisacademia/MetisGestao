@@ -10,7 +10,8 @@ import {
   FileText, 
   BarChart3, 
   LogOut,
-  Home
+  Home,
+  ClipboardCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -25,6 +26,7 @@ const adminLinks = [
   { href: '/admin/alunos', label: 'Alunos', icon: UserCircle },
   { href: '/admin/dominios', label: 'Domínios Cognitivos', icon: Brain },
   { href: '/admin/templates', label: 'Templates de Avaliação', icon: FileText },
+  { href: '/admin/avaliacoes', label: 'Avaliações', icon: ClipboardCheck },
   { href: '/admin/relatorios', label: 'Relatórios', icon: BarChart3 },
 ];
 
