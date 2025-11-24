@@ -47,7 +47,18 @@ cd metis-avaliacao
 npm install
 ```
 
-3. **Configure o banco de dados**
+3. **Configure as variáveis de ambiente**
+
+O sistema requer a variável `JWT_SECRET` para autenticação segura.
+
+Crie um arquivo `.env` na raiz do projeto:
+```bash
+JWT_SECRET=sua-chave-secreta-aleatoria-aqui
+```
+
+⚠️ **Importante**: Gere uma chave forte e aleatória para produção. Nunca use valores padrão.
+
+4. **Configure o banco de dados**
 ```bash
 # Gerar o cliente Prisma
 npx prisma generate
@@ -183,10 +194,14 @@ O sistema oferece três tipos de visualizações:
 
 ## 🔐 Segurança
 
-- Senhas armazenadas com hash bcrypt
-- Autenticação via JWT com cookies httpOnly
+- Senhas armazenadas com hash bcrypt (salt rounds: 10)
+- Autenticação via JWT com cookies httpOnly (expiração: 7 dias)
+- JWT_SECRET obrigatório via variável de ambiente (sem fallbacks inseguros)
 - Middleware de proteção de rotas
 - Controle de acesso baseado em perfis (Admin/Moderador)
+- Validações de autorização em todas as APIs
+- Proteção contra duplicação de avaliações
+- Validação de templates ativos e consistência mês/ano
 
 ## 🛠️ Tecnologias Utilizadas
 
