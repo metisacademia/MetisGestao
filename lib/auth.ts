@@ -30,7 +30,7 @@ export async function verifyPassword(
 
 export async function signToken(payload: JWTPayload): Promise<string> {
   const secret = new TextEncoder().encode(JWT_SECRET);
-  const token = await new SignJWT(payload)
+  const token = await new SignJWT(payload as Record<string, unknown>)
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .sign(secret);

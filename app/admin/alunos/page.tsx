@@ -1,11 +1,15 @@
 import { prisma } from '@/lib/prisma';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AlunosContent from './content';
 
 export default async function AlunosPage() {
   const alunos = await prisma.aluno.findMany({
     include: { turma: true },
     orderBy: { nome: 'asc' },
+  });
+
+  const turmas = await prisma.turma.findMany({
+    select: { id: true, nome_turma: true },
+    orderBy: { nome_turma: 'asc' },
   });
 
   return (
@@ -17,36 +21,7 @@ export default async function AlunosPage() {
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Lista de Alunos</CardTitle>
-          <CardDescription>
-            Total: {alunos.length} aluno(s)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Turma</TableHead>
-                <TableHead>Observações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {alunos.map((aluno) => (
-                <TableRow key={aluno.id}>
-                  <TableCell className="font-medium">{aluno.nome}</TableCell>
-                  <TableCell>{aluno.turma.nome_turma}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {aluno.observacoes || '-'}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <AlunosContent alunosIniciais={alunos} turmas={turmas} />
     </div>
   );
 }

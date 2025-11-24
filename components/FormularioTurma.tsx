@@ -1,0 +1,173 @@
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+interface Usuario {
+  id: string;
+  nome: string;
+}
+
+interface FormularioTurmaProps {
+  moderadores: Usuario[];
+  onSubmit?: () => void;
+  turmaParaEditar?: {
+    id: string;
+    nome_turma: string;
+    dia_semana: string;
+    horario: string;
+    turno: string;
+    moderadorId: string;
+  };
+}
+
+export default function FormularioTurma({
+  moderadores,
+  onSubmit,
+  turmaParaEditar,
+}: FormularioTurmaProps) {
+  const [nome_turma, setNomeTurma] = useState(turmaParaEditar?.nome_turma || '');
+  const [dia_semana, setDiaSemana] = useState(turmaParaEditar?.dia_semana || '');
+  const [horario, setHorario] = useState(turmaParaEditar?.horario || '');
+  const [turno, setTurno] = useState(turmaParaEditar?.turno || 'MANHA');
+  const [moderadorId, setModeradorId] = useState(turmaParaEditar?.moderadorId || '');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const url = turmaParaEditar
+        ? `/api/admin/turmas/${turmaParaEditar.id}`
+        : '/api/admin/turmas';
+      const method = turmaParaEditar ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome_turma, dia_semana, horario, turno, moderadorId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error || 'Erro ao salvar turma');
+        setLoading(false);
+        return;
+      }
+
+      // Reset form
+      setNomeTurma('');
+      setDiaSemana('');
+      setHorario('');
+      setTurno('MANHA');
+      setModeradorId('');
+
+      onSubmit?.();
+    } catch (err) {
+      setError('Erro ao conectar com o servidor');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{turmaParaEditar ? 'Editar Turma' : 'Nova Turma'}</CardTitle>
+        <CardDescription>
+          {turmaParaEditar ? 'Atualize os dados da turma' : 'Adicione uma nova turma'}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="nome_turma">Nome da Turma</Label>
+              <Input
+                id="nome_turma"
+                placeholder="Ex: Aurora – Segunda 18h"
+                value={nome_turma}
+                onChange={(e) => setNomeTurma(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="dia_semana">Dia da Semana</Label>
+              <Input
+                id="dia_semana"
+                placeholder="Ex: Segunda-feira"
+                value={dia_semana}
+                onChange={(e) => setDiaSemana(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="horario">Horário</Label>
+              <Input
+                id="horario"
+                type="time"
+                value={horario}
+                onChange={(e) => setHorario(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="turno">Turno</Label>
+              <select
+                id="turno"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                value={turno}
+                onChange={(e) => setTurno(e.target.value)}
+                disabled={loading}
+              >
+                <option value="MANHA">Manhã</option>
+                <option value="TARDE">Tarde</option>
+                <option value="NOITE">Noite</option>
+              </select>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="moderadorId">Moderador</Label>
+              <select
+                id="moderadorId"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                value={moderadorId}
+                onChange={(e) => setModeradorId(e.target.value)}
+                required
+                disabled={loading}
+              >
+                <option value="">Selecione um moderador</option>
+                {moderadores.map((mod) => (
+                  <option key={mod.id} value={mod.id}>
+                    {mod.nome}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {error && (
+            <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
+              {error}
+            </div>
+          )}
+
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Salvando...' : 'Salvar Turma'}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}

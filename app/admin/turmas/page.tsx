@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import TurmasContent from './content';
 
 export default async function TurmasPage() {
   const turmas = await prisma.turma.findMany({
@@ -9,6 +10,11 @@ export default async function TurmasPage() {
       _count: { select: { alunos: true } },
     },
     orderBy: { nome_turma: 'asc' },
+  });
+
+  const moderadores = await prisma.usuario.findMany({
+    where: { perfil: 'MODERADOR' },
+    select: { id: true, nome: true },
   });
 
   return (
@@ -20,40 +26,7 @@ export default async function TurmasPage() {
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Lista de Turmas</CardTitle>
-          <CardDescription>
-            Total: {turmas.length} turma(s)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome da Turma</TableHead>
-                <TableHead>Dia/Horário</TableHead>
-                <TableHead>Turno</TableHead>
-                <TableHead>Moderador</TableHead>
-                <TableHead>Alunos</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {turmas.map((turma) => (
-                <TableRow key={turma.id}>
-                  <TableCell className="font-medium">{turma.nome_turma}</TableCell>
-                  <TableCell>
-                    {turma.dia_semana} às {turma.horario}
-                  </TableCell>
-                  <TableCell>{turma.turno}</TableCell>
-                  <TableCell>{turma.moderador.nome}</TableCell>
-                  <TableCell>{turma._count.alunos}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <TurmasContent turmasIniciais={turmas} moderadores={moderadores} />
     </div>
   );
 }
