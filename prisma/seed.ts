@@ -130,15 +130,15 @@ async function main() {
   console.log(`✓ ${dominios.length} domínios cognitivos criados`);
 
   const template = await prisma.templateAvaliacao.upsert({
-    where: { id: 'template-nov-2024' },
+    where: { id: 'template-nov-2025' },
     update: {},
     create: {
-      id: 'template-nov-2024',
-      nome: 'Avaliação Cognitiva Padrão – Novembro/2024',
+      id: 'template-nov-2025',
+      nome: 'Avaliação Cognitiva Padrão – Novembro/2025',
       mes_referencia: 11,
-      ano_referencia: 2024,
+      ano_referencia: 2025,
       ativo: true,
-      observacoes: 'Template de exemplo para novembro de 2024',
+      observacoes: 'Template de exemplo para novembro de 2025',
     },
   });
   console.log('✓ Template de avaliação criado:', template.nome);
