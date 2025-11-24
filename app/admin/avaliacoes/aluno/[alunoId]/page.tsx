@@ -113,6 +113,7 @@ export default function AdminAvaliarAlunoPage() {
       const response = await fetch('/api/admin/avaliacao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           alunoId,
           templateId: template!.id,

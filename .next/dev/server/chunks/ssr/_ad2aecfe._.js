@@ -232,6 +232,7 @@ function AdminAvaliarAlunoPage() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     alunoId,
                     templateId: template.id,
@@ -267,7 +268,7 @@ function AdminAvaliarAlunoPage() {
                     required: true
                 }, void 0, false, {
                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                    lineNumber: 146,
+                    lineNumber: 147,
                     columnNumber: 11
                 }, this);
             case 'SIM_NAO':
@@ -290,20 +291,20 @@ function AdminAvaliarAlunoPage() {
                                     required: true
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                    lineNumber: 158,
+                                    lineNumber: 159,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     children: "Sim"
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                    lineNumber: 167,
+                                    lineNumber: 168,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                            lineNumber: 157,
+                            lineNumber: 158,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -322,26 +323,26 @@ function AdminAvaliarAlunoPage() {
                                     required: true
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                    lineNumber: 170,
+                                    lineNumber: 171,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     children: "Não"
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                    lineNumber: 179,
+                                    lineNumber: 180,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                            lineNumber: 169,
+                            lineNumber: 170,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                    lineNumber: 156,
+                    lineNumber: 157,
                     columnNumber: 11
                 }, this);
             case 'OPCAO_UNICA':
@@ -361,7 +362,7 @@ function AdminAvaliarAlunoPage() {
                             children: "Selecione..."
                         }, void 0, false, {
                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                            lineNumber: 194,
+                            lineNumber: 195,
                             columnNumber: 13
                         }, this),
                         opcoes.map((opcao)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -369,13 +370,13 @@ function AdminAvaliarAlunoPage() {
                                 children: opcao
                             }, opcao, false, {
                                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                lineNumber: 196,
+                                lineNumber: 197,
                                 columnNumber: 15
                             }, this))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                    lineNumber: 188,
+                    lineNumber: 189,
                     columnNumber: 11
                 }, this);
             case 'TEXTO':
@@ -389,7 +390,7 @@ function AdminAvaliarAlunoPage() {
                     required: true
                 }, void 0, false, {
                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                    lineNumber: 205,
+                    lineNumber: 206,
                     columnNumber: 11
                 }, this);
             default:
@@ -399,7 +400,7 @@ function AdminAvaliarAlunoPage() {
                     disabled: true
                 }, void 0, false, {
                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                    lineNumber: 214,
+                    lineNumber: 215,
                     columnNumber: 16
                 }, this);
         }
@@ -411,12 +412,12 @@ function AdminAvaliarAlunoPage() {
                 className: "w-8 h-8 animate-spin text-primary"
             }, void 0, false, {
                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                lineNumber: 221,
+                lineNumber: 222,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-            lineNumber: 220,
+            lineNumber: 221,
             columnNumber: 7
         }, this);
     }
@@ -429,17 +430,17 @@ function AdminAvaliarAlunoPage() {
                     children: error || 'Dados não encontrados'
                 }, void 0, false, {
                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                    lineNumber: 230,
+                    lineNumber: 231,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                lineNumber: 229,
+                lineNumber: 230,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-            lineNumber: 228,
+            lineNumber: 229,
             columnNumber: 7
         }, this);
     }
@@ -456,7 +457,7 @@ function AdminAvaliarAlunoPage() {
                         children: "Avaliação Cognitiva"
                     }, void 0, false, {
                         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                        lineNumber: 241,
+                        lineNumber: 242,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -473,13 +474,13 @@ function AdminAvaliarAlunoPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                        lineNumber: 242,
+                        lineNumber: 243,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                lineNumber: 240,
+                lineNumber: 241,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -490,20 +491,20 @@ function AdminAvaliarAlunoPage() {
                                 children: template.nome
                             }, void 0, false, {
                                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                lineNumber: 249,
+                                lineNumber: 250,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
                                 children: "Preencha todos os campos da avaliação"
                             }, void 0, false, {
                                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                lineNumber: 250,
+                                lineNumber: 251,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                        lineNumber: 248,
+                        lineNumber: 249,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -520,7 +521,7 @@ function AdminAvaliarAlunoPage() {
                                             children: "Data de Realização do Exame"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                            lineNumber: 257,
+                                            lineNumber: 258,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -532,13 +533,13 @@ function AdminAvaliarAlunoPage() {
                                             className: "mt-2 max-w-xs"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                            lineNumber: 260,
+                                            lineNumber: 261,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                    lineNumber: 256,
+                                    lineNumber: 257,
                                     columnNumber: 13
                                 }, this),
                                 itensOrdenados.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -554,7 +555,7 @@ function AdminAvaliarAlunoPage() {
                                                             children: item.titulo
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                            lineNumber: 274,
+                                                            lineNumber: 275,
                                                             columnNumber: 21
                                                         }, this),
                                                         item.descricao && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -562,7 +563,7 @@ function AdminAvaliarAlunoPage() {
                                                             children: item.descricao
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                            lineNumber: 278,
+                                                            lineNumber: 279,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -573,18 +574,18 @@ function AdminAvaliarAlunoPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                            lineNumber: 282,
+                                                            lineNumber: 283,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                    lineNumber: 273,
+                                                    lineNumber: 274,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                lineNumber: 272,
+                                                lineNumber: 273,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -592,13 +593,13 @@ function AdminAvaliarAlunoPage() {
                                                 children: renderCampo(item)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                lineNumber: 287,
+                                                lineNumber: 288,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, item.id, true, {
                                         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                        lineNumber: 271,
+                                        lineNumber: 272,
                                         columnNumber: 15
                                     }, this)),
                                 error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -606,7 +607,7 @@ function AdminAvaliarAlunoPage() {
                                     children: error
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                    lineNumber: 292,
+                                    lineNumber: 293,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -622,7 +623,7 @@ function AdminAvaliarAlunoPage() {
                                                         className: "w-4 h-4 mr-2 animate-spin"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                        lineNumber: 301,
+                                                        lineNumber: 302,
                                                         columnNumber: 21
                                                     }, this),
                                                     "Salvando..."
@@ -633,7 +634,7 @@ function AdminAvaliarAlunoPage() {
                                                         className: "w-4 h-4 mr-2"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                                        lineNumber: 306,
+                                                        lineNumber: 307,
                                                         columnNumber: 21
                                                     }, this),
                                                     "Salvar Avaliação"
@@ -641,7 +642,7 @@ function AdminAvaliarAlunoPage() {
                                             }, void 0, true)
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                            lineNumber: 298,
+                                            lineNumber: 299,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -652,36 +653,36 @@ function AdminAvaliarAlunoPage() {
                                             children: "Cancelar"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                            lineNumber: 311,
+                                            lineNumber: 312,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                                    lineNumber: 297,
+                                    lineNumber: 298,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                            lineNumber: 255,
+                            lineNumber: 256,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                        lineNumber: 254,
+                        lineNumber: 255,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-                lineNumber: 247,
+                lineNumber: 248,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/admin/avaliacoes/aluno/[alunoId]/page.tsx",
-        lineNumber: 239,
+        lineNumber: 240,
         columnNumber: 5
     }, this);
 }
