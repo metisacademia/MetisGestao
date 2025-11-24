@@ -227,7 +227,7 @@ function AdminAvaliarAlunoPage() {
         setSaving(true);
         setError('');
         try {
-            const response = await fetch('/api/admin/avaliacao', {
+            const response = await fetch(`/api/admin/avaliacao/${alunoId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

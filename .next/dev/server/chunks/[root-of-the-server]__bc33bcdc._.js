@@ -251,12 +251,14 @@ function calcularScoreTotal(scoresPorDominio) {
     return scores.reduce((acc, score)=>acc + score, 0) / scores.length;
 }
 }),
-"[project]/app/api/admin/avaliacao/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
+"[project]/app/api/admin/avaliacao/[alunoId]/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
 return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
 
 __turbopack_context__.s([
+    "GET",
+    ()=>GET,
     "POST",
     ()=>POST
 ]);
@@ -272,6 +274,47 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ;
 ;
 ;
+async function GET(request, { params }) {
+    try {
+        const user = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getUserFromToken"])();
+        if (!user || user.perfil !== 'ADMIN') {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: 'Não autorizado'
+            }, {
+                status: 401
+            });
+        }
+        const { alunoId } = await params;
+        const searchParams = request.nextUrl.searchParams;
+        const mes = Number(searchParams.get('mes'));
+        const ano = Number(searchParams.get('ano'));
+        const avaliacao = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].avaliacao.findFirst({
+            where: {
+                alunoId,
+                mes_referencia: mes,
+                ano_referencia: ano
+            },
+            include: {
+                respostas: true
+            }
+        });
+        if (!avaliacao) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: 'Avaliação não encontrada'
+            }, {
+                status: 404
+            });
+        }
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(avaliacao);
+    } catch (error) {
+        console.error('Erro ao buscar avaliação:', error);
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            error: 'Erro interno'
+        }, {
+            status: 500
+        });
+    }
+}
 async function POST(request) {
     try {
         const user = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getUserFromToken"])();
@@ -438,4 +481,4 @@ __turbopack_async_result__();
 } catch(e) { __turbopack_async_result__(e); } }, false);}),
 ];
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__6b28ef4c._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__bc33bcdc._.js.map

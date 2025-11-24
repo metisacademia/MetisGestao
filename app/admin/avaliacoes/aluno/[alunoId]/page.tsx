@@ -110,7 +110,7 @@ export default function AdminAvaliarAlunoPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/admin/avaliacao', {
+      const response = await fetch(`/api/admin/avaliacao/${alunoId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
