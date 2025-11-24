@@ -315,7 +315,7 @@ async function GET(request, { params }) {
         });
     }
 }
-async function POST(request) {
+async function POST(request, { params }) {
     try {
         const user = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getUserFromToken"])();
         if (!user || user.perfil !== 'ADMIN') {

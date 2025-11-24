@@ -40,7 +40,10 @@ export async function GET(
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ alunoId: string }> }
+) {
   try {
     const user = await getUserFromToken();
     if (!user || user.perfil !== 'ADMIN') {
