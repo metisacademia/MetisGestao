@@ -6,7 +6,6 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.shared]
-DATABASE_URL = "file:./dev.db"
 JWT_SECRET = "metis-jwt-secret-production-change-this-to-random-string"
 
 [workflows]
@@ -38,9 +37,9 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 32907
-externalPort = 3001
-
-[[ports]]
 localPort = 43481
 externalPort = 3000
+
+[[ports]]
+localPort = 43877
+externalPort = 3001
