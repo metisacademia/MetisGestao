@@ -5,6 +5,7 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  serverExternalPackages: ['better-sqlite3'],
 }
 
 module.exports = nextConfig
