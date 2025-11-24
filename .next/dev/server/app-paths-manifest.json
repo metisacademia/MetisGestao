@@ -1,15 +1,4 @@
 {
-  "/admin/avaliacoes/aluno/[alunoId]/page": "app/admin/avaliacoes/aluno/[alunoId]/page.js",
-  "/admin/avaliacoes/page": "app/admin/avaliacoes/page.js",
-  "/admin/avaliacoes/turma/[id]/page": "app/admin/avaliacoes/turma/[id]/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/admin/relatorios/page": "app/admin/relatorios/page.js",
-  "/api/admin/alunos/[id]/route": "app/api/admin/alunos/[id]/route.js",
-  "/api/admin/alunos/route": "app/api/admin/alunos/route.js",
-  "/api/admin/avaliacao/[id]/route": "app/api/admin/avaliacao/[id]/route.js",
-  "/api/admin/relatorios/aluno/[alunoId]/route": "app/api/admin/relatorios/aluno/[alunoId]/route.js",
-  "/api/admin/template-ativo/route": "app/api/admin/template-ativo/route.js",
-  "/api/admin/turmas/route": "app/api/admin/turmas/route.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/admin/avaliacao/[alunoId]/route": "app/api/admin/avaliacao/[alunoId]/route.js",
   "/login/page": "app/login/page.js"
 }
