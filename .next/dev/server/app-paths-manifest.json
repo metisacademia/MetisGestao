@@ -1,4 +1,8 @@
 {
   "/admin/alunos/page": "app/admin/alunos/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/templates/[id]/page": "app/admin/templates/[id]/page.js",
+  "/admin/templates/page": "app/admin/templates/page.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
   "/login/page": "app/login/page.js"
 }
