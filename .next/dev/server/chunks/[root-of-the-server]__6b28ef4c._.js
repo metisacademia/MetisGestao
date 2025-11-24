@@ -282,7 +282,7 @@ async function POST(request) {
                 status: 401
             });
         }
-        const { alunoId, templateId, mes_referencia, ano_referencia, respostas } = await request.json();
+        const { alunoId, templateId, mes_referencia, ano_referencia, data_aplicacao, respostas } = await request.json();
         const aluno = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].aluno.findUnique({
             where: {
                 id: alunoId
@@ -399,6 +399,7 @@ async function POST(request) {
             templateId,
             mes_referencia,
             ano_referencia,
+            data_aplicacao: data_aplicacao ? new Date(data_aplicacao) : new Date(),
             status: 'CONCLUIDA',
             ...scores
         };

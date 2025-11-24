@@ -1,7 +1,11 @@
 {
   "/admin/avaliacoes/aluno/[alunoId]/page": "app/admin/avaliacoes/aluno/[alunoId]/page.js",
+  "/admin/avaliacoes/page": "app/admin/avaliacoes/page.js",
+  "/admin/avaliacoes/turma/[id]/page": "app/admin/avaliacoes/turma/[id]/page.js",
+  "/admin/templates/page": "app/admin/templates/page.js",
   "/api/admin/alunos/[id]/route": "app/api/admin/alunos/[id]/route.js",
   "/api/admin/avaliacao/[alunoId]/route": "app/api/admin/avaliacao/[alunoId]/route.js",
+  "/api/admin/avaliacao/route": "app/api/admin/avaliacao/route.js",
   "/api/admin/template-ativo/route": "app/api/admin/template-ativo/route.js",
   "/login/page": "app/login/page.js"
 }
