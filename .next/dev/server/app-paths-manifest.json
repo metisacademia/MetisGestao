@@ -1,7 +1,4 @@
 {
-  "/admin/avaliacoes/aluno/[alunoId]/page": "app/admin/avaliacoes/aluno/[alunoId]/page.js",
-  "/api/admin/alunos/[id]/route": "app/api/admin/alunos/[id]/route.js",
-  "/api/admin/salvar-avaliacao/route": "app/api/admin/salvar-avaliacao/route.js",
-  "/api/admin/template-ativo/route": "app/api/admin/template-ativo/route.js",
+  "/admin/page": "app/admin/page.js",
   "/login/page": "app/login/page.js"
 }
