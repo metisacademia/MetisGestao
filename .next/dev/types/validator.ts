@@ -236,6 +236,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../../app/api/admin/salvar-avaliacao/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/salvar-avaliacao">> = Specific
+  const handler = {} as typeof import("../../../app/api/admin/salvar-avaliacao/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../app/api/admin/template-ativo/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/template-ativo">> = Specific

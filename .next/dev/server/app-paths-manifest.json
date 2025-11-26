@@ -1,3 +1,8 @@
 {
-  "/login/page": "app/login/page.js"
+  "/admin/avaliacoes/aluno/[alunoId]/page": "app/admin/avaliacoes/aluno/[alunoId]/page.js",
+  "/api/admin/alunos/[id]/route": "app/api/admin/alunos/[id]/route.js",
+  "/api/admin/salvar-avaliacao/route": "app/api/admin/salvar-avaliacao/route.js",
+  "/api/admin/template-ativo/route": "app/api/admin/template-ativo/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js"
 }

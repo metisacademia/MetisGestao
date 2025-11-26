@@ -75,8 +75,8 @@ export default function AdminAvaliarAlunoPage() {
         setAluno(alunoData);
         setTemplate(templateData);
 
-        const avaliacaoRes = await fetch(
-          `/api/admin/avaliacao/${alunoId}?mes=${mes}&ano=${ano}`
+        const avaliacaoRes = await apiCall(
+          `/api/admin/salvar-avaliacao?alunoId=${alunoId}&mes=${mes}&ano=${ano}`
         );
 
         if (avaliacaoRes.ok) {
@@ -111,7 +111,7 @@ export default function AdminAvaliarAlunoPage() {
     setError('');
 
     try {
-      const response = await apiCall(`/api/admin/avaliacao/${alunoId}`, {
+      const response = await apiCall(`/api/admin/salvar-avaliacao`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

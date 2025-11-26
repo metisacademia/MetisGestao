@@ -170,13 +170,8 @@ async function getUserFromToken(request) {
             token = authHeader.slice(7);
         }
     }
-    if (!token) {
-        console.log('getUserFromToken: No token found');
-        return null;
-    }
-    const result = await verifyToken(token);
-    console.log('getUserFromToken result:', result);
-    return result;
+    if (!token) return null;
+    return verifyToken(token);
 }
 }),
 "[project]/lib/pontuacao.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
