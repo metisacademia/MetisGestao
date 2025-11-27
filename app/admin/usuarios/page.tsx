@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
 import { Plus, KeyRound, Loader2, Copy, Check } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 
 interface Usuario {
   id: string;
@@ -42,10 +44,33 @@ export default function UsuariosPage() {
   const [selectedUser, setSelectedUser] = useState<Usuario | null>(null);
   const [newPassword, setNewPassword] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [busca, setBusca] = useState('');
+  const [perfil, setPerfil] = useState<string>('');
+  const [pagina, setPagina] = useState(1);
+  const itensPorPagina = 10;
 
   useEffect(() => {
     fetchUsuarios();
   }, []);
+
+  useEffect(() => {
+    setPagina(1);
+  }, [busca, perfil]);
+
+  const usuariosFiltrados = useMemo(() => {
+    const termo = busca.toLowerCase();
+    return usuarios.filter((usuario) => {
+      const atendeBusca =
+        usuario.nome.toLowerCase().includes(termo) ||
+        usuario.email.toLowerCase().includes(termo);
+      const atendePerfil = perfil ? usuario.perfil === perfil : true;
+      return atendeBusca && atendePerfil;
+    });
+  }, [usuarios, busca, perfil]);
+
+  const totalPaginas = Math.max(1, Math.ceil(usuariosFiltrados.length / itensPorPagina));
+  const inicio = (pagina - 1) * itensPorPagina;
+  const usuariosPaginados = usuariosFiltrados.slice(inicio, inicio + itensPorPagina);
 
   const fetchUsuarios = async () => {
     try {
@@ -112,26 +137,51 @@ export default function UsuariosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Usuários</h1>
-          <p className="text-muted-foreground mt-2">
-            Gerencie usuários do sistema
-          </p>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h1 className="text-3xl font-bold">Usuários</h1>
+            <p className="text-muted-foreground mt-2">
+              Gerencie usuários do sistema
+            </p>
+          </div>
+          <Button asChild>
+            <Link href="/admin/usuarios/novo">
+              <Plus className="w-4 h-4 mr-2" />
+              Novo Usuário
+            </Link>
+          </Button>
         </div>
-        <Button asChild>
-          <Link href="/admin/usuarios/novo">
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Usuário
-          </Link>
-        </Button>
+
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+            <Input
+              placeholder="Buscar por nome ou e-mail"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="w-full sm:w-72"
+            />
+            <Select
+              value={perfil}
+              onChange={(e) => setPerfil(e.target.value)}
+              className="w-full sm:w-48"
+            >
+              <option value="">Todos os perfis</option>
+              <option value="ADMIN">Admin</option>
+              <option value="COORDENADOR">Coordenador</option>
+              <option value="MODERADOR">Moderador</option>
+              <option value="ALUNO">Aluno</option>
+            </Select>
+          </div>
+          <div className="text-sm text-muted-foreground">{usuariosFiltrados.length} usuário(s) encontrados</div>
+        </div>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle>Lista de Usuários</CardTitle>
           <CardDescription>
-            Total: {usuarios.length} usuário(s)
+            Total: {usuariosFiltrados.length} usuário(s)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -146,7 +196,7 @@ export default function UsuariosPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {usuarios.map((usuario) => (
+              {usuariosPaginados.map((usuario) => (
                 <TableRow key={usuario.id}>
                   <TableCell className="font-medium">
                     {usuario.nome}
@@ -188,6 +238,29 @@ export default function UsuariosPage() {
               ))}
             </TableBody>
           </Table>
+          <div className="flex items-center justify-between pt-4 text-sm">
+            <div>
+              Página {pagina} de {totalPaginas}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={pagina === 1}
+                onClick={() => setPagina((prev) => Math.max(1, prev - 1))}
+              >
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={pagina === totalPaginas}
+                onClick={() => setPagina((prev) => Math.min(totalPaginas, prev + 1))}
+              >
+                Próxima
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
