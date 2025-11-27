@@ -9,8 +9,12 @@ const databaseUrl = process.env.DATABASE_URL
 const connectionString = (() => {
   if (databaseUrl) return databaseUrl
 
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('DATABASE_URL environment variable must be provided in production')
+  }
+
   console.warn(
-    'DATABASE_URL environment variable is not set. Using a local placeholder connection string.\n' +
+    'DATABASE_URL is not set. Using a local placeholder connection string for development.\n' +
       'Configure the Supabase pooled connection string in production environments.'
   )
 
