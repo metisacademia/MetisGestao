@@ -8,6 +8,7 @@ datasource db {
 
 enum PerfilUsuario {
   ADMIN
+  COORDENADOR
   MODERADOR
   ALUNO
 }
