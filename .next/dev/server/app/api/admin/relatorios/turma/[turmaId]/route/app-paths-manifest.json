@@ -1,0 +1,3 @@
+{
+  "/api/admin/relatorios/turma/[turmaId]/route": "app/api/admin/relatorios/turma/[turmaId]/route.js"
+}

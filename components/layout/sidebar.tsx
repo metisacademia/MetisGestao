@@ -35,6 +35,7 @@ const adminLinks = [
 
 const moderadorLinks = [
   { href: '/moderador', label: 'Minhas Turmas', icon: GraduationCap },
+  { href: '/moderador/relatorios', label: 'Relatórios', icon: BarChart3 },
 ];
 
 export function Sidebar({ perfil }: SidebarProps) {
