@@ -121,7 +121,7 @@ export async function POST(
         };
       });
 
-    const scores = calcularScoresPorDominio(template.itens, respostasComPontuacao);
+    const scores = calcularScoresPorDominio(respostasComPontuacao, template.itens);
     const scoreTotal = calcularScoreTotal(scores);
 
     const scoresToSave: any = {
