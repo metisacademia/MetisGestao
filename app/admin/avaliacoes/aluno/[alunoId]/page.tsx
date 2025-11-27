@@ -106,7 +106,7 @@ function renderGabarito(item: ItemTemplate) {
     case 'mapa':
       const entries = Object.entries(regra.mapa);
       const maxEntry = entries.reduce((a: any, b: any) => (b[1] > a[1] ? b : a), entries[0]);
-      const mapaTexto = entries.map(([k, v]) => `${k}: ${v} pt(s)`).join(' • ');
+      const mapaTexto = entries.map(([k, v]: any[]) => `${k}: ${v} pt(s)`).join(' • ');
       return (
         <div className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded">
           <Target className="w-3 h-3 inline mr-1" />
@@ -277,9 +277,9 @@ export default function AdminAvaliarAlunoPage() {
   const estatisticasPorDominio = useMemo(() => {
     const stats: Record<string, { respondidos: number; total: number; pontuacao: number }> = {};
 
-    domainGroups.forEach((group) => {
-      const respondidos = group.itens.filter((item) => respostas[item.id] !== undefined && respostas[item.id] !== '').length;
-      const pontuacao = group.itens.reduce((acc, item) => acc + (pontuacoesPorItem[item.id] || 0), 0);
+    domainGroups.forEach((group: any) => {
+      const respondidos = group.itens.filter((item: any) => respostas[item.id] !== undefined && respostas[item.id] !== '').length;
+      const pontuacao = group.itens.reduce((acc: any, item: any) => acc + (pontuacoesPorItem[item.id] || 0), 0);
       stats[group.dominioId] = {
         respondidos,
         total: group.itens.length,
@@ -291,12 +291,12 @@ export default function AdminAvaliarAlunoPage() {
   }, [domainGroups, respostas, pontuacoesPorItem]);
 
   const pontuacaoTotal = useMemo(() => {
-    return Object.values(pontuacoesPorItem).reduce((acc, p) => acc + p, 0);
+    return Object.values(pontuacoesPorItem).reduce((acc: any, p: any) => acc + p, 0);
   }, [pontuacoesPorItem]);
 
   const totalRespondidos = useMemo(() => {
     if (!template) return 0;
-    return template.itens.filter((item) => respostas[item.id] !== undefined && respostas[item.id] !== '').length;
+    return template.itens.filter((item: any) => respostas[item.id] !== undefined && respostas[item.id] !== '').length;
   }, [template, respostas]);
 
   const totalItens = template?.itens.length || 0;
@@ -435,7 +435,7 @@ export default function AdminAvaliarAlunoPage() {
 
   const expandAll = () => {
     const newExpanded: Record<string, boolean> = {};
-    domainGroups.forEach((g) => {
+    domainGroups.forEach((g: any) => {
       newExpanded[g.dominioId] = true;
     });
     setExpandedSections(newExpanded);
@@ -443,7 +443,7 @@ export default function AdminAvaliarAlunoPage() {
 
   const collapseAll = () => {
     const newExpanded: Record<string, boolean> = {};
-    domainGroups.forEach((g) => {
+    domainGroups.forEach((g: any) => {
       newExpanded[g.dominioId] = false;
     });
     setExpandedSections(newExpanded);
@@ -541,7 +541,7 @@ export default function AdminAvaliarAlunoPage() {
               disabled={isDisabled}
             >
               <option value="">Selecione...</option>
-              {opcoes.map((opcao: string) => {
+              {opcoes.map((opcao: any) => {
                 const pontosOpcao = regra?.tipo === 'mapa' ? regra.mapa[opcao] : null;
                 return (
                   <option key={opcao} value={opcao}>
@@ -554,7 +554,7 @@ export default function AdminAvaliarAlunoPage() {
             </select>
             {regra?.tipo === 'mapa' && (
               <div className="flex flex-wrap gap-2 mt-2">
-                {opcoes.map((opcao: string) => {
+                {opcoes.map((opcao: any) => {
                   const pontosOpcao = regra.mapa[opcao] || 0;
                   const isMelhor = melhorOpcao === opcao;
                   return (

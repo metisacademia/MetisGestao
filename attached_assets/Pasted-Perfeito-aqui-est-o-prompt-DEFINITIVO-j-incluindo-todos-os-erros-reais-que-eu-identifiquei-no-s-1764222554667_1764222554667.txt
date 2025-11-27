@@ -1,0 +1,187 @@
+Perfeito — aqui está o prompt DEFINITIVO, já incluindo todos os erros reais que eu identifiquei no seu repositório, e instruções explícitas de como corrigi-los.
+
+👉 É só copiar e colar no Replit.
+Ele vai revisar tudo e reescrever os arquivos corretamente.
+
+⸻
+
+✅ PROMPT COMPLETO PARA O REPLIT — CORRIGIR TODOS OS ERROS IDENTIFICADOS
+
+Quero que você aja como um corretor avançado de TypeScript dentro do meu projeto Next.js.
+Seu trabalho é corrigir todos os erros relacionados a “Parameter implicitly has an ‘any’ type” nos arquivos do projeto.
+
+Aqui estão os erros EXATOS já confirmados nos meus arquivos — você DEVE corrigir todos eles e procurar por outros semelhantes:
+
+⸻
+
+🔍 ERROS IDENTIFICADOS ATÉ AGORA (OBRIGATÓRIO CORRIGIR)
+
+✅ 1. app/admin/avaliacoes/page.tsx
+
+Erro detectado no deploy da Vercel:
+
+turmas.map((turma) => (
+
+Correção necessária:
+
+turmas.map((turma: any) => (
+
+
+⸻
+
+✅ 2. app/admin/avaliacoes/turma/[id]/page.tsx
+
+Erros detectados pela Vercel:
+
+(a) Linha com .map(a => a.alunoId)
+
+avaliacoesMesAtual.map(a => a.alunoId)
+
+Correção:
+
+avaliacoesMesAtual.map((a: any) => a.alunoId)
+
+
+⸻
+
+(b) Linha com .map((aluno) => …)
+
+turma.alunos.map((aluno) => (
+
+Correção:
+
+turma.alunos.map((aluno: any) => (
+
+
+⸻
+
+✅ 3. app/admin/avaliacoes/aluno/[alunoId]/page.tsx
+
+Erros confirmados:
+
+(a) Função map em regra.faixas
+
+regra.faixas.map((f) => { … })
+
+Correção:
+
+regra.faixas.map((f: any) => { … })
+
+
+⸻
+
+(b) .reduce((a, b) => …) fora de uma regra
+
+entries.reduce((a, b) => (b[1] > a[1] ? b : a), entries[0])
+
+Correção:
+
+entries.reduce((a: any, b: any) => (b[1] > a[1] ? b : a), entries[0])
+
+
+⸻
+
+(c) .map(([k, v]) => …)
+
+Correção necessária:
+
+entries.map(([k, v]: any[]) => …)
+
+ou este:
+
+entries.map(([k, v]: [string, any]) => …)
+
+
+⸻
+
+(d) .forEach(g => …) em expandAll / collapseAll
+
+domainGroups.forEach(g => { … })
+
+Correção:
+
+domainGroups.forEach((g: any) => { … })
+
+
+⸻
+
+(e) .filter(item => …)
+
+group.itens.filter((item) => …)
+
+Correção:
+
+group.itens.filter((item: any) => …)
+
+
+⸻
+
+(f) .reduce((acc, item) => …)
+
+group.itens.reduce((acc, item) => …)
+
+Correção:
+
+group.itens.reduce((acc: any, item: any) => …)
+
+
+⸻
+
+📌 INSTRUÇÕES QUE VOCÊ DEVE SEGUIR AGORA
+
+Você deve:
+
+✔️ 1. Revisar TODOS os arquivos do projeto
+
+Procure por todas as funções:
+	•	.map(
+	•	.filter(
+	•	.reduce(
+	•	.forEach(
+	•	.find(
+	•	.some(
+	•	.every(
+
+E adicionar tipagem explícita a todos os parâmetros.
+
+✔️ 2. Aplique o padrão simples:
+
+Sempre que não souber o tipo correto, use:
+
+(param: any)
+
+✔️ 3. Reescreva arquivos completos
+
+Na sua resposta, quero:
+	1.	Nome do arquivo corrigido
+	2.	Código completo do arquivo já corrigido
+	3.	Lista das correções feitas naquele arquivo
+
+✔️ 4. Não altere lógica nenhuma
+
+Apenas adicione tipagem.
+Nenhum comportamento do sistema deve mudar.
+
+⸻
+
+🎯 RESPOSTA ESPERADA
+
+Quero que você mostre, para cada arquivo corrigido:
+	•	“Arquivo corrigido: xxxx”
+	•	Código final corrigido
+	•	Lista das mudanças (ex: “adicionei :any no parâmetro a do map”)
+
+Repita isso para todos os arquivos que você modificar.
+
+⸻
+
+🔥 Agora comece.
+
+Leia todos os arquivos e aplique TODAS as correções necessárias.
+
+⸻
+
+👉 Cole este prompt exatamente assim na IA do Replit.
+Ele fará a limpeza completa do projeto.
+
+Se quiser, posso também criar um script automático que varre todos os .tsx e injeta tipos any sozinho — basta pedir.
