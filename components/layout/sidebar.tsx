@@ -3,23 +3,26 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { 
-  Users, 
-  GraduationCap, 
-  UserCircle, 
-  Brain, 
-  FileText, 
-  BarChart3, 
+import {
+  Users,
+  GraduationCap,
+  UserCircle,
+  Brain,
+  FileText,
+  BarChart3,
   LogOut,
   Home,
   ClipboardCheck,
   LayoutDashboard,
-  User
+  User,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface SidebarProps {
   perfil: 'ADMIN' | 'COORDENADOR' | 'MODERADOR';
+  className?: string;
+  onNavigate?: () => void;
 }
 
 const adminLinks = [
@@ -53,15 +56,16 @@ const moderadorLinks = [
   { href: '/moderador/meu-perfil', label: 'Meu Perfil', icon: User },
 ];
 
-export function Sidebar({ perfil }: SidebarProps) {
+export function Sidebar({ perfil, className, onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const links = perfil === 'ADMIN' 
-    ? adminLinks 
-    : perfil === 'COORDENADOR' 
-      ? coordenadorLinks 
-      : moderadorLinks;
+  const links =
+    perfil === 'ADMIN'
+      ? adminLinks
+      : perfil === 'COORDENADOR'
+        ? coordenadorLinks
+        : moderadorLinks;
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -70,13 +74,13 @@ export function Sidebar({ perfil }: SidebarProps) {
   };
 
   return (
-    <div className="w-64 bg-[#173b5a] flex flex-col h-screen">
+    <div className={cn('w-64 bg-[#173b5a] flex flex-col h-full md:h-screen', className)}>
       <div className="p-4 border-b border-[#2a5580]">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 relative bg-[#f8f1e7] rounded-lg flex items-center justify-center overflow-hidden">
-            <Image 
-              src="/logo-metis-light.jpg" 
-              alt="Métis Logo" 
+            <Image
+              src="/logo-metis-light.jpg"
+              alt="Métis Logo"
               width={48}
               height={48}
               className="object-contain"
@@ -92,11 +96,12 @@ export function Sidebar({ perfil }: SidebarProps) {
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {links.map((link) => {
           const Icon = link.icon;
-          const isActive = pathname === link.href || 
+          const isActive =
+            pathname === link.href ||
             (link.href !== '/admin' && pathname?.startsWith(link.href + '/'));
-          
+
           return (
-            <Link key={link.href} href={link.href}>
+            <Link key={link.href} href={link.href} onClick={onNavigate}>
               <div
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all ${
                   isActive
@@ -105,7 +110,9 @@ export function Sidebar({ perfil }: SidebarProps) {
                 }`}
               >
                 <Icon className="w-5 h-5" />
-                <span className={`text-sm ${isActive ? 'font-semibold' : 'font-medium'}`}>{link.label}</span>
+                <span className={`text-sm ${isActive ? 'font-semibold' : 'font-medium'}`}>
+                  {link.label}
+                </span>
               </div>
             </Link>
           );
@@ -116,7 +123,10 @@ export function Sidebar({ perfil }: SidebarProps) {
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 text-[#f8f1e7] hover:bg-[#2a5580] hover:text-[#f8f1e7]"
-          onClick={handleLogout}
+          onClick={() => {
+            onNavigate?.();
+            void handleLogout();
+          }}
         >
           <LogOut className="w-5 h-5" />
           Sair
