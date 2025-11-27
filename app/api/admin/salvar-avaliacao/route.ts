@@ -123,13 +123,9 @@ export async function POST(request: NextRequest) {
         };
       });
 
-    const dominiosUnicos = Array.from(
-      new Map(template.itens.map((item) => [item.dominioId, item.dominio])).values()
-    );
-
     const scoresPorDominio = calcularScoresPorDominio(
       respostasComPontuacao,
-      dominiosUnicos
+      template.itens
     );
 
     const scoreTotal = calcularScoreTotal(scoresPorDominio);
