@@ -29,7 +29,7 @@ interface ItemParaEditar {
   id: string;
   codigo_item: string;
   titulo: string;
-  descricao?: string | null;
+  descricao?: string;
   tipo_resposta: string;
   ordem: number;
   ativo: boolean;
