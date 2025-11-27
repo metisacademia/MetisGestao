@@ -23,8 +23,8 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log('Iniciando seed do banco de dados...');
 
-  const adminPassword = await bcrypt.hash('admin123', 10);
-  const modPassword = await bcrypt.hash('mod123', 10);
+  const adminPassword = '$2b$10$LKZVbjXLwfmB7lFk8FNnFuM3JcDje4Xc5QQ4KVXoT7skX0dQ5mU2m';
+  const modPassword = '$2b$10$fcoWARp4y3qKMaAz29a07.7WwPgqhej65r1wqGTT16GvVj1rBzyFi';
 
   const admin = await prisma.usuario.upsert({
     where: { email: 'admin@metis.com' },
