@@ -11,7 +11,8 @@ import {
   BarChart3, 
   LogOut,
   Home,
-  ClipboardCheck
+  ClipboardCheck,
+  LayoutDashboard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -21,6 +22,7 @@ interface SidebarProps {
 
 const adminLinks = [
   { href: '/admin', label: 'Dashboard', icon: Home },
+  { href: '/admin/dashboard', label: 'Acompanhamento', icon: LayoutDashboard },
   { href: '/admin/usuarios', label: 'Usuários', icon: Users },
   { href: '/admin/turmas', label: 'Turmas', icon: GraduationCap },
   { href: '/admin/alunos', label: 'Alunos', icon: UserCircle },
