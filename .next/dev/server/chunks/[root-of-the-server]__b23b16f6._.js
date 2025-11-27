@@ -106,6 +106,8 @@ __turbopack_context__.s([
     ()=>setAuthCookie,
     "signToken",
     ()=>signToken,
+    "verifyAuth",
+    ()=>verifyAuth,
     "verifyPassword",
     ()=>verifyPassword,
     "verifyToken",
@@ -171,6 +173,22 @@ async function getUserFromToken(request) {
     let token = await getAuthToken();
     if (!token && request) {
         const authHeader = request.headers?.get?.('authorization') || request.headers?.['authorization'];
+        if (authHeader?.startsWith('Bearer ')) {
+            token = authHeader.slice(7);
+        }
+    }
+    if (!token) return null;
+    return verifyToken(token);
+}
+async function verifyAuth(request) {
+    let token;
+    const cookieHeader = request.headers?.get?.('cookie') || '';
+    const tokenMatch = cookieHeader.match(/auth-token=([^;]+)/);
+    if (tokenMatch) {
+        token = tokenMatch[1];
+    }
+    if (!token) {
+        const authHeader = request.headers?.get?.('authorization');
         if (authHeader?.startsWith('Bearer ')) {
             token = authHeader.slice(7);
         }

@@ -313,7 +313,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
+function FormularioAluno({ turmas, onSubmit, alunoParaEditar, apiBasePath = '/api/admin' }) {
     _s();
     const [nome, setNome] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(alunoParaEditar?.nome || '');
     const [turmaId, setTurmaId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(alunoParaEditar?.turmaId || '');
@@ -326,7 +326,7 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
         setError('');
         setLoading(true);
         try {
-            const url = alunoParaEditar ? `/api/admin/alunos/${alunoParaEditar.id}` : '/api/admin/alunos';
+            const url = alunoParaEditar ? `${apiBasePath}/alunos/${alunoParaEditar.id}` : `${apiBasePath}/alunos`;
             const method = alunoParaEditar ? 'PUT' : 'POST';
             const response = await fetch(url, {
                 method,
@@ -365,20 +365,20 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                         children: alunoParaEditar ? 'Editar Aluno' : 'Novo Aluno'
                     }, void 0, false, {
                         fileName: "[project]/components/FormularioAluno.tsx",
-                        lineNumber: 87,
+                        lineNumber: 89,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                         children: alunoParaEditar ? 'Atualize os dados do aluno' : 'Adicione um novo aluno'
                     }, void 0, false, {
                         fileName: "[project]/components/FormularioAluno.tsx",
-                        lineNumber: 88,
+                        lineNumber: 90,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/FormularioAluno.tsx",
-                lineNumber: 86,
+                lineNumber: 88,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -397,7 +397,7 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                             children: "Nome do Aluno"
                                         }, void 0, false, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 96,
+                                            lineNumber: 98,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -409,13 +409,13 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                             disabled: loading
                                         }, void 0, false, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 97,
+                                            lineNumber: 99,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/FormularioAluno.tsx",
-                                    lineNumber: 95,
+                                    lineNumber: 97,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -426,7 +426,7 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                             children: "Turma"
                                         }, void 0, false, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 108,
+                                            lineNumber: 110,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -442,7 +442,7 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                                     children: "Selecione uma turma"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/FormularioAluno.tsx",
-                                                    lineNumber: 117,
+                                                    lineNumber: 119,
                                                     columnNumber: 17
                                                 }, this),
                                                 turmas.map((turma)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -450,19 +450,19 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                                         children: turma.nome_turma
                                                     }, turma.id, false, {
                                                         fileName: "[project]/components/FormularioAluno.tsx",
-                                                        lineNumber: 119,
+                                                        lineNumber: 121,
                                                         columnNumber: 19
                                                     }, this))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 109,
+                                            lineNumber: 111,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/FormularioAluno.tsx",
-                                    lineNumber: 107,
+                                    lineNumber: 109,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -473,7 +473,7 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                             children: "Data de Nascimento"
                                         }, void 0, false, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 127,
+                                            lineNumber: 129,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -484,13 +484,13 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                             disabled: loading
                                         }, void 0, false, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 128,
+                                            lineNumber: 130,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/FormularioAluno.tsx",
-                                    lineNumber: 126,
+                                    lineNumber: 128,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -501,7 +501,7 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                             children: "Observações"
                                         }, void 0, false, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 138,
+                                            lineNumber: 140,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -514,19 +514,19 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                                             disabled: loading
                                         }, void 0, false, {
                                             fileName: "[project]/components/FormularioAluno.tsx",
-                                            lineNumber: 139,
+                                            lineNumber: 141,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/FormularioAluno.tsx",
-                                    lineNumber: 137,
+                                    lineNumber: 139,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/FormularioAluno.tsx",
-                            lineNumber: 94,
+                            lineNumber: 96,
                             columnNumber: 11
                         }, this),
                         error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -534,7 +534,7 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/components/FormularioAluno.tsx",
-                            lineNumber: 152,
+                            lineNumber: 154,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -544,24 +544,24 @@ function FormularioAluno({ turmas, onSubmit, alunoParaEditar }) {
                             children: loading ? 'Salvando...' : 'Salvar Aluno'
                         }, void 0, false, {
                             fileName: "[project]/components/FormularioAluno.tsx",
-                            lineNumber: 157,
+                            lineNumber: 159,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/FormularioAluno.tsx",
-                    lineNumber: 93,
+                    lineNumber: 95,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/FormularioAluno.tsx",
-                lineNumber: 92,
+                lineNumber: 94,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/FormularioAluno.tsx",
-        lineNumber: 85,
+        lineNumber: 87,
         columnNumber: 5
     }, this);
 }
