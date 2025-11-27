@@ -1,0 +1,147 @@
+'use client';
+
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import FormularioAluno from '@/components/FormularioAluno';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+
+interface Aluno {
+  id: string;
+  nome: string;
+  turmaId: string;
+  turma: { id: string; nome_turma: string };
+  data_nascimento?: Date | null;
+  observacoes?: string | null;
+}
+
+interface Turma {
+  id: string;
+  nome_turma: string;
+}
+
+export default function AlunosContent({
+  alunosIniciais,
+  turmas,
+}: {
+  alunosIniciais: Aluno[];
+  turmas: Turma[];
+}) {
+  const [alunos, setAlunos] = useState<Aluno[]>(alunosIniciais);
+  const [mostraFormulario, setMostraFormulario] = useState(false);
+  const [alunoParaEditar, setAlunoParaEditar] = useState<Aluno | null>(null);
+
+  const handleRecarregarAlunos = async () => {
+    const response = await fetch('/api/coordenador/alunos');
+    if (response.ok) {
+      const dados = await response.json();
+      setAlunos(dados);
+      setMostraFormulario(false);
+      setAlunoParaEditar(null);
+    }
+  };
+
+  const handleEditar = (aluno: Aluno) => {
+    setAlunoParaEditar(aluno);
+    setMostraFormulario(true);
+  };
+
+  const handleDeletar = async (id: string) => {
+    if (!confirm('Tem certeza que deseja deletar este aluno?')) return;
+
+    try {
+      const response = await fetch(`/api/coordenador/alunos/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        await handleRecarregarAlunos();
+      }
+    } catch (error) {
+      console.error('Erro ao deletar aluno:', error);
+    }
+  };
+
+  const handleCancelar = () => {
+    setMostraFormulario(false);
+    setAlunoParaEditar(null);
+  };
+
+  return (
+    <>
+      {mostraFormulario && (
+        <FormularioAluno
+          turmas={turmas}
+          onSubmit={handleRecarregarAlunos}
+          alunoParaEditar={alunoParaEditar || undefined}
+          apiBasePath="/api/coordenador"
+        />
+      )}
+
+      {!mostraFormulario && (
+        <Button onClick={() => setMostraFormulario(true)} className="w-full">
+          + Novo Aluno
+        </Button>
+      )}
+
+      {mostraFormulario && (
+        <Button onClick={handleCancelar} variant="outline" className="w-full">
+          Cancelar
+        </Button>
+      )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Alunos</CardTitle>
+          <CardDescription>
+            Total: {alunos.length} aluno(s)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Turma</TableHead>
+                <TableHead>Observações</TableHead>
+                <TableHead>Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {alunos.map((aluno) => (
+                <TableRow key={aluno.id}>
+                  <TableCell className="font-medium">
+                    <Link href={`/coordenador/alunos/${aluno.id}`} className="hover:underline text-primary">
+                      {aluno.nome}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{aluno.turma.nome_turma}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {aluno.observacoes || '-'}
+                  </TableCell>
+                  <TableCell className="space-x-2">
+                    <Button
+                      onClick={() => handleEditar(aluno)}
+                      size="sm"
+                      variant="outline"
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      onClick={() => handleDeletar(aluno.id)}
+                      size="sm"
+                      variant="destructive"
+                    >
+                      Deletar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </>
+  );
+}

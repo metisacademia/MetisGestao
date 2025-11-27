@@ -13,12 +13,13 @@ import {
   LogOut,
   Home,
   ClipboardCheck,
-  LayoutDashboard
+  LayoutDashboard,
+  User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface SidebarProps {
-  perfil: 'ADMIN' | 'MODERADOR';
+  perfil: 'ADMIN' | 'COORDENADOR' | 'MODERADOR';
 }
 
 const adminLinks = [
@@ -31,18 +32,36 @@ const adminLinks = [
   { href: '/admin/templates', label: 'Templates de Avaliação', icon: FileText },
   { href: '/admin/avaliacoes', label: 'Avaliações', icon: ClipboardCheck },
   { href: '/admin/relatorios', label: 'Relatórios', icon: BarChart3 },
+  { href: '/admin/meu-perfil', label: 'Meu Perfil', icon: User },
+];
+
+const coordenadorLinks = [
+  { href: '/coordenador', label: 'Dashboard', icon: Home },
+  { href: '/coordenador/dashboard', label: 'Acompanhamento', icon: LayoutDashboard },
+  { href: '/coordenador/turmas', label: 'Turmas', icon: GraduationCap },
+  { href: '/coordenador/alunos', label: 'Alunos', icon: UserCircle },
+  { href: '/coordenador/dominios', label: 'Domínios Cognitivos', icon: Brain },
+  { href: '/coordenador/templates', label: 'Templates de Avaliação', icon: FileText },
+  { href: '/coordenador/avaliacoes', label: 'Avaliações', icon: ClipboardCheck },
+  { href: '/coordenador/relatorios', label: 'Relatórios', icon: BarChart3 },
+  { href: '/coordenador/meu-perfil', label: 'Meu Perfil', icon: User },
 ];
 
 const moderadorLinks = [
   { href: '/moderador', label: 'Minhas Turmas', icon: GraduationCap },
   { href: '/moderador/relatorios', label: 'Relatórios', icon: BarChart3 },
+  { href: '/moderador/meu-perfil', label: 'Meu Perfil', icon: User },
 ];
 
 export function Sidebar({ perfil }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const links = perfil === 'ADMIN' ? adminLinks : moderadorLinks;
+  const links = perfil === 'ADMIN' 
+    ? adminLinks 
+    : perfil === 'COORDENADOR' 
+      ? coordenadorLinks 
+      : moderadorLinks;
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });

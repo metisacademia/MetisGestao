@@ -41,11 +41,11 @@ export async function POST(request: NextRequest) {
 
     await setAuthCookie(token);
 
-    const redirectTo = usuario.perfil === 'ADMIN' 
-      ? '/admin' 
-      : usuario.perfil === 'MODERADOR' 
-        ? '/moderador' 
-        : '/aluno';
+    const redirectTo = 
+      usuario.perfil === 'ADMIN' ? '/admin' 
+      : usuario.perfil === 'COORDENADOR' ? '/coordenador'
+      : usuario.perfil === 'MODERADOR' ? '/moderador' 
+      : '/aluno/meu-relatorio';
 
     return NextResponse.json({
       token,

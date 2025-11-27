@@ -30,8 +30,15 @@ function middleware(request) {
     if (pathname === '/login' && token) {
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$esm$2f$server$2f$web$2f$exports$2f$index$2e$js__$5b$middleware$2d$edge$5d$__$28$ecmascript$29$__["NextResponse"].next();
     }
-    // Se está tentando acessar /admin, /moderador ou /aluno sem token, redireciona para login
-    if ((pathname.startsWith('/admin') || pathname.startsWith('/moderador') || pathname.startsWith('/aluno')) && !token) {
+    // Se está tentando acessar rotas protegidas sem token, redireciona para login
+    const protectedRoutes = [
+        '/admin',
+        '/coordenador',
+        '/moderador',
+        '/aluno'
+    ];
+    const isProtectedRoute = protectedRoutes.some((route)=>pathname.startsWith(route));
+    if (isProtectedRoute && !token) {
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$esm$2f$server$2f$web$2f$exports$2f$index$2e$js__$5b$middleware$2d$edge$5d$__$28$ecmascript$29$__["NextResponse"].redirect(new URL('/login', request.url));
     }
     return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$esm$2f$server$2f$web$2f$exports$2f$index$2e$js__$5b$middleware$2d$edge$5d$__$28$ecmascript$29$__["NextResponse"].next();
@@ -39,6 +46,7 @@ function middleware(request) {
 const config = {
     matcher: [
         '/admin/:path*',
+        '/coordenador/:path*',
         '/moderador/:path*',
         '/aluno/:path*',
         '/login'

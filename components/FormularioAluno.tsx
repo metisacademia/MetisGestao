@@ -21,12 +21,14 @@ interface FormularioAlunoProps {
     data_nascimento?: string;
     observacoes?: string;
   };
+  apiBasePath?: string;
 }
 
 export default function FormularioAluno({
   turmas,
   onSubmit,
   alunoParaEditar,
+  apiBasePath = '/api/admin',
 }: FormularioAlunoProps) {
   const [nome, setNome] = useState(alunoParaEditar?.nome || '');
   const [turmaId, setTurmaId] = useState(alunoParaEditar?.turmaId || '');
@@ -46,8 +48,8 @@ export default function FormularioAluno({
 
     try {
       const url = alunoParaEditar
-        ? `/api/admin/alunos/${alunoParaEditar.id}`
-        : '/api/admin/alunos';
+        ? `${apiBasePath}/alunos/${alunoParaEditar.id}`
+        : `${apiBasePath}/alunos`;
       const method = alunoParaEditar ? 'PUT' : 'POST';
 
       const response = await fetch(url, {

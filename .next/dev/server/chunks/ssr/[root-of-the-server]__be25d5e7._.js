@@ -119,6 +119,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/house.js [app-ssr] (ecmascript) <export default as Home>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clipboard$2d$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ClipboardCheck$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/clipboard-check.js [app-ssr] (ecmascript) <export default as ClipboardCheck>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/layout-dashboard.js [app-ssr] (ecmascript) <export default as LayoutDashboard>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user.js [app-ssr] (ecmascript) <export default as User>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.tsx [app-ssr] (ecmascript)");
 'use client';
 ;
@@ -172,6 +173,58 @@ const adminLinks = [
         href: '/admin/relatorios',
         label: 'Relatórios',
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chart$2d$column$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__BarChart3$3e$__["BarChart3"]
+    },
+    {
+        href: '/admin/meu-perfil',
+        label: 'Meu Perfil',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"]
+    }
+];
+const coordenadorLinks = [
+    {
+        href: '/coordenador',
+        label: 'Dashboard',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__["Home"]
+    },
+    {
+        href: '/coordenador/dashboard',
+        label: 'Acompanhamento',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__["LayoutDashboard"]
+    },
+    {
+        href: '/coordenador/turmas',
+        label: 'Turmas',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$graduation$2d$cap$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__GraduationCap$3e$__["GraduationCap"]
+    },
+    {
+        href: '/coordenador/alunos',
+        label: 'Alunos',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__UserCircle$3e$__["UserCircle"]
+    },
+    {
+        href: '/coordenador/dominios',
+        label: 'Domínios Cognitivos',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$brain$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Brain$3e$__["Brain"]
+    },
+    {
+        href: '/coordenador/templates',
+        label: 'Templates de Avaliação',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"]
+    },
+    {
+        href: '/coordenador/avaliacoes',
+        label: 'Avaliações',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clipboard$2d$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ClipboardCheck$3e$__["ClipboardCheck"]
+    },
+    {
+        href: '/coordenador/relatorios',
+        label: 'Relatórios',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chart$2d$column$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__BarChart3$3e$__["BarChart3"]
+    },
+    {
+        href: '/coordenador/meu-perfil',
+        label: 'Meu Perfil',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"]
     }
 ];
 const moderadorLinks = [
@@ -184,12 +237,17 @@ const moderadorLinks = [
         href: '/moderador/relatorios',
         label: 'Relatórios',
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chart$2d$column$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__BarChart3$3e$__["BarChart3"]
+    },
+    {
+        href: '/moderador/meu-perfil',
+        label: 'Meu Perfil',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"]
     }
 ];
 function Sidebar({ perfil }) {
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["usePathname"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
-    const links = perfil === 'ADMIN' ? adminLinks : moderadorLinks;
+    const links = perfil === 'ADMIN' ? adminLinks : perfil === 'COORDENADOR' ? coordenadorLinks : moderadorLinks;
     const handleLogout = async ()=>{
         await fetch('/api/auth/logout', {
             method: 'POST'
@@ -215,12 +273,12 @@ function Sidebar({ perfil }) {
                                 className: "object-contain"
                             }, void 0, false, {
                                 fileName: "[project]/components/layout/sidebar.tsx",
-                                lineNumber: 58,
+                                lineNumber: 77,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/layout/sidebar.tsx",
-                            lineNumber: 57,
+                            lineNumber: 76,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -230,7 +288,7 @@ function Sidebar({ perfil }) {
                                     children: "Métis"
                                 }, void 0, false, {
                                     fileName: "[project]/components/layout/sidebar.tsx",
-                                    lineNumber: 67,
+                                    lineNumber: 86,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -238,24 +296,24 @@ function Sidebar({ perfil }) {
                                     children: "Academia da Mente"
                                 }, void 0, false, {
                                     fileName: "[project]/components/layout/sidebar.tsx",
-                                    lineNumber: 68,
+                                    lineNumber: 87,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/layout/sidebar.tsx",
-                            lineNumber: 66,
+                            lineNumber: 85,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/layout/sidebar.tsx",
-                    lineNumber: 56,
+                    lineNumber: 75,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/layout/sidebar.tsx",
-                lineNumber: 55,
+                lineNumber: 74,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -272,7 +330,7 @@ function Sidebar({ perfil }) {
                                     className: "w-5 h-5"
                                 }, void 0, false, {
                                     fileName: "[project]/components/layout/sidebar.tsx",
-                                    lineNumber: 88,
+                                    lineNumber: 107,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -280,24 +338,24 @@ function Sidebar({ perfil }) {
                                     children: link.label
                                 }, void 0, false, {
                                     fileName: "[project]/components/layout/sidebar.tsx",
-                                    lineNumber: 89,
+                                    lineNumber: 108,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/layout/sidebar.tsx",
-                            lineNumber: 81,
+                            lineNumber: 100,
                             columnNumber: 15
                         }, this)
                     }, link.href, false, {
                         fileName: "[project]/components/layout/sidebar.tsx",
-                        lineNumber: 80,
+                        lineNumber: 99,
                         columnNumber: 13
                     }, this);
                 })
             }, void 0, false, {
                 fileName: "[project]/components/layout/sidebar.tsx",
-                lineNumber: 73,
+                lineNumber: 92,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -311,25 +369,25 @@ function Sidebar({ perfil }) {
                             className: "w-5 h-5"
                         }, void 0, false, {
                             fileName: "[project]/components/layout/sidebar.tsx",
-                            lineNumber: 102,
+                            lineNumber: 121,
                             columnNumber: 11
                         }, this),
                         "Sair"
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/layout/sidebar.tsx",
-                    lineNumber: 97,
+                    lineNumber: 116,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/layout/sidebar.tsx",
-                lineNumber: 96,
+                lineNumber: 115,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/layout/sidebar.tsx",
-        lineNumber: 54,
+        lineNumber: 73,
         columnNumber: 5
     }, this);
 }

@@ -26,6 +26,7 @@ interface FormularioItemProps {
   dominios: Dominio[];
   onSubmit?: () => void;
   itemParaEditar?: ItemParaEditar;
+  apiBasePath?: string;
 }
 
 export default function FormularioItem({
@@ -33,6 +34,7 @@ export default function FormularioItem({
   dominios,
   onSubmit,
   itemParaEditar,
+  apiBasePath = '/api/admin',
 }: FormularioItemProps) {
   const [codigo_item, setCodigoItem] = useState(itemParaEditar?.codigo_item || '');
   const [titulo, setTitulo] = useState(itemParaEditar?.titulo || '');
@@ -51,8 +53,8 @@ export default function FormularioItem({
 
     try {
       const url = itemParaEditar
-        ? `/api/admin/templates/${templateId}/itens/${itemParaEditar.id}`
-        : `/api/admin/templates/${templateId}/itens`;
+        ? `${apiBasePath}/templates/${templateId}/itens/${itemParaEditar.id}`
+        : `${apiBasePath}/templates/${templateId}/itens`;
       const method = itemParaEditar ? 'PUT' : 'POST';
 
       const response = await fetch(url, {

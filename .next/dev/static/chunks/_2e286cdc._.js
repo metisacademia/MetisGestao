@@ -418,7 +418,7 @@ function LoginPage() {
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                             id: "login",
                                             type: "text",
-                                            placeholder: "admin@metis ou moderador@metis",
+                                            placeholder: "seu-login@metis",
                                             value: login,
                                             onChange: (e)=>setLogin(e.target.value),
                                             required: true,
@@ -493,31 +493,14 @@ function LoginPage() {
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "mt-6 pt-4 border-t border-[#cda465]/20 text-xs text-center text-[#173b5a]/60",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    className: "font-medium mb-1",
-                                    children: "Login de demonstração:"
-                                }, void 0, false, {
-                                    fileName: "[project]/app/login/page.tsx",
-                                    lineNumber: 118,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    children: "Admin: admin@metis / admin123"
-                                }, void 0, false, {
-                                    fileName: "[project]/app/login/page.tsx",
-                                    lineNumber: 119,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    children: "Moderador: moderador@metis / mod123"
-                                }, void 0, false, {
-                                    fileName: "[project]/app/login/page.tsx",
-                                    lineNumber: 120,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: "Sistema de Gestão Métis"
+                            }, void 0, false, {
+                                fileName: "[project]/app/login/page.tsx",
+                                lineNumber: 118,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
                             fileName: "[project]/app/login/page.tsx",
                             lineNumber: 117,
                             columnNumber: 11

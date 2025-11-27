@@ -22,12 +22,14 @@ interface FormularioTurmaProps {
     turno: string;
     moderadorId: string;
   };
+  apiBasePath?: string;
 }
 
 export default function FormularioTurma({
   moderadores,
   onSubmit,
   turmaParaEditar,
+  apiBasePath = '/api/admin',
 }: FormularioTurmaProps) {
   const [nome_turma, setNomeTurma] = useState(turmaParaEditar?.nome_turma || '');
   const [dia_semana, setDiaSemana] = useState(turmaParaEditar?.dia_semana || '');
@@ -44,8 +46,8 @@ export default function FormularioTurma({
 
     try {
       const url = turmaParaEditar
-        ? `/api/admin/turmas/${turmaParaEditar.id}`
-        : '/api/admin/turmas';
+        ? `${apiBasePath}/turmas/${turmaParaEditar.id}`
+        : `${apiBasePath}/turmas`;
       const method = turmaParaEditar ? 'PUT' : 'POST';
 
       const response = await fetch(url, {

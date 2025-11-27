@@ -10,8 +10,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Se está tentando acessar /admin, /moderador ou /aluno sem token, redireciona para login
-  if ((pathname.startsWith('/admin') || pathname.startsWith('/moderador') || pathname.startsWith('/aluno')) && !token) {
+  // Se está tentando acessar rotas protegidas sem token, redireciona para login
+  const protectedRoutes = ['/admin', '/coordenador', '/moderador', '/aluno'];
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  
+  if (isProtectedRoute && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -19,5 +22,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/moderador/:path*', '/aluno/:path*', '/login'],
+  matcher: ['/admin/:path*', '/coordenador/:path*', '/moderador/:path*', '/aluno/:path*', '/login'],
 };

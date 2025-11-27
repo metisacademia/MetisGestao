@@ -80,7 +80,7 @@ export default function LoginPage() {
               <Input
                 id="login"
                 type="text"
-                placeholder="admin@metis ou moderador@metis"
+                placeholder="seu-login@metis"
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
                 required
@@ -115,9 +115,7 @@ export default function LoginPage() {
             </Button>
           </form>
           <div className="mt-6 pt-4 border-t border-[#cda465]/20 text-xs text-center text-[#173b5a]/60">
-            <p className="font-medium mb-1">Login de demonstração:</p>
-            <p>Admin: admin@metis / admin123</p>
-            <p>Moderador: moderador@metis / mod123</p>
+            <p>Sistema de Gestão Métis</p>
           </div>
         </CardContent>
       </Card>
