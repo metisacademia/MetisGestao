@@ -6,6 +6,7 @@ import {
   TipoResposta,
   Turno,
 } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const databaseUrl = process.env.DATABASE_URL;
 
