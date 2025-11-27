@@ -124,12 +124,20 @@ export async function POST(
     const scores = calcularScoresPorDominio(respostasComPontuacao, template.itens);
     const scoreTotal = calcularScoreTotal(scores);
 
+    // Create a map from dominioId to dominio name
+    const dominiosMap: Record<string, string> = {};
+    template.itens.forEach((item: any) => {
+      if (!dominiosMap[item.dominioId]) {
+        dominiosMap[item.dominioId] = item.dominio.nome;
+      }
+    });
+
     const scoresToSave: any = {
       score_total: scoreTotal,
     };
 
-    scores.forEach(({ dominio, score }) => {
-      const nomeDominio = dominio.nome.toLowerCase();
+    Object.entries(scores).forEach(([dominioId, score]: any[]) => {
+      const nomeDominio = dominiosMap[dominioId]?.toLowerCase() || '';
 
       if (nomeDominio.includes('fluência') || nomeDominio.includes('fluencia')) {
         scoresToSave.score_fluencia = score.total;
