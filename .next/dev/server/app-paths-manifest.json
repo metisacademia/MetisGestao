@@ -1,14 +1,4 @@
 {
-  "/api/auth/me/route": "app/api/auth/me/route.js",
-  "/api/moderador/alunos/[id]/eventos/route": "app/api/moderador/alunos/[id]/eventos/route.js",
-  "/api/moderador/alunos/[id]/presencas/route": "app/api/moderador/alunos/[id]/presencas/route.js",
-  "/api/moderador/alunos/[id]/route": "app/api/moderador/alunos/[id]/route.js",
-  "/api/moderador/relatorios/alunos/route": "app/api/moderador/relatorios/alunos/route.js",
   "/login/page": "app/login/page.js",
-  "/moderador/alunos/[id]/page": "app/moderador/alunos/[id]/page.js",
-  "/moderador/meu-perfil/page": "app/moderador/meu-perfil/page.js",
-  "/moderador/page": "app/moderador/page.js",
-  "/moderador/relatorios/page": "app/moderador/relatorios/page.js",
-  "/moderador/turmas/[id]/page": "app/moderador/turmas/[id]/page.js",
   "/page": "app/page.js"
 }

@@ -1,0 +1,54 @@
+modules = ["nodejs-20", "postgresql-16"]
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+JWT_SECRET = "metis-jwt-secret-production-change-this-to-random-string"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Next.js Server"
+
+[[workflows.workflow]]
+name = "Next.js Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx next dev -p 5000"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 42505
+externalPort = 3002
+
+[[ports]]
+localPort = 43481
+externalPort = 3000
+
+[[ports]]
+localPort = 43815
+externalPort = 3001
+
+[deployment]
+build = ["sh", "-c", "npx prisma generate && npx next build"]
+run = ["sh", "-c", "npx next start -p 5000"]
+deploymentTarget = "cloudrun"
