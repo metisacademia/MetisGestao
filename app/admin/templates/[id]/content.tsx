@@ -25,6 +25,16 @@ interface Item {
   ativo: boolean;
 }
 
+interface ItemParaEditar {
+  id: string;
+  codigo_item: string;
+  titulo: string;
+  descricao?: string;
+  tipo_resposta: string;
+  ordem: number;
+  ativo: boolean;
+}
+
 interface Template {
   id: string;
   nome: string;
@@ -51,7 +61,7 @@ export default function TemplateContent({
 }) {
   const [itens, setItens] = useState<Item[]>(template.itens);
   const [mostraFormulario, setMostraFormulario] = useState(false);
-  const [itemParaEditar, setItemParaEditar] = useState<Item | null>(null);
+  const [itemParaEditar, setItemParaEditar] = useState<ItemParaEditar | null>(null);
   
   const [dialogAberto, setDialogAberto] = useState(false);
   const [turmas, setTurmas] = useState<Turma[]>([]);
@@ -97,7 +107,10 @@ export default function TemplateContent({
   };
 
   const handleEditar = (item: Item) => {
-    setItemParaEditar(item);
+    setItemParaEditar({
+      ...item,
+      descricao: item.descricao ?? undefined,
+    });
     setMostraFormulario(true);
   };
 
