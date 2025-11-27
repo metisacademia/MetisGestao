@@ -103,9 +103,10 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ;
 async function GET(request, { params }) {
     try {
+        const { alunoId } = await params;
         const avaliacoes = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].avaliacao.findMany({
             where: {
-                alunoId: params.alunoId,
+                alunoId,
                 status: 'CONCLUIDA'
             },
             orderBy: [
