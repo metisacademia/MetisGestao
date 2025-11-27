@@ -6,24 +6,13 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 const databaseUrl = process.env.DATABASE_URL
-const placeholderConnectionString = 'postgresql://postgres:postgres@localhost:5432/postgres'
-const connectionString = (() => {
-  if (databaseUrl) return databaseUrl
 
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('DATABASE_URL environment variable must be provided in production')
-  }
-
-  console.warn(
-    'DATABASE_URL is not set. Using a local placeholder connection string for development.\n' +
-      'Configure the Supabase pooled connection string in production environments.'
-  )
-
-  return placeholderConnectionString
-})()
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL environment variable is required to initialize PrismaClient')
+}
 
 const adapter = new PrismaPg({
-  connectionString,
+  connectionString: databaseUrl,
 })
 
 export const prisma =
