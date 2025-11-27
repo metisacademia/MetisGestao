@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import FormularioAluno from '@/components/FormularioAluno';
 import { Button } from '@/components/ui/button';
+import { Eye } from 'lucide-react';
+import Link from 'next/link';
 
 interface Aluno {
   id: string;
@@ -115,6 +117,12 @@ export default function AlunosContent({
                     {aluno.observacoes || '-'}
                   </TableCell>
                   <TableCell className="space-x-2">
+                    <Link href={`/admin/alunos/${aluno.id}`}>
+                      <Button size="sm" variant="outline">
+                        <Eye className="w-4 h-4 mr-1" />
+                        Detalhes
+                      </Button>
+                    </Link>
                     <Button
                       onClick={() => handleEditar(aluno)}
                       size="sm"

@@ -106,6 +106,8 @@ __turbopack_context__.s([
     ()=>setAuthCookie,
     "signToken",
     ()=>signToken,
+    "verifyAuth",
+    ()=>verifyAuth,
     "verifyPassword",
     ()=>verifyPassword,
     "verifyToken",
@@ -130,7 +132,12 @@ async function verifyPassword(password, hashedPassword) {
 }
 async function signToken(payload) {
     const secret = new TextEncoder().encode(JWT_SECRET);
-    const token = await new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$sign$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["SignJWT"](payload).setProtectedHeader({
+    const jwtPayload = {
+        userId: payload.userId,
+        email: payload.email,
+        perfil: payload.perfil
+    };
+    const token = await new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$jose$2f$dist$2f$webapi$2f$jwt$2f$sign$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["SignJWT"](jwtPayload).setProtectedHeader({
         alg: 'HS256'
     }).setExpirationTime('7d').sign(secret);
     return token;
@@ -166,6 +173,22 @@ async function getUserFromToken(request) {
     let token = await getAuthToken();
     if (!token && request) {
         const authHeader = request.headers?.get?.('authorization') || request.headers?.['authorization'];
+        if (authHeader?.startsWith('Bearer ')) {
+            token = authHeader.slice(7);
+        }
+    }
+    if (!token) return null;
+    return verifyToken(token);
+}
+async function verifyAuth(request) {
+    let token;
+    const cookieHeader = request.headers?.get?.('cookie') || '';
+    const tokenMatch = cookieHeader.match(/auth-token=([^;]+)/);
+    if (tokenMatch) {
+        token = tokenMatch[1];
+    }
+    if (!token) {
+        const authHeader = request.headers?.get?.('authorization');
         if (authHeader?.startsWith('Bearer ')) {
             token = authHeader.slice(7);
         }

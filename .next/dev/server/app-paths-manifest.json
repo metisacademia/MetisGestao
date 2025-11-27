@@ -1,22 +1,5 @@
 {
-  "/admin/alunos/page": "app/admin/alunos/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/admin/relatorios/page": "app/admin/relatorios/page.js",
-  "/admin/usuarios/page": "app/admin/usuarios/page.js",
-  "/api/admin/alunos/route": "app/api/admin/alunos/route.js",
-  "/api/admin/relatorios/aluno/[alunoId]/completo/route": "app/api/admin/relatorios/aluno/[alunoId]/completo/route.js",
-  "/api/admin/turmas/route": "app/api/admin/turmas/route.js",
-  "/api/admin/usuarios/[id]/resetar-senha/route": "app/api/admin/usuarios/[id]/resetar-senha/route.js",
-  "/api/admin/usuarios/route": "app/api/admin/usuarios/route.js",
-  "/api/auth/alterar-senha/route": "app/api/auth/alterar-senha/route.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
-  "/api/auth/logout/route": "app/api/auth/logout/route.js",
-  "/api/auth/me/route": "app/api/auth/me/route.js",
-  "/api/moderador/relatorios/aluno/[alunoId]/completo/route": "app/api/moderador/relatorios/aluno/[alunoId]/completo/route.js",
-  "/api/moderador/relatorios/alunos/route": "app/api/moderador/relatorios/alunos/route.js",
   "/login/page": "app/login/page.js",
-  "/moderador/meu-perfil/page": "app/moderador/meu-perfil/page.js",
   "/moderador/page": "app/moderador/page.js",
-  "/moderador/relatorios/page": "app/moderador/relatorios/page.js",
   "/page": "app/page.js"
 }

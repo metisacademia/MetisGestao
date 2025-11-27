@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import { FileText, Eye } from 'lucide-react';
 
 export default async function TurmaDetalhePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -83,11 +83,17 @@ export default async function TurmaDetalhePage({ params }: { params: Promise<{ i
                         {jaAvaliado ? 'Avaliado' : 'Pendente'}
                       </span>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="space-x-2">
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/moderador/alunos/${aluno.id}`}>
+                          <Eye className="w-4 h-4 mr-1" />
+                          Detalhes
+                        </Link>
+                      </Button>
                       <Button asChild variant="outline" size="sm">
                         <Link href={`/moderador/avaliar/${aluno.id}?mes=${mesAtual}&ano=${anoAtual}`}>
-                          <FileText className="w-4 h-4 mr-2" />
-                          {jaAvaliado ? 'Ver Avaliação' : 'Lançar Avaliação'}
+                          <FileText className="w-4 h-4 mr-1" />
+                          {jaAvaliado ? 'Ver Avaliação' : 'Avaliar'}
                         </Link>
                       </Button>
                     </TableCell>
