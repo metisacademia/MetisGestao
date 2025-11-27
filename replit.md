@@ -59,9 +59,9 @@ Preferred communication style: Simple, everyday language.
 - Global singleton pattern to prevent connection exhaustion
 
 **Database Schema Design**:
-- **Users (Usuario)**: Supports ADMIN and MODERADOR roles
+- **Users (Usuario)**: Supports ADMIN, MODERADOR, and ALUNO roles
 - **Classes (Turma)**: Schedule information with moderator assignment
-- **Students (Aluno)**: Linked to classes, with optional metadata
+- **Students (Aluno)**: Linked to classes, with optional usuarioId for login access
 - **Cognitive Domains (DominioCognitivo)**: Configurable evaluation categories
 - **Assessment Templates (TemplateAvaliacao)**: Month/year-specific evaluation models
 - **Template Items (ItemTemplate)**: Individual questions/tasks with scoring rules
@@ -209,6 +209,56 @@ The reports module has been expanded with comprehensive long-term tracking featu
 - scripts/seed-relatorios.ts: Populates test data
 - Creates 6 months of weekly presences
 - Generates random relevant events
+
+### Admin Report Features (November 2025)
+
+All moderator report features are now available to admin:
+- Same enhanced reports page with period filters, metric toggles, charts
+- Same annual report page with quarterly evolution
+- Same student details page for registering events/presences
+- Access to ALL students across all classes (not filtered by moderator)
+
+**Admin APIs:**
+- GET /api/admin/relatorios/alunos - List all students
+- GET /api/admin/relatorios/aluno/[id]/completo - Full report
+- GET /api/admin/relatorios/aluno/[id]/anual - Annual report
+- GET/POST /api/admin/alunos/[id]/eventos - Student events
+- GET/POST /api/admin/alunos/[id]/presencas - Student attendance
+
+### Student Account Creation (November 2025)
+
+Admins and moderators can create login accounts for students:
+- New field: Aluno.usuarioId links to a Usuario with perfil: ALUNO
+- Button "Criar Acesso para Aluno" on student details page
+- Auto-generates username: firstname@metis (e.g., joao@metis)
+- Auto-generates 6-character random password
+- Credentials shown only once in a dialog
+
+**APIs:**
+- POST /api/admin/alunos/[id]/criar-usuario
+- POST /api/moderador/alunos/[id]/criar-usuario (only for their students)
+
+### Student Portal (Área do Aluno) (November 2025)
+
+Students with accounts can access a simplified, friendly report:
+- Login: firstname@metis (e.g., pedro@metis)
+- Redirects to /aluno/meu-relatorio
+
+**Report Sections:**
+1. **Capa** - Name, class, period, intro phrase
+2. **Evolução Global da Mente** - Score 0-10, trend arrow, phrase
+3. **Gráfico de Linha** - Evolution over time with markers
+4. **Gráfico Radar** - Domains with friendly legends:
+   - Fluência = "agilidade para lembrar e falar palavras"
+   - Cultura = "repertório de conhecimentos e memórias gerais"
+   - Atenção = "capacidade de focar e notar detalhes"
+5. **Resumo** - Friendly text reinforcing strengths
+6. **Presença** - "Você participou de X de Y encontros" with indicator
+7. **Recomendações** - 3 practical suggestions (invitations not prescriptions)
+8. **Avisos Importantes** - Medical disclaimer and moderator contact
+
+**Utility Functions:**
+- lib/recomendacoes-aluno.ts: Generates recommendations based on weak domains
 
 ## Evaluation Methodology (AVALIAÇÃO MÉTIS)
 The system follows the Métis cognitive assessment methodology with 6 sections:
