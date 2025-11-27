@@ -1,7 +1,7 @@
 # Métis - Academia da Mente
 ## Sistema de Gestão de Avaliações Cognitivas
 
-Sistema web completo para gestão de avaliações cognitivas mensais, desenvolvido com Next.js, TypeScript, Prisma e SQLite.
+Sistema web completo para gestão de avaliações cognitivas mensais, desenvolvido com Next.js, TypeScript, Prisma e PostgreSQL (Supabase).
 
 ## 🚀 Funcionalidades
 
@@ -49,12 +49,14 @@ npm install
 
 3. **Configure as variáveis de ambiente**
 
-O sistema requer a variável `JWT_SECRET` para autenticação segura.
+Copie o arquivo `.env.example` para `.env` e preencha:
 
-Crie um arquivo `.env` na raiz do projeto:
 ```bash
-JWT_SECRET=sua-chave-secreta-aleatoria-aqui
+cp .env.example .env
 ```
+
+- `DATABASE_URL`: Use a connection string **PostgreSQL do Supabase** (prefira a URL de pooling para uso na Vercel).
+- `JWT_SECRET`: Chave secreta forte para assinar tokens JWT.
 
 ⚠️ **Importante**: Gere uma chave forte e aleatória para produção. Nunca use valores padrão.
 
@@ -63,8 +65,8 @@ JWT_SECRET=sua-chave-secreta-aleatoria-aqui
 # Gerar o cliente Prisma
 npx prisma generate
 
-# Criar as tabelas
-npx prisma db push
+# Criar as tabelas com migrations
+npx prisma migrate dev --name init
 
 # Popular o banco com dados iniciais
 npx tsx prisma/seed.ts
@@ -198,6 +200,26 @@ O sistema oferece três tipos de visualizações:
 - Autenticação via JWT com cookies httpOnly (expiração: 7 dias)
 - JWT_SECRET obrigatório via variável de ambiente (sem fallbacks inseguros)
 - Middleware de proteção de rotas
+
+## 🚢 Deploy na Vercel com Supabase
+
+1. **Defina as variáveis de ambiente no projeto da Vercel**
+   - Vá em *Settings → Environment Variables* e crie a chave `DATABASE_URL` com a *connection string* de pooling do Supabase.
+   - Adicione também `JWT_SECRET` com uma chave forte.
+   - Salve e acione um novo deploy para que as variáveis sejam aplicadas.
+
+2. **Rodar migrations/localmente**
+   - Confirme que o `DATABASE_URL` local aponta para o banco desejado.
+   - Execute `npx prisma migrate dev --name init` para aplicar o schema atualizado.
+
+3. **Gerar cliente Prisma**
+   - Rode `npx prisma generate` sempre que o schema mudar.
+
+4. **Seed opcional**
+   - Use `npx tsx prisma/seed.ts` apenas em ambientes de desenvolvimento ou bancos preparados para dados de exemplo.
+
+5. **Build local**
+   - Com o `.env` configurado, execute `npm run build` para validar o deploy antes de subir para a Vercel.
 - Controle de acesso baseado em perfis (Admin/Moderador)
 - Validações de autorização em todas as APIs
 - Proteção contra duplicação de avaliações
@@ -208,7 +230,7 @@ O sistema oferece três tipos de visualizações:
 - **Frontend**: Next.js 16, React 19, TypeScript
 - **Styling**: Tailwind CSS, shadcn/ui
 - **Backend**: Next.js API Routes
-- **Banco de Dados**: SQLite com Prisma ORM 7
+- **Banco de Dados**: PostgreSQL (Supabase) com Prisma ORM 7
 - **Gráficos**: Recharts
 - **Autenticação**: JWT + bcrypt
 - **Validação**: Zod
@@ -220,8 +242,8 @@ O sistema oferece três tipos de visualizações:
 # Visualizar banco de dados
 npx prisma studio
 
-# Resetar banco de dados
-npx prisma db push --force-reset
+# Aplicar migrations
+npx prisma migrate dev --name init
 
 # Gerar cliente após mudanças no schema
 npx prisma generate
