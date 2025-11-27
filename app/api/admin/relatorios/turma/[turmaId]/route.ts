@@ -3,15 +3,17 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { turmaId: string } }
+  { params }: { params: Promise<{ turmaId: string }> }
 ) {
   try {
+    const { turmaId } = await params;
+    
     const searchParams = request.nextUrl.searchParams;
     const mes = Number(searchParams.get('mes'));
     const ano = Number(searchParams.get('ano'));
 
     const alunos = await prisma.aluno.findMany({
-      where: { turmaId: params.turmaId },
+      where: { turmaId },
       include: {
         avaliacoes: {
           where: {

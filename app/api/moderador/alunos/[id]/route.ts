@@ -4,9 +4,11 @@ import { getUserFromToken } from '@/lib/auth';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const user = await getUserFromToken();
     if (!user || user.perfil !== 'MODERADOR') {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
@@ -14,7 +16,7 @@ export async function GET(
 
     const aluno = await prisma.aluno.findFirst({
       where: {
-        id: params.id,
+        id,
         turma: {
           moderadorId: user.userId,
         },

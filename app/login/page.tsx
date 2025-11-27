@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export default function LoginPage() {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha }),
+        body: JSON.stringify({ email: login, senha }),
       });
 
       const data = await response.json();
@@ -76,13 +76,13 @@ export default function LoginPage() {
         <CardContent className="pt-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[#173b5a]">Email</Label>
+              <Label htmlFor="login" className="text-[#173b5a]">Login</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="login"
+                type="text"
+                placeholder="admin@metis ou moderador@metis"
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
                 required
                 disabled={loading}
                 className="border-[#cda465]/30 focus:border-[#cda465] focus:ring-[#cda465]"
@@ -116,8 +116,8 @@ export default function LoginPage() {
           </form>
           <div className="mt-6 pt-4 border-t border-[#cda465]/20 text-xs text-center text-[#173b5a]/60">
             <p className="font-medium mb-1">Login de demonstração:</p>
-            <p>Admin: admin@metis.com / admin123</p>
-            <p>Moderador: moderador@metis.com / mod123</p>
+            <p>Admin: admin@metis / admin123</p>
+            <p>Moderador: moderador@metis / mod123</p>
           </div>
         </CardContent>
       </Card>

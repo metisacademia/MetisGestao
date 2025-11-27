@@ -3,13 +3,14 @@ import { prisma } from '@/lib/prisma';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { nome_turma, dia_semana, horario, turno, moderadorId } = await request.json();
 
     const turma = await prisma.turma.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(nome_turma && { nome_turma }),
         ...(dia_semana && { dia_semana }),
@@ -32,11 +33,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     await prisma.turma.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

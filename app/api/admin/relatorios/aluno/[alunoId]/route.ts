@@ -3,11 +3,13 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { alunoId: string } }
+  { params }: { params: Promise<{ alunoId: string }> }
 ) {
   try {
+    const { alunoId } = await params;
+    
     const avaliacoes = await prisma.avaliacao.findMany({
-      where: { alunoId: params.alunoId, status: 'CONCLUIDA' },
+      where: { alunoId, status: 'CONCLUIDA' },
       orderBy: [{ ano_referencia: 'asc' }, { mes_referencia: 'asc' }],
     });
 

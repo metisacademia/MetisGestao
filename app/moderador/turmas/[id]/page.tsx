@@ -7,12 +7,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import Link from 'next/link';
 import { FileText } from 'lucide-react';
 
-export default async function TurmaDetalhePage({ params }: { params: { id: string } }) {
+export default async function TurmaDetalhePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await getUserFromToken();
 
   const turma = await prisma.turma.findFirst({
     where: { 
-      id: params.id,
+      id,
       moderadorId: user!.userId,
     },
     include: {
