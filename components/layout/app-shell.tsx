@@ -5,6 +5,7 @@ import { Menu } from 'lucide-react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { Toaster } from '@/components/ui/toaster';
 
 interface AppShellProps {
   perfil: 'ADMIN' | 'COORDENADOR' | 'MODERADOR';
@@ -44,6 +45,7 @@ export function AppShell({ perfil, children }: AppShellProps) {
         <main className="flex-1 overflow-y-auto">
           <div className="p-4 sm:p-6 md:p-8 space-y-4">{children}</div>
         </main>
+        <Toaster />
       </div>
     </div>
   );
