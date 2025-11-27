@@ -27,6 +27,12 @@ export async function GET(
             nome_turma: true,
           },
         },
+        usuario: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
       },
     });
 

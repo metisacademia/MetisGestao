@@ -8,6 +8,10 @@
     "originalSource": "/moderador/:path*"
   },
   {
+    "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/aluno(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$",
+    "originalSource": "/aluno/:path*"
+  },
+  {
     "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/login(\\\\.json)?[\\/#\\?]?$",
     "originalSource": "/login"
   }

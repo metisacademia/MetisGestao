@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, ArrowLeft, Plus, Check, X, Heart, Home, Users, MoreHorizontal } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Loader2, ArrowLeft, Plus, Check, X, Heart, Home, Users, MoreHorizontal, UserPlus, KeyRound, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -16,6 +17,11 @@ interface Aluno {
   nome: string;
   data_nascimento?: string;
   turma: { nome_turma: string };
+  usuarioId?: string | null;
+  usuario?: {
+    id: string;
+    email: string;
+  } | null;
 }
 
 interface Evento {
@@ -31,6 +37,12 @@ interface Presenca {
   data: string;
   presente: boolean;
   observacao?: string;
+}
+
+interface Credenciais {
+  email: string;
+  senha: string;
+  mensagem: string;
 }
 
 const TIPOS_EVENTO = [
@@ -54,6 +66,12 @@ export default function DetalhesAlunoPage() {
   const [novaPresenca, setNovaPresenca] = useState({ data: '', presente: true });
   const [salvandoEvento, setSalvandoEvento] = useState(false);
   const [salvandoPresenca, setSalvandoPresenca] = useState(false);
+
+  const [criandoUsuario, setCriandoUsuario] = useState(false);
+  const [credenciaisDialog, setCredenciaisDialog] = useState(false);
+  const [credenciais, setCredenciais] = useState<Credenciais | null>(null);
+  const [erroUsuario, setErroUsuario] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState<'email' | 'senha' | null>(null);
 
   useEffect(() => {
     async function carregarDados() {
@@ -82,6 +100,39 @@ export default function DetalhesAlunoPage() {
     }
     carregarDados();
   }, [alunoId, router]);
+
+  async function criarUsuario() {
+    setCriandoUsuario(true);
+    setErroUsuario(null);
+    try {
+      const res = await fetch(`/api/moderador/alunos/${alunoId}/criar-usuario`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setCredenciais(data);
+        setCredenciaisDialog(true);
+        const resAluno = await fetch(`/api/moderador/alunos/${alunoId}`);
+        if (resAluno.ok) {
+          setAluno(await resAluno.json());
+        }
+      } else {
+        setErroUsuario(data.error || 'Erro ao criar usuário');
+      }
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+      setErroUsuario('Erro ao criar usuário');
+    } finally {
+      setCriandoUsuario(false);
+    }
+  }
+
+  async function copiarTexto(texto: string, tipo: 'email' | 'senha') {
+    await navigator.clipboard.writeText(texto);
+    setCopiado(tipo);
+    setTimeout(() => setCopiado(null), 2000);
+  }
 
   async function salvarEvento() {
     if (!novoEvento.data || !novoEvento.titulo) return;
@@ -158,6 +209,52 @@ export default function DetalhesAlunoPage() {
           <p className="text-muted-foreground">{aluno.turma.nome_turma}</p>
         </div>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <KeyRound className="w-5 h-5" />
+            Acesso do Aluno
+          </CardTitle>
+          <CardDescription>
+            Gerenciar o acesso do aluno ao sistema
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {aluno.usuario ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-600" />
+                <span className="text-sm font-medium">Acesso configurado</span>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-md">
+                <p className="text-sm text-muted-foreground">Email de acesso:</p>
+                <p className="font-mono text-sm">{aluno.usuario.email}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                A senha foi exibida apenas uma vez no momento da criação do acesso.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Este aluno ainda não possui acesso ao sistema.
+              </p>
+              {erroUsuario && (
+                <p className="text-sm text-red-600">{erroUsuario}</p>
+              )}
+              <Button onClick={criarUsuario} disabled={criandoUsuario}>
+                {criandoUsuario ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <UserPlus className="w-4 h-4 mr-2" />
+                )}
+                Criar Acesso para Aluno
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -321,6 +418,58 @@ export default function DetalhesAlunoPage() {
           <Button variant="outline">Ver Relatórios</Button>
         </Link>
       </div>
+
+      <Dialog open={credenciaisDialog} onOpenChange={setCredenciaisDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Acesso Criado com Sucesso</DialogTitle>
+            <DialogDescription>
+              Guarde estas credenciais em um local seguro. A senha não será exibida novamente.
+            </DialogDescription>
+          </DialogHeader>
+          {credenciais && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <div className="flex gap-2">
+                  <Input value={credenciais.email} readOnly className="font-mono" />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copiarTexto(credenciais.email, 'email')}
+                  >
+                    {copiado === 'email' ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                  </Button>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Senha</Label>
+                <div className="flex gap-2">
+                  <Input value={credenciais.senha} readOnly className="font-mono" />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copiarTexto(credenciais.senha, 'senha')}
+                  >
+                    {copiado === 'senha' ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                  </Button>
+                </div>
+              </div>
+              <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-md">
+                <p className="text-sm text-yellow-800">
+                  <strong>Importante:</strong> Esta é a única vez que a senha será exibida. 
+                  Anote-a em um local seguro para compartilhar com o aluno.
+                </p>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setCredenciaisDialog(false)}>
+              Entendido
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

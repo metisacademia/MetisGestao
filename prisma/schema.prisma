@@ -9,6 +9,7 @@ datasource db {
 enum PerfilUsuario {
   ADMIN
   MODERADOR
+  ALUNO
 }
 
 enum Turno {
@@ -39,6 +40,7 @@ model Usuario {
   criado_em    DateTime       @default(now())
   atualizado_em DateTime      @updatedAt
   turmas       Turma[]
+  aluno        Aluno?
 }
 
 model Turma {
@@ -56,14 +58,16 @@ model Turma {
 }
 
 model Aluno {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   nome            String
   data_nascimento DateTime?
   turmaId         String
-  turma           Turma    @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+  turma           Turma     @relation(fields: [turmaId], references: [id], onDelete: Cascade)
   observacoes     String?
-  criado_em       DateTime @default(now())
-  atualizado_em   DateTime @updatedAt
+  usuarioId       String?   @unique
+  usuario         Usuario?  @relation(fields: [usuarioId], references: [id])
+  criado_em       DateTime  @default(now())
+  atualizado_em   DateTime  @updatedAt
   avaliacoes      Avaliacao[]
   presencas       Presenca[]
   eventos         EventoAluno[]

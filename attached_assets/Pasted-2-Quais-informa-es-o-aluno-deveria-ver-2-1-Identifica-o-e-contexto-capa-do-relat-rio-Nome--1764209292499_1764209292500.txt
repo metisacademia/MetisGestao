@@ -1,0 +1,77 @@
+2. Quais informações o aluno deveria ver
+
+2.1. Identificação e contexto (capa do relatório)
+	•	Nome do aluno
+	•	Turma / Horário
+	•	Período analisado (por ex. “Nov/2025 – Abr/2026”)
+	•	Frase curta em “linguagem Métis”, tipo:
+“Este painel mostra a trajetória da sua mente na Métis, ao longo do período acima.”
+
+2.2. Visão geral simples
+	•	Um card principal:
+	•	“Evolução global da mente” com:
+	•	score atual em escala 0–10
+	•	seta ↑ → ↓ vs início
+	•	uma frase de 1 linha:
+“Sua mente se manteve estável ao longo dos últimos 6 meses.”
+“Sua mente mostrou evolução importante em relação ao início.”
+
+Nada de muitos números brutos – foco em “tendência”.
+
+2.3. Gráficos amigáveis
+	1.	Gráfico de linha (você x você mesmo)
+	•	Eixo X: meses
+	•	Eixo Y: score total
+	•	Destaque de: “Aqui você começou •” e “Onde você está hoje •”.
+	2.	Gráfico radar dos domínios
+	•	Fluência
+	•	Cultura
+	•	Interpretação
+	•	Atenção
+	•	Auto-percepção
+
+Sempre com legendas em linguagem simples, por exemplo:
+	•	Fluência = “agilidade para lembrar e falar palavras”
+	•	Cultura = “repertório de conhecimentos e memórias gerais”
+	•	Atenção = “capacidade de focar e notar detalhes”
+
+2.4. Interpretação em texto (aquela versão enxuta do resumo)
+
+Algo como:
+
+“Neste período, você manteve um bom desempenho em Fluência e Cultura, que são áreas relacionadas à sua capacidade de se expressar e ao seu repertório de conhecimentos. Atenção e Interpretação ficaram estáveis, o que é positivo para o dia a dia. Seguiremos estimulando especialmente [DOMÍNIO_FOCO] nos próximos encontros.”
+
+Aqui o foco é:
+	•	reforçar pontos fortes,
+	•	normalizar oscilações,
+	•	explicar que “oscilar é esperado”.
+
+2.5. Presença / rotina
+
+Mostrar de forma bem simples:
+	•	“Você participou de X de Y encontros neste período.”
+	•	Uma barrinha ou círculo com:
+	•	Verde: presença boa
+	•	Amarelo: ok
+	•	Vermelho: baixa
+
+E uma frase padrão:
+
+“Manter a regularidade nas sessões é um dos fatores que mais ajudam a proteger a mente ao longo dos anos.”
+
+2.6. Recomendações práticas
+
+Sempre 3 bullets no máximo, tipo:
+	•	“Manter a leitura de temas que você gosta pelo menos 3x na semana.”
+	•	“Participar de conversas sobre notícias e histórias para treinar interpretação.”
+	•	“Evitar fazer várias coisas ao mesmo tempo quando quiser lembrar de algo importante.”
+
+Nada muito prescritivo, mais “convites” do que ordens.
+
+2.7. Avisos importantes
+
+Sempre incluir duas notas:
+	1.	Não é diagnóstico médico
+“Este relatório não substitui avaliação médica ou neurológica. Ele acompanha o desempenho nas atividades da Métis e serve para apoiar a sua jornada de longevidade mental.”
+	2.	Canal de diálogo
+“Se tiver dúvidas sobre algum item, converse com sua moderadora ou com a coordenação da Métis. Estamos aqui para caminhar junto com você.”

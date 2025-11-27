@@ -14,7 +14,7 @@ if (!JWT_SECRET) {
 export interface JWTPayload {
   userId: string;
   email: string;
-  perfil: 'ADMIN' | 'MODERADOR';
+  perfil: 'ADMIN' | 'MODERADOR' | 'ALUNO';
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -30,7 +30,12 @@ export async function verifyPassword(
 
 export async function signToken(payload: JWTPayload): Promise<string> {
   const secret = new TextEncoder().encode(JWT_SECRET);
-  const token = await new SignJWT(payload as Record<string, unknown>)
+  const jwtPayload: Record<string, unknown> = {
+    userId: payload.userId,
+    email: payload.email,
+    perfil: payload.perfil,
+  };
+  const token = await new SignJWT(jwtPayload)
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .sign(secret);

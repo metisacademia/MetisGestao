@@ -41,6 +41,12 @@ export async function POST(request: NextRequest) {
 
     await setAuthCookie(token);
 
+    const redirectTo = usuario.perfil === 'ADMIN' 
+      ? '/admin' 
+      : usuario.perfil === 'MODERADOR' 
+        ? '/moderador' 
+        : '/aluno';
+
     return NextResponse.json({
       token,
       usuario: {
@@ -49,7 +55,7 @@ export async function POST(request: NextRequest) {
         email: usuario.email,
         perfil: usuario.perfil,
       },
-      redirectTo: usuario.perfil === 'ADMIN' ? '/admin' : '/moderador',
+      redirectTo,
     });
   } catch (error) {
     console.error('Erro no login:', error);
