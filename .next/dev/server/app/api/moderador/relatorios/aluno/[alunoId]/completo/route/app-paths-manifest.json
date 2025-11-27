@@ -1,0 +1,3 @@
+{
+  "/api/moderador/relatorios/aluno/[alunoId]/completo/route": "app/api/moderador/relatorios/aluno/[alunoId]/completo/route.js"
+}

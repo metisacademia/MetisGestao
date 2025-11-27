@@ -65,6 +65,8 @@ model Aluno {
   criado_em       DateTime @default(now())
   atualizado_em   DateTime @updatedAt
   avaliacoes      Avaliacao[]
+  presencas       Presenca[]
+  eventos         EventoAluno[]
 }
 
 model DominioCognitivo {
@@ -155,4 +157,36 @@ model RespostaItem {
   pontuacao_item  Float            @default(0)
   criado_em       DateTime         @default(now())
   atualizado_em   DateTime         @updatedAt
+}
+
+model Presenca {
+  id          String   @id @default(uuid())
+  alunoId     String
+  aluno       Aluno    @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  data        DateTime
+  presente    Boolean  @default(true)
+  observacao  String?
+  criado_em   DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+  
+  @@unique([alunoId, data])
+}
+
+enum TipoEvento {
+  SAUDE
+  ROTINA
+  TURMA
+  OUTROS
+}
+
+model EventoAluno {
+  id          String     @id @default(uuid())
+  alunoId     String
+  aluno       Aluno      @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  data        DateTime
+  titulo      String
+  descricao   String?
+  tipo        TipoEvento @default(OUTROS)
+  criado_em   DateTime   @default(now())
+  atualizado_em DateTime @updatedAt
 }

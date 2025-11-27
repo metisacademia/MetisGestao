@@ -148,6 +148,68 @@ Preferred communication style: Simple, everyday language.
 - "Novo Domínio" button on domains page with dialog form
 - "Novo Template" button on templates page with dialog form
 
+### Enhanced Reports Module (November 2025)
+
+The reports module has been expanded with comprehensive long-term tracking features:
+
+**Period Filtering**
+- Options: 3 months, 6 months, 12 months, or full history
+- Filter applies to evolution charts, presence data, and events
+
+**Metric Toggles**
+- Individual checkboxes for each cognitive domain (Fluência, Cultura, Interpretação, Atenção, Auto-percepção, Total)
+- Optional 3-month moving average line for trend analysis
+
+**Summary Cards (Visão Rápida)**
+- Current score for each domain (0-10 scale)
+- Trend comparison with 6 months prior or first evaluation
+- Color-coded indicators: green (improvement), yellow (stable), red (decline)
+- Threshold: changes >1 point considered significant
+
+**Class Comparison Radar**
+- Student scores vs class average on last evaluation month
+- Shows message when insufficient class data
+
+**Presence Tracking**
+- New Presenca table: alunoId, data, presente, observacao
+- Monthly bar chart showing attendance percentage
+- Current month stats and 6-month average
+- Color-coded bars: green ≥75%, amber ≥50%, red <50%
+
+**Events Timeline**
+- New EventoAluno table: alunoId, data, titulo, descricao, tipo
+- Types: SAUDE, ROTINA, TURMA, OUTROS
+- Events displayed on evolution chart as purple markers
+- Chronological timeline with icons by type
+
+**Automatic Analytical Summary**
+- Generated text analyzing performance trends
+- Correlates with presence data when available
+- Function in lib/resumo-analitico.ts
+
+**Annual Report**
+- Separate page: /moderador/relatorios/anual/[alunoId]
+- Quarterly evolution (T1, T2, T3, T4)
+- Annual radar with averaged domain scores
+- Print-to-PDF support with @media print CSS
+- Year selector for historical years
+
+**CSV Export**
+- Export student history: /api/moderador/relatorios/exportar/aluno/[alunoId]
+- Export class history: /api/moderador/relatorios/exportar/turma/[turmaId]
+- Includes: scores, normalized scores, presence, events
+
+**Student Details Page**
+- /moderador/alunos/[id] for registering events and attendance
+- Event form: date, type, title, description
+- Presence form: date, present/absent toggle
+- Recent items lists for quick reference
+
+**Seed Script**
+- scripts/seed-relatorios.ts: Populates test data
+- Creates 6 months of weekly presences
+- Generates random relevant events
+
 ## Evaluation Methodology (AVALIAÇÃO MÉTIS)
 The system follows the Métis cognitive assessment methodology with 6 sections:
 1. **Fluência Verbal** - List writers/painters/singers (scored by ranges)

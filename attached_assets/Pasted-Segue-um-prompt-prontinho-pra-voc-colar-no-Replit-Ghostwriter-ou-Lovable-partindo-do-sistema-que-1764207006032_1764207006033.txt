@@ -1,0 +1,286 @@
+Segue um prompt prontinho pra você colar no Replit (Ghostwriter) ou Lovable, partindo do sistema que você já tem funcionando.
+
+⸻
+
+
+Você é um desenvolvedor full-stack sênior. Já existe um sistema web da Métis – Academia da Mente rodando (frontend + backend + banco) com:
+
+- Login (Admin / Moderador)
+- Área do moderador com:
+  - Minhas Turmas
+  - Lançamento de avaliações mensais dos alunos
+- Módulo de Relatórios com:
+  - Gráfico de evolução do aluno por mês
+  - Gráfico radar com os domínios cognitivos (Fluência, Cultura, Interpretação, Atenção, Auto-percepção, Total)
+
+Quero que você EVOLUA o módulo de RELATÓRIOS focando em acompanhamento de LONGO PRAZO (anos) e geração de insights, seguindo as especificações abaixo.
+
+Use a MESMA stack já configurada no projeto (React/Next + Tailwind + shadcn/ui + Recharts + Prisma/SQLite), adaptando o que for necessário.
+
+--------------------------------
+## 1. Contexto do módulo de relatórios
+
+- Tela atual: “Relatórios” do moderador, com:
+  - Dropdown para selecionar o aluno
+  - Gráfico de linha com evolução mensal (por domínio e total)
+  - Gráfico radar com o perfil de domínios na última avaliação
+
+Objetivo: transformar essa tela num painel mais completo, preparado para alunos que podem ficar ANOS na Métis.
+
+--------------------------------
+## 2. Funcionalidades novas a serem implementadas
+
+### 2.1. Filtros de período + controle de linhas do gráfico
+
+No gráfico de evolução do aluno:
+
+1. Adicionar um seletor de PERÍODO, com opções:
+
+   - “Últimos 3 meses”
+   - “Últimos 6 meses”
+   - “Últimos 12 meses”
+   - “Todo o histórico”
+
+2. Adicionar checkboxes para ligar/desligar cada série de dados do gráfico:
+
+   - Atenção
+   - Auto-percepção
+   - Cultura
+   - Fluência
+   - Interpretação
+   - Total
+
+3. Implementar uma linha de **média móvel simples** (ex.: janela de 3 meses) para o score TOTAL:
+
+   - Pode ser uma série adicional opcional (“Média móvel (3 meses)”) ligada/desligada por um checkbox.
+
+**Requisitos técnicos:**
+
+- Criar componentes reutilizáveis (por exemplo `PeriodFilter`, `MetricToggle`) para não poluir demais a página.
+- Os filtros devem agir apenas no front-end, reaproveitando os dados carregados, se já estiverem em memória. Se for mais simples, você pode implementar filtros no backend com query parametrizada, mas mantenha a performance aceitável.
+
+---
+
+### 2.2. Cards-resumo com evolução
+
+Acima dos gráficos, criar um bloco de **“Visão rápida”** com cards para:
+
+- **Total cognitivo atual**
+- Para cada domínio:
+  - Fluência
+  - Cultura
+  - Interpretação
+  - Atenção
+  - Auto-percepção
+
+Cada card deve mostrar:
+
+- Score atual (escala 0–10, se o sistema já tiver, ou score normal)
+- Variação em relação a um período de referência:
+  - Por padrão: comparação com **6 meses atrás** OU com a **primeira avaliação** do aluno (defina uma estratégia e deixe claro no código/comentário).
+- Ícone/seta e cor de tendência:
+  - Verde (↑) melhora relevante
+  - Amarelo (→) estável
+  - Vermelho (↓) queda relevante
+
+Defina um critério simples de “relevante”, por exemplo:
+
+- Melhora/quebra maior que 15% ou > 1 ponto na escala 0–10.
+
+---
+
+### 2.3. Comparação com a turma no gráfico radar
+
+No gráfico radar de “Perfil de Domínios Cognitivos”:
+
+- Atualmente mostra apenas o aluno na última avaliação.
+- ALTERAR para permitir:
+
+  1. **Aluno (última avaliação)**  
+  2. **Média da turma (última avaliação do mesmo mês)**
+
+- A turma deve ser a turma atual do aluno.  
+- Caso não haja média da turma (ex.: só existe o próprio aluno), exibir apenas o aluno e uma mensagem discreta (“Ainda não há dados suficientes da turma para comparação”).
+
+Implementação:
+
+- Criar uma função no backend que retorne:
+  - scores médios por domínio da turma, para o mesmo mês/ano da última avaliação do aluno;
+- Ajustar o componente Recharts Radar para duas séries:
+  - “Aluno”
+  - “Média da Turma”
+
+---
+
+### 2.4. Presença / engajamento no relatório
+
+Preparar o sistema para cruzar presença com desempenho.
+
+1. Verificar se já existe uma tabela de presenças.  
+   - Se NÃO existir, criar uma estrutura mínima de presença, por exemplo:
+
+   ```ts
+   Presenca {
+     id
+     alunoId
+     data
+     presente (boolean)
+   }
+
+Pode ser simples, o importante é conseguir calcular “presenças no mês”.
+	2.	Na tela de Relatórios do aluno, criar um mini-gráfico de barras ou linha com:
+	•	X: meses (mesmo período selecionado no filtro).
+	•	Y: número de presenças no mês / % de comparecimento.
+	3.	Abaixo do gráfico cognitivo, exibir:
+	•	“Presenças no mês atual: X de Y sessões”
+	•	“Presença média nos últimos 6 meses: Z%”
+
+Isso deve ser carregado na mesma chamada de dados do relatório, para evitar múltiplas requisições desnecessárias.
+
+⸻
+
+2.5. Linha do tempo de eventos relevantes
+
+Adicionar a capacidade de registrar e visualizar “eventos relevantes” que ajudem a interpretar variações de desempenho.
+	1.	Criar uma tabela nova, algo como:
+
+EventoAluno {
+  id
+  alunoId
+  data
+  titulo
+  descricao
+  tipo (enum opcional: SAUDE, ROTINA, TURMA, OUTROS)
+  criadoEm
+}
+
+
+	2.	No painel do moderador (fora da tela de relatório, em uma tela de “Detalhes do aluno” ou similar), permitir cadastrar eventos.
+	3.	Na tela de Relatórios do aluno:
+	•	No gráfico de evolução, marcar eventos como pequenos ícones/marcadores na linha do tempo.
+	•	Ao passar o mouse sobre o marcador, mostrar tooltip com titulo e data.
+	4.	Se for complexo colocar no gráfico agora, pode começar com uma linha do tempo textual abaixo dos gráficos, ordenada por data, filtrada pelo período selecionado.
+
+⸻
+
+2.6. Geração automática de texto-resumo
+
+Criar uma função que gere um texto-resumo simples para o moderador, com base nos dados do período selecionado.
+
+Exemplo de saída (em português):
+
+“Nos últimos 12 meses, o aluno apresentou melhora consistente em Fluência e Cultura, mantendo estabilidade em Atenção e Auto-percepção. Observa-se leve queda em Interpretação nos últimos 3 meses, coincidindo com aumento de faltas no período.”
+
+Implementação:
+	•	Uma função pura em TypeScript que recebe:
+	•	histórico de scores por domínio
+	•	variações calculadas
+	•	dados de presença
+	•	Retorna uma string em português.
+	•	Não precisa de IA; pode ser baseada em regras simples (if/else) com limiares de melhora/queda.
+
+Mostrar esse texto em um bloco “Resumo analítico” na tela.
+
+⸻
+
+2.7. Relatório anual
+
+Adicionar um botão “Ver relatório anual” ou uma aba dentro de Relatórios.
+
+Funcionalidades:
+	•	Seleção de ano (ex.: 2025, 2026…).
+	•	Mostrar:
+	1.	Gráfico de linha ou barras com a média trimestral dos scores de cada domínio.
+	2.	Um gráfico radar com a média anual dos domínios.
+	3.	Presença média no ano.
+	•	Gerar um texto-resumo anual usando a mesma lógica do item 2.6.
+	•	Botão “Exportar PDF”:
+	•	Pode ser algo simples usando uma biblioteca de geração de PDF ou print-to-PDF do navegador (deixe estruturado para impressão, com CSS @media print).
+
+⸻
+
+2.8. Exportação para planilha (CSV/Excel)
+
+Adicionar na tela de Relatórios (ou em uma tela de Admin) um botão:
+	•	“Exportar histórico do aluno (CSV)”
+	•	“Exportar histórico da turma (CSV)”
+
+Formato do CSV (colunas mínimas):
+	•	ID_aluno
+	•	Nome_aluno
+	•	Data_avaliacao
+	•	Mes
+	•	Ano
+	•	Idade (se disponível)
+	•	Turma
+	•	Moderador
+	•	Score_Fluencia
+	•	Score_Cultura
+	•	Score_Interpretacao
+	•	Score_Atencao
+	•	Score_Auto_percepcao
+	•	Score_Total
+	•	Score_Fluencia_0a10
+	•	Score_Cultura_0a10
+	•	Score_Interpretacao_0a10
+	•	Score_Atencao_0a10
+	•	Score_Auto_percepcao_0a10
+	•	Presencas_no_mes (se disponível)
+	•	Eventos_relevantes (campo concatenando títulos de eventos daquele mês, se existirem)
+
+Implementação:
+	•	Criar endpoints API que retornem CSV.
+	•	Nos botões do frontend, fazer o download diretamente (Content-Type text/csv e Content-Disposition: attachment).
+
+⸻
+
+3. Organização de código
+	•	Criar serviços/helpers no backend para:
+	•	buscar histórico de avaliações de um aluno com agregações por mês/domínio;
+	•	calcular scores agregados (se ainda não existir uma camada de serviço);
+	•	buscar presenças por mês;
+	•	buscar eventos por período;
+	•	montar os dados de exportação CSV.
+	•	No frontend:
+	•	Componentizar:
+	•	StudentEvolutionChart
+	•	DomainRadarChart
+	•	PresenceChart
+	•	SummaryCards
+	•	AnnualReportView
+	•	PeriodFilter
+	•	etc.
+	•	Comentar o código em pontos importantes, explicando as regras de:
+	•	filtros de período
+	•	cálculo de variação e classificação em melhora/estável/queda
+	•	geração de texto-resumo
+
+⸻
+
+4. UX e idioma
+	•	Manter o visual atual (cores e estilo), aproveitando Tailwind + shadcn/ui.
+	•	Todos os rótulos, textos e mensagens em português do Brasil:
+	•	“Relatórios”, “Evolução do aluno”, “Perfil de Domínios Cognitivos”, “Período”, “Últimos 6 meses”, “Melhora”, “Estável”, “Queda”, etc.
+
+⸻
+
+5. Entregável
+
+Ao final, quero:
+	1.	Código atualizado com:
+	•	nova tela de Relatórios mais rica
+	•	backend pronto para lidar com períodos, comparações com turma, presença, eventos, exportação.
+	2.	Seed ou instruções mínimas para testar:
+	•	alguns alunos com avaliações em meses diferentes
+	•	dados de presença falsos
+	•	alguns eventos cadastrados
+	3.	README atualizado explicando:
+	•	como usar o módulo de relatórios
+	•	como funciona a exportação CSV
+	•	onde cadastrar eventos e presenças
+
+Use boas práticas de TypeScript, organização de pastas e componentes reutilizáveis.
+
+---
+
+Se quiser depois, posso te ajudar a escrever o texto-resumo “padrão Métis” (linguagem bem alinhada com a apresentação comercial e o manual de marca) pra ser usado nesse relatório anual e mensal.
