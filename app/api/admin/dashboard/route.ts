@@ -42,11 +42,11 @@ export async function GET(request: NextRequest) {
       orderBy: { nome_turma: 'asc' },
     });
 
-    const turmasComEstatisticas = turmas.map((turma) => {
+    const turmasComEstatisticas = turmas.map((turma: typeof turmas[0]) => {
       const totalAlunos = turma.alunos.length;
       const avaliacoesPorAluno = new Map<string, { status: string }>();
       
-      turma.avaliacoes.forEach((av) => {
+      turma.avaliacoes.forEach((av: typeof turma.avaliacoes[0]) => {
         avaliacoesPorAluno.set(av.alunoId, { status: av.status });
       });
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       const pendentes = totalAlunos - avaliacoesPorAluno.size;
       const percentualConcluido = totalAlunos > 0 ? Math.round((concluidas / totalAlunos) * 100) : 0;
 
-      const alunosComStatus = turma.alunos.map((aluno) => {
+      const alunosComStatus = turma.alunos.map((aluno: typeof turma.alunos[0]) => {
         const avaliacao = avaliacoesPorAluno.get(aluno.id);
         let status: 'PENDENTE' | 'RASCUNHO' | 'CONCLUIDA' = 'PENDENTE';
         if (avaliacao) {
@@ -86,16 +86,16 @@ export async function GET(request: NextRequest) {
     });
 
     const totalAvaliacoesMes = turmasComEstatisticas.reduce(
-      (acc, t) => acc + t.concluidas + t.rascunhos,
+      (acc: number, t: typeof turmasComEstatisticas[0]) => acc + t.concluidas + t.rascunhos,
       0
     );
     const totalAlunosSistema = turmasComEstatisticas.reduce(
-      (acc, t) => acc + t.totalAlunos,
+      (acc: number, t: typeof turmasComEstatisticas[0]) => acc + t.totalAlunos,
       0
     );
-    const totalConcluidas = turmasComEstatisticas.reduce((acc, t) => acc + t.concluidas, 0);
-    const totalPendentes = turmasComEstatisticas.reduce((acc, t) => acc + t.pendentes, 0);
-    const totalRascunhos = turmasComEstatisticas.reduce((acc, t) => acc + t.rascunhos, 0);
+    const totalConcluidas = turmasComEstatisticas.reduce((acc: number, t: typeof turmasComEstatisticas[0]) => acc + t.concluidas, 0);
+    const totalPendentes = turmasComEstatisticas.reduce((acc: number, t: typeof turmasComEstatisticas[0]) => acc + t.pendentes, 0);
+    const totalRascunhos = turmasComEstatisticas.reduce((acc: number, t: typeof turmasComEstatisticas[0]) => acc + t.rascunhos, 0);
     const percentualGeralConclusao = totalAlunosSistema > 0 
       ? Math.round((totalConcluidas / totalAlunosSistema) * 100) 
       : 0;

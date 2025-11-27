@@ -32,7 +32,7 @@ export async function GET() {
       orderBy: [{ ano_referencia: 'asc' }, { mes_referencia: 'asc' }],
     });
 
-    const evolucao = avaliacoes.map((av) => ({
+    const evolucao = avaliacoes.map((av: typeof avaliacoes[0]) => ({
       mes_ano: `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`,
       score_total: av.score_total,
       score_fluencia: av.score_fluencia_0a10,
@@ -74,7 +74,7 @@ export async function GET() {
     `;
 
     const totalEncontros = presencasData.length;
-    const presencasConfirmadas = presencasData.filter((p) => p.presente).length;
+    const presencasConfirmadas = presencasData.filter((p: typeof presencasData[0]) => p.presente).length;
     const percentualPresenca = totalEncontros > 0 
       ? Math.round((presencasConfirmadas / totalEncontros) * 100) 
       : 0;

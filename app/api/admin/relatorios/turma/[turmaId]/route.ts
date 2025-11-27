@@ -26,8 +26,8 @@ export async function GET(
     });
 
     const comparacao = alunos
-      .filter((aluno) => aluno.avaliacoes.length > 0)
-      .map((aluno) => ({
+      .filter((aluno: typeof alunos[0]) => aluno.avaliacoes.length > 0)
+      .map((aluno: typeof alunos[0]) => ({
         nome: aluno.nome,
         score: aluno.avaliacoes[0].score_total,
       }));

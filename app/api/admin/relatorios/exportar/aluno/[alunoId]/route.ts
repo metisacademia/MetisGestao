@@ -38,7 +38,7 @@ export async function GET(
     });
 
     const presencasPorMes: Record<string, number> = {};
-    presencas.forEach((p) => {
+    presencas.forEach((p: typeof presencas[0]) => {
       if (p.presente) {
         const key = `${p.data.getMonth() + 1}/${p.data.getFullYear()}`;
         presencasPorMes[key] = (presencasPorMes[key] || 0) + 1;
@@ -50,7 +50,7 @@ export async function GET(
     });
 
     const eventosPorMes: Record<string, string[]> = {};
-    eventos.forEach((e) => {
+    eventos.forEach((e: typeof eventos[0]) => {
       const key = `${e.data.getMonth() + 1}/${e.data.getFullYear()}`;
       if (!eventosPorMes[key]) eventosPorMes[key] = [];
       eventosPorMes[key].push(e.titulo);
@@ -84,7 +84,7 @@ export async function GET(
       'Eventos_relevantes',
     ];
 
-    const rows = avaliacoes.map((av) => {
+    const rows = avaliacoes.map((av: typeof avaliacoes[0]) => {
       const mesAnoKey = `${av.mes_referencia}/${av.ano_referencia}`;
       return [
         aluno.id,
@@ -113,7 +113,7 @@ export async function GET(
 
     const csvContent = [
       headers.join(','),
-      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+      ...rows.map((row: typeof rows[0]) => row.map((cell: any) => `"${cell}"`).join(',')),
     ].join('\n');
 
     const filename = `metis_aluno_${aluno.nome.replace(/\s+/g, '_')}_${format(new Date(), 'yyyy-MM-dd')}.csv`;

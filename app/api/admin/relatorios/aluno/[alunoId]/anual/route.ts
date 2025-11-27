@@ -44,19 +44,19 @@ export async function GET(
     ];
 
     const mediasTrimestrais = trimestres.map((tri) => {
-      const avsTri = avaliacoes.filter((a) => tri.meses.includes(a.mes_referencia));
+      const avsTri = avaliacoes.filter((a: typeof avaliacoes[0]) => tri.meses.includes(a.mes_referencia));
       if (avsTri.length === 0) {
         return { trimestre: tri.nome, dados: null };
       }
       return {
         trimestre: tri.nome,
         dados: {
-          score_total: avsTri.reduce((s, a) => s + a.score_total, 0) / avsTri.length,
-          score_fluencia: avsTri.reduce((s, a) => s + a.score_fluencia_0a10, 0) / avsTri.length,
-          score_cultura: avsTri.reduce((s, a) => s + a.score_cultura_0a10, 0) / avsTri.length,
-          score_interpretacao: avsTri.reduce((s, a) => s + a.score_interpretacao_0a10, 0) / avsTri.length,
-          score_atencao: avsTri.reduce((s, a) => s + a.score_atencao_0a10, 0) / avsTri.length,
-          score_auto_percepcao: avsTri.reduce((s, a) => s + a.score_auto_percepcao_0a10, 0) / avsTri.length,
+          score_total: avsTri.reduce((s: number, a: typeof avsTri[0]) => s + a.score_total, 0) / avsTri.length,
+          score_fluencia: avsTri.reduce((s: number, a: typeof avsTri[0]) => s + a.score_fluencia_0a10, 0) / avsTri.length,
+          score_cultura: avsTri.reduce((s: number, a: typeof avsTri[0]) => s + a.score_cultura_0a10, 0) / avsTri.length,
+          score_interpretacao: avsTri.reduce((s: number, a: typeof avsTri[0]) => s + a.score_interpretacao_0a10, 0) / avsTri.length,
+          score_atencao: avsTri.reduce((s: number, a: typeof avsTri[0]) => s + a.score_atencao_0a10, 0) / avsTri.length,
+          score_auto_percepcao: avsTri.reduce((s: number, a: typeof avsTri[0]) => s + a.score_auto_percepcao_0a10, 0) / avsTri.length,
         },
       };
     });
@@ -71,11 +71,11 @@ export async function GET(
     let mediaAnual = null;
     if (avaliacoes.length > 0) {
       mediaAnual = {
-        fluencia: avaliacoes.reduce((s, a) => s + a.score_fluencia_0a10, 0) / avaliacoes.length,
-        cultura: avaliacoes.reduce((s, a) => s + a.score_cultura_0a10, 0) / avaliacoes.length,
-        interpretacao: avaliacoes.reduce((s, a) => s + a.score_interpretacao_0a10, 0) / avaliacoes.length,
-        atencao: avaliacoes.reduce((s, a) => s + a.score_atencao_0a10, 0) / avaliacoes.length,
-        auto_percepcao: avaliacoes.reduce((s, a) => s + a.score_auto_percepcao_0a10, 0) / avaliacoes.length,
+        fluencia: avaliacoes.reduce((s: number, a: typeof avaliacoes[0]) => s + a.score_fluencia_0a10, 0) / avaliacoes.length,
+        cultura: avaliacoes.reduce((s: number, a: typeof avaliacoes[0]) => s + a.score_cultura_0a10, 0) / avaliacoes.length,
+        interpretacao: avaliacoes.reduce((s: number, a: typeof avaliacoes[0]) => s + a.score_interpretacao_0a10, 0) / avaliacoes.length,
+        atencao: avaliacoes.reduce((s: number, a: typeof avaliacoes[0]) => s + a.score_atencao_0a10, 0) / avaliacoes.length,
+        auto_percepcao: avaliacoes.reduce((s: number, a: typeof avaliacoes[0]) => s + a.score_auto_percepcao_0a10, 0) / avaliacoes.length,
       };
     }
 
@@ -99,11 +99,11 @@ export async function GET(
       },
     });
 
-    const totalPresencas = presencas.filter((p) => p.presente).length;
+    const totalPresencas = presencas.filter((p: typeof presencas[0]) => p.presente).length;
     const totalSessoes = presencas.length;
     const presencaMediaAnual = totalSessoes > 0 ? (totalPresencas / totalSessoes) * 100 : 0;
 
-    const evolucaoParaResumo = avaliacoes.map((av) => ({
+    const evolucaoParaResumo = avaliacoes.map((av: typeof avaliacoes[0]) => ({
       score_total: av.score_total,
       score_fluencia: av.score_fluencia_0a10,
       score_cultura: av.score_cultura_0a10,
@@ -130,7 +130,7 @@ export async function GET(
     return NextResponse.json({
       aluno: { id: aluno.id, nome: aluno.nome, turma: aluno.turma.nome_turma },
       ano,
-      anosDisponiveis: anosDisponiveis.map((a) => a.ano_referencia),
+      anosDisponiveis: anosDisponiveis.map((a: typeof anosDisponiveis[0]) => a.ano_referencia),
       evolucaoTrimestral,
       radarAnual,
       presencaMediaAnual,
