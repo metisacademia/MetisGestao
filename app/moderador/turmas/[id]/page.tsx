@@ -39,7 +39,7 @@ export default async function TurmaDetalhePage({ params }: { params: Promise<{ i
     },
   });
 
-  const alunosComAvaliacao = new Set(avaliacoesMesAtual.map(a => a.alunoId));
+  const alunosComAvaliacao = new Set(avaliacoesMesAtual.map((a: any) => a.alunoId));
 
   return (
     <div className="space-y-6">

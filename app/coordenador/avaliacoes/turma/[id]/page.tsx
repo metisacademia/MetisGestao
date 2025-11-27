@@ -41,7 +41,7 @@ export default async function CoordenadorTurmaAvaliacoesPage({
     },
   });
 
-  const alunosComAvaliacao = new Set(avaliacoesMesAtual.map(a => a.alunoId));
+  const alunosComAvaliacao = new Set(avaliacoesMesAtual.map((a: any) => a.alunoId));
 
   return (
     <div className="space-y-6">
@@ -72,7 +72,7 @@ export default async function CoordenadorTurmaAvaliacoesPage({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {turma.alunos.map((aluno) => {
+              {turma.alunos.map((aluno: any) => {
                 const jaAvaliado = alunosComAvaliacao.has(aluno.id);
                 return (
                   <TableRow key={aluno.id}>

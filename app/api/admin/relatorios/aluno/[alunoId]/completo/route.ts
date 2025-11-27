@@ -53,7 +53,7 @@ export async function GET(
       orderBy: [{ ano_referencia: 'asc' }, { mes_referencia: 'asc' }],
     });
 
-    const evolucao = avaliacoes.map((av) => ({
+    const evolucao = avaliacoes.map((av: any) => ({
       mes_ano: `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`,
       score_total: av.score_total,
       score_fluencia: av.score_fluencia_0a10,
@@ -63,7 +63,7 @@ export async function GET(
       score_auto_percepcao: av.score_auto_percepcao_0a10,
     }));
 
-    const evolucaoComMediaMovel = evolucao.map((item, idx, arr) => {
+    const evolucaoComMediaMovel = evolucao.map((item: any, idx: any, arr: any) => {
       if (idx < 2) return { ...item, media_movel: item.score_total };
       const soma = arr[idx].score_total + arr[idx - 1].score_total + arr[idx - 2].score_total;
       return { ...item, media_movel: soma / 3 };
@@ -96,14 +96,14 @@ export async function GET(
       if (avaliacoesTurma.length > 0) {
         temMediaTurma = true;
         const mediaTurma = {
-          fluencia: avaliacoesTurma.reduce((s, a) => s + a.score_fluencia_0a10, 0) / avaliacoesTurma.length,
-          cultura: avaliacoesTurma.reduce((s, a) => s + a.score_cultura_0a10, 0) / avaliacoesTurma.length,
-          interpretacao: avaliacoesTurma.reduce((s, a) => s + a.score_interpretacao_0a10, 0) / avaliacoesTurma.length,
-          atencao: avaliacoesTurma.reduce((s, a) => s + a.score_atencao_0a10, 0) / avaliacoesTurma.length,
-          auto_percepcao: avaliacoesTurma.reduce((s, a) => s + a.score_auto_percepcao_0a10, 0) / avaliacoesTurma.length,
+          fluencia: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_fluencia_0a10, 0) / avaliacoesTurma.length,
+          cultura: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_cultura_0a10, 0) / avaliacoesTurma.length,
+          interpretacao: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_interpretacao_0a10, 0) / avaliacoesTurma.length,
+          atencao: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_atencao_0a10, 0) / avaliacoesTurma.length,
+          auto_percepcao: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_auto_percepcao_0a10, 0) / avaliacoesTurma.length,
         };
 
-        radar = alunoRadar.map((item, idx) => ({
+        radar = alunoRadar.map((item: any, idx: any) => ({
           ...item,
           media: [mediaTurma.fluencia, mediaTurma.cultura, mediaTurma.interpretacao, mediaTurma.atencao, mediaTurma.auto_percepcao][idx],
         }));
@@ -121,7 +121,7 @@ export async function GET(
     });
 
     const presencasPorMes: Record<string, { presencas: number; total: number }> = {};
-    presencas.forEach((p) => {
+    presencas.forEach((p: any) => {
       const mesAno = `${String(p.data.getMonth() + 1).padStart(2, '0')}/${p.data.getFullYear()}`;
       if (!presencasPorMes[mesAno]) {
         presencasPorMes[mesAno] = { presencas: 0, total: 0 };
@@ -132,7 +132,7 @@ export async function GET(
       }
     });
 
-    const dadosPresenca = Object.entries(presencasPorMes).map(([mesAno, dados]) => ({
+    const dadosPresenca = Object.entries(presencasPorMes).map(([mesAno, dados]: any[]) => ({
       mes_ano: mesAno,
       presencas: dados.presencas,
       total_sessoes: dados.total,
@@ -144,8 +144,8 @@ export async function GET(
     const chaveMesAtual = `${String(mesAtual).padStart(2, '0')}/${anoAtual}`;
     const presencaMesAtual = presencasPorMes[chaveMesAtual] || { presencas: 0, total: 0 };
 
-    const totalPresencas = dadosPresenca.reduce((s, p) => s + p.presencas, 0);
-    const totalSessoes = dadosPresenca.reduce((s, p) => s + p.total_sessoes, 0);
+    const totalPresencas = dadosPresenca.reduce((s: any, p: any) => s + p.presencas, 0);
+    const totalSessoes = dadosPresenca.reduce((s: any, p: any) => s + p.total_sessoes, 0);
     const presencaMedia6Meses = totalSessoes > 0 ? (totalPresencas / totalSessoes) * 100 : 0;
 
     const eventos = await prisma.eventoAluno.findMany({
@@ -156,13 +156,13 @@ export async function GET(
       orderBy: { data: 'desc' },
     });
 
-    const eventosComMesAno = eventos.map(e => ({
+    const eventosComMesAno = eventos.map((e: any) => ({
       ...e,
       mes_ano: `${String(e.data.getMonth() + 1).padStart(2, '0')}/${e.data.getFullYear()}`,
     }));
 
-    const evolucaoComEventos = evolucaoComMediaMovel.map(item => {
-      const eventoDoMes = eventosComMesAno.find(e => e.mes_ano === item.mes_ano);
+    const evolucaoComEventos = evolucaoComMediaMovel.map((item: any) => {
+      const eventoDoMes = eventosComMesAno.find((e: any) => e.mes_ano === item.mes_ano);
       return {
         ...item,
         evento: eventoDoMes ? { titulo: eventoDoMes.titulo, tipo: eventoDoMes.tipo } : undefined,
@@ -172,7 +172,7 @@ export async function GET(
     const periodoMeses = periodo === '3m' ? 3 : periodo === '6m' ? 6 : periodo === '12m' ? 12 : evolucao.length;
     const variacoes = calcularVariacoes(evolucao, periodoMeses);
     
-    const cardsResumo = variacoes.map(v => {
+    const cardsResumo = variacoes.map((v: any) => {
       const atual = evolucao.length > 0 ? evolucao[evolucao.length - 1] : null;
       const anterior = evolucao.length > periodoMeses ? evolucao[evolucao.length - periodoMeses - 1] : evolucao[0];
       
@@ -213,7 +213,7 @@ export async function GET(
         mesAtual: presencaMesAtual,
         media6Meses: presencaMedia6Meses,
       },
-      eventos: eventos.map(e => ({
+      eventos: eventos.map((e: any) => ({
         id: e.id,
         data: e.data.toISOString(),
         titulo: e.titulo,

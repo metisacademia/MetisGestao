@@ -107,8 +107,8 @@ export async function PUT(
     }
 
     const respostasComPontuacao = template.itens
-      .filter((item) => respostas[item.id])
-      .map((item) => {
+      .filter((item: any) => respostas[item.id])
+      .map((item: any) => {
         const valor_bruto = respostas[item.id];
         const pontuacao = calcularPontuacaoItem(valor_bruto, item.regra_pontuacao);
         const valor_numerico = parseFloat(valor_bruto);
@@ -122,15 +122,23 @@ export async function PUT(
         };
       });
 
-    const scores = calcularScoresPorDominio(template.itens, respostasComPontuacao);
+    const scores = calcularScoresPorDominio(respostasComPontuacao, template.itens);
     const scoreTotal = calcularScoreTotal(scores);
+
+    // Create a map from dominioId to dominio name
+    const dominiosMap: Record<string, string> = {};
+    template.itens.forEach((item: any) => {
+      if (!dominiosMap[item.dominioId]) {
+        dominiosMap[item.dominioId] = item.dominio.nome;
+      }
+    });
 
     const scoresToSave: Record<string, number> = {
       score_total: scoreTotal,
     };
 
-    scores.forEach(({ dominio, score }) => {
-      const nomeDominio = dominio.nome.toLowerCase();
+    Object.entries(scores).forEach(([dominioId, score]: any[]) => {
+      const nomeDominio = dominiosMap[dominioId]?.toLowerCase() || '';
 
       if (nomeDominio.includes('fluência') || nomeDominio.includes('fluencia')) {
         scoresToSave.score_fluencia = score.total;
@@ -171,7 +179,7 @@ export async function PUT(
         });
 
     await prisma.respostaItem.createMany({
-      data: respostasComPontuacao.map((resp) => ({
+      data: respostasComPontuacao.map((resp: any) => ({
         avaliacaoId: avaliacao.id,
         itemId: resp.itemId,
         dominioId: resp.dominioId,

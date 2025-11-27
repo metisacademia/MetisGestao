@@ -70,8 +70,8 @@ export async function POST(request: NextRequest) {
     }
 
     const respostasComPontuacao = template.itens
-      .filter((item) => respostas[item.id])
-      .map((item) => {
+      .filter((item: any) => respostas[item.id])
+      .map((item: any) => {
         const valor_bruto = respostas[item.id];
         const pontuacao = calcularPontuacaoItem(valor_bruto, item.regra_pontuacao);
         const valor_numerico = parseFloat(valor_bruto);
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     const scoresPorDominio = calcularScoresPorDominio(
       respostasComPontuacao,
-      template.itens.map((item) => ({
+      template.itens.map((item: any) => ({
         dominioId: item.dominioId,
         regra_pontuacao: item.regra_pontuacao,
       }))
@@ -109,8 +109,8 @@ export async function POST(request: NextRequest) {
       score_auto_percepcao_0a10: 0,
     };
 
-    Object.entries(scoresPorDominio).forEach(([dominioId, score]) => {
-      const dominio = template.itens.find((i) => i.dominioId === dominioId)?.dominio;
+    Object.entries(scoresPorDominio).forEach(([dominioId, score]: any[]) => {
+      const dominio = template.itens.find((i: any) => i.dominioId === dominioId)?.dominio;
       if (!dominio) return;
 
       const nomeDominio = dominio.nome.toLowerCase();
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
             status: 'CONCLUIDA',
             ...scores,
             respostas: {
-              create: respostasComPontuacao.map((r) => ({
+              create: respostasComPontuacao.map((r: any) => ({
                 itemId: r.itemId,
                 dominioId: r.dominioId,
                 valor_bruto: r.valor_bruto,
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
             status: 'CONCLUIDA',
             ...scores,
             respostas: {
-              create: respostasComPontuacao.map((r) => ({
+              create: respostasComPontuacao.map((r: any) => ({
                 itemId: r.itemId,
                 dominioId: r.dominioId,
                 valor_bruto: r.valor_bruto,

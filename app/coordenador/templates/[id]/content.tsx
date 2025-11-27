@@ -125,7 +125,7 @@ export default function TemplateContent({
   const toggleTurma = (turmaId: string) => {
     setTurmasSelecionadas(prev => 
       prev.includes(turmaId) 
-        ? prev.filter(id => id !== turmaId)
+        ? prev.filter((id: any) => id !== turmaId)
         : [...prev, turmaId]
     );
   };
@@ -134,7 +134,7 @@ export default function TemplateContent({
     if (turmasSelecionadas.length === turmas.length) {
       setTurmasSelecionadas([]);
     } else {
-      setTurmasSelecionadas(turmas.map(t => t.id));
+      setTurmasSelecionadas(turmas.map((t: any) => t.id));
     }
   };
 
@@ -149,7 +149,7 @@ export default function TemplateContent({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ templateId: template.id }),
           })]
-        : turmasSelecionadas.map(turmaId =>
+        : turmasSelecionadas.map((turmaId: any) =>
             fetch('/api/coordenador/gerar-avaliacoes', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -158,7 +158,7 @@ export default function TemplateContent({
           );
 
       const responses = await Promise.all(promises);
-      const results = await Promise.all(responses.map(r => r.json()));
+      const results = await Promise.all(responses.map((r: any) => r.json()));
       
       const totalResult = results.reduce(
         (acc, r) => ({

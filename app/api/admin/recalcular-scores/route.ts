@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     let atualizadas = 0;
 
     for (const avaliacao of avaliacoes) {
-      const respostasComPontuacao = avaliacao.respostas.map((resposta) => {
+      const respostasComPontuacao = avaliacao.respostas.map((resposta: any) => {
         const item = resposta.item;
         const pontuacao = calcularPontuacaoItem(resposta.valor_bruto, item.regra_pontuacao);
 
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
       const scoresPorDominio = calcularScoresPorDominio(
         respostasComPontuacao,
-        avaliacao.template.itens.map((item) => ({
+        avaliacao.template.itens.map((item: any) => ({
           dominioId: item.dominioId,
           regra_pontuacao: item.regra_pontuacao,
         }))
@@ -69,8 +69,8 @@ export async function POST(request: NextRequest) {
         score_auto_percepcao_0a10: 0,
       };
 
-      Object.entries(scoresPorDominio).forEach(([dominioId, score]) => {
-        const dominio = avaliacao.template.itens.find((i) => i.dominioId === dominioId)?.dominio;
+      Object.entries(scoresPorDominio).forEach(([dominioId, score]: any[]) => {
+        const dominio = avaliacao.template.itens.find((i: any) => i.dominioId === dominioId)?.dominio;
         if (!dominio) return;
 
         const nomeDominio = dominio.nome.toLowerCase();

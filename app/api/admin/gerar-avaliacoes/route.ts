@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       success: true,
       avaliacoesCriadas,
       avaliacoesExistentes,
-      totalAlunos: turmas.reduce((acc, t) => acc + t.alunos.length, 0),
+      totalAlunos: turmas.reduce((acc: any, t: any) => acc + t.alunos.length, 0),
       turmasProcessadas: turmas.length,
     });
   } catch (error) {
