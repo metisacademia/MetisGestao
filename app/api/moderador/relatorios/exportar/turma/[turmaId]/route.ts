@@ -67,7 +67,7 @@ export async function GET(
 
     for (const aluno of turma.alunos) {
       const presencasPorMes: Record<string, number> = {};
-      aluno.presencas.forEach((p) => {
+      aluno.presencas.forEach((p: typeof aluno.presencas[0]) => {
         if (p.presente) {
           const key = `${p.data.getMonth() + 1}/${p.data.getFullYear()}`;
           presencasPorMes[key] = (presencasPorMes[key] || 0) + 1;
@@ -75,7 +75,7 @@ export async function GET(
       });
 
       const eventosPorMes: Record<string, string[]> = {};
-      aluno.eventos.forEach((e) => {
+      aluno.eventos.forEach((e: typeof aluno.eventos[0]) => {
         const key = `${e.data.getMonth() + 1}/${e.data.getFullYear()}`;
         if (!eventosPorMes[key]) eventosPorMes[key] = [];
         eventosPorMes[key].push(e.titulo);

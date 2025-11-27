@@ -32,7 +32,7 @@ export async function GET(
       orderBy: [{ ano_referencia: 'asc' }, { mes_referencia: 'asc' }],
     });
 
-    const evolucao = avaliacoes.map((av) => ({
+    const evolucao = avaliacoes.map((av: typeof avaliacoes[0]) => ({
       mes_ano: `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`,
       score_total: av.score_total,
       score_fluencia: av.score_fluencia_0a10,

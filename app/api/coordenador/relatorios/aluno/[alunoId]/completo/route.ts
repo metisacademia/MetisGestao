@@ -53,7 +53,7 @@ export async function GET(
       orderBy: [{ ano_referencia: 'asc' }, { mes_referencia: 'asc' }],
     });
 
-    const evolucao = avaliacoes.map((av) => ({
+    const evolucao = avaliacoes.map((av: typeof avaliacoes[0]) => ({
       mes_ano: `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`,
       score_total: av.score_total,
       score_fluencia: av.score_fluencia_0a10,
@@ -63,7 +63,7 @@ export async function GET(
       score_auto_percepcao: av.score_auto_percepcao_0a10,
     }));
 
-    const evolucaoComMediaMovel = evolucao.map((item, idx, arr) => {
+    const evolucaoComMediaMovel = evolucao.map((item: typeof evolucao[0], idx: number, arr: typeof evolucao) => {
       if (idx < 2) return { ...item, media_movel: item.score_total };
       const soma = arr[idx].score_total + arr[idx - 1].score_total + arr[idx - 2].score_total;
       return { ...item, media_movel: soma / 3 };
@@ -96,11 +96,11 @@ export async function GET(
       if (avaliacoesTurma.length > 0) {
         temMediaTurma = true;
         const mediaTurma = {
-          fluencia: avaliacoesTurma.reduce((s, a) => s + a.score_fluencia_0a10, 0) / avaliacoesTurma.length,
-          cultura: avaliacoesTurma.reduce((s, a) => s + a.score_cultura_0a10, 0) / avaliacoesTurma.length,
-          interpretacao: avaliacoesTurma.reduce((s, a) => s + a.score_interpretacao_0a10, 0) / avaliacoesTurma.length,
-          atencao: avaliacoesTurma.reduce((s, a) => s + a.score_atencao_0a10, 0) / avaliacoesTurma.length,
-          auto_percepcao: avaliacoesTurma.reduce((s, a) => s + a.score_auto_percepcao_0a10, 0) / avaliacoesTurma.length,
+          fluencia: avaliacoesTurma.reduce((s: number, a: typeof avaliacoesTurma[0]) => s + a.score_fluencia_0a10, 0) / avaliacoesTurma.length,
+          cultura: avaliacoesTurma.reduce((s: number, a: typeof avaliacoesTurma[0]) => s + a.score_cultura_0a10, 0) / avaliacoesTurma.length,
+          interpretacao: avaliacoesTurma.reduce((s: number, a: typeof avaliacoesTurma[0]) => s + a.score_interpretacao_0a10, 0) / avaliacoesTurma.length,
+          atencao: avaliacoesTurma.reduce((s: number, a: typeof avaliacoesTurma[0]) => s + a.score_atencao_0a10, 0) / avaliacoesTurma.length,
+          auto_percepcao: avaliacoesTurma.reduce((s: number, a: typeof avaliacoesTurma[0]) => s + a.score_auto_percepcao_0a10, 0) / avaliacoesTurma.length,
         };
 
         radar = alunoRadar.map((item, idx) => ({
@@ -121,7 +121,7 @@ export async function GET(
     });
 
     const presencasPorMes: Record<string, { presencas: number; total: number }> = {};
-    presencas.forEach((p) => {
+    presencas.forEach((p: typeof presencas[0]) => {
       const mesAno = `${String(p.data.getMonth() + 1).padStart(2, '0')}/${p.data.getFullYear()}`;
       if (!presencasPorMes[mesAno]) {
         presencasPorMes[mesAno] = { presencas: 0, total: 0 };

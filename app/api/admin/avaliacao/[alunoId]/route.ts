@@ -3,6 +3,14 @@ import { prisma } from '@/lib/prisma';
 import { getUserFromToken } from '@/lib/auth';
 import { calcularPontuacaoItem, calcularScoresPorDominio, calcularScoreTotal } from '@/lib/pontuacao';
 
+interface RespostaComPontuacao {
+  itemId: string;
+  dominioId: string;
+  valor_bruto: string;
+  valor_numerico: number;
+  pontuacao_item: number;
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ alunoId: string }> }
@@ -105,7 +113,7 @@ export async function POST(
       });
     }
 
-    const respostasComPontuacao = template.itens
+    const respostasComPontuacao: RespostaComPontuacao[] = template.itens
       .filter((item: any) => respostas[item.id])
       .map((item: any) => {
         const valor_bruto = respostas[item.id];

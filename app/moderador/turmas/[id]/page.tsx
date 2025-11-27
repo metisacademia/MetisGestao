@@ -67,7 +67,7 @@ export default async function TurmaDetalhePage({ params }: { params: Promise<{ i
               </TableRow>
             </TableHeader>
             <TableBody>
-              {turma.alunos.map((aluno) => {
+              {turma.alunos.map((aluno: typeof turma.alunos[0]) => {
                 const jaAvaliado = alunosComAvaliacao.has(aluno.id);
                 return (
                   <TableRow key={aluno.id}>

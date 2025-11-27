@@ -18,8 +18,8 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const alunos = turmas.flatMap((turma) =>
-      turma.alunos.map((aluno) => ({
+    const alunos = turmas.flatMap((turma: typeof turmas[0]) =>
+      turma.alunos.map((aluno: typeof turma.alunos[0]) => ({
         id: aluno.id,
         nome: aluno.nome,
         turma: {
