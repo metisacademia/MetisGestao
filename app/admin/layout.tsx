@@ -1,6 +1,6 @@
 import { getUserFromToken } from '@/lib/auth';
-import { Sidebar } from '@/components/layout/sidebar';
 import { redirect } from 'next/navigation';
+import { AppShell } from '@/components/layout/app-shell';
 
 export default async function AdminLayout({
   children,
@@ -13,14 +13,5 @@ export default async function AdminLayout({
     redirect('/login');
   }
 
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar perfil="ADMIN" />
-      <main className="flex-1 overflow-y-auto bg-gray-50">
-        <div className="p-8">
-          {children}
-        </div>
-      </main>
-    </div>
-  );
+  return <AppShell perfil="ADMIN">{children}</AppShell>;
 }
