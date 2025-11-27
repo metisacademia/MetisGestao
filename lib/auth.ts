@@ -2,13 +2,27 @@ import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
 
-if (!JWT_SECRET) {
+  if (secret) return secret;
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      'JWT_SECRET environment variable is not set. Using a development fallback secret.'
+    );
+    return 'development-secret';
+  }
+
   throw new Error(
     'JWT_SECRET environment variable is not set. ' +
-    'Please configure it before starting the application.'
+      'Please configure it before starting the application.'
   );
+}
+
+function getJwtSecretKey() {
+  const secret = getJwtSecret();
+  return new TextEncoder().encode(secret);
 }
 
 export interface JWTPayload {
@@ -29,7 +43,7 @@ export async function verifyPassword(
 }
 
 export async function signToken(payload: JWTPayload): Promise<string> {
-  const secret = new TextEncoder().encode(JWT_SECRET);
+  const secret = getJwtSecretKey();
   const jwtPayload: Record<string, unknown> = {
     userId: payload.userId,
     email: payload.email,
@@ -44,7 +58,7 @@ export async function signToken(payload: JWTPayload): Promise<string> {
 
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    const secret = new TextEncoder().encode(JWT_SECRET);
+    const secret = getJwtSecretKey();
     const { payload } = await jwtVerify(token, secret);
     return payload as unknown as JWTPayload;
   } catch {
@@ -75,34 +89,34 @@ export async function getAuthToken(): Promise<string | undefined> {
 
 export async function getUserFromToken(request?: any): Promise<JWTPayload | null> {
   let token = await getAuthToken();
-  
+
   if (!token && request) {
     const authHeader = request.headers?.get?.('authorization') || request.headers?.['authorization'];
     if (authHeader?.startsWith('Bearer ')) {
       token = authHeader.slice(7);
     }
   }
-  
+
   if (!token) return null;
   return verifyToken(token);
 }
 
 export async function verifyAuth(request: any): Promise<JWTPayload | null> {
   let token: string | undefined;
-  
+
   const cookieHeader = request.headers?.get?.('cookie') || '';
   const tokenMatch = cookieHeader.match(/auth-token=([^;]+)/);
   if (tokenMatch) {
     token = tokenMatch[1];
   }
-  
+
   if (!token) {
     const authHeader = request.headers?.get?.('authorization');
     if (authHeader?.startsWith('Bearer ')) {
       token = authHeader.slice(7);
     }
   }
-  
+
   if (!token) return null;
   return verifyToken(token);
 }
