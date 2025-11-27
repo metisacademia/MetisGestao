@@ -17,6 +17,14 @@ interface Aluno {
   observacoes?: string | null;
 }
 
+interface AlunoParaEditar {
+  id: string;
+  nome: string;
+  turmaId: string;
+  data_nascimento?: string;
+  observacoes?: string;
+}
+
 interface Turma {
   id: string;
   nome_turma: string;
@@ -31,7 +39,7 @@ export default function AlunosContent({
 }) {
   const [alunos, setAlunos] = useState<Aluno[]>(alunosIniciais);
   const [mostraFormulario, setMostraFormulario] = useState(false);
-  const [alunoParaEditar, setAlunoParaEditar] = useState<Aluno | null>(null);
+  const [alunoParaEditar, setAlunoParaEditar] = useState<AlunoParaEditar | null>(null);
 
   const handleRecarregarAlunos = async () => {
     const response = await fetch('/api/admin/alunos');
@@ -44,7 +52,15 @@ export default function AlunosContent({
   };
 
   const handleEditar = (aluno: Aluno) => {
-    setAlunoParaEditar(aluno);
+    setAlunoParaEditar({
+      ...aluno,
+      data_nascimento: aluno.data_nascimento 
+        ? aluno.data_nascimento instanceof Date 
+          ? aluno.data_nascimento.toISOString() 
+          : String(aluno.data_nascimento)
+        : undefined,
+      observacoes: aluno.observacoes || undefined,
+    });
     setMostraFormulario(true);
   };
 
