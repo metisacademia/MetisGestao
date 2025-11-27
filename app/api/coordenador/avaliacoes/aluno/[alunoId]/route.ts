@@ -122,7 +122,13 @@ export async function PUT(
         };
       });
 
-    const scores = calcularScoresPorDominio(respostasComPontuacao, template.itens);
+    const scores = calcularScoresPorDominio(
+      respostasComPontuacao,
+      template.itens.map((item: any) => ({
+        dominioId: item.dominioId,
+        regra_pontuacao: item.regra_pontuacao,
+      }))
+    );
     const scoreTotal = calcularScoreTotal(scores);
 
     // Create a map from dominioId to dominio name

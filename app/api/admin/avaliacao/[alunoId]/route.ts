@@ -106,8 +106,8 @@ export async function POST(
     }
 
     const respostasComPontuacao = template.itens
-      .filter((item) => respostas[item.id])
-      .map((item) => {
+      .filter((item: any) => respostas[item.id])
+      .map((item: any) => {
         const valor_bruto = respostas[item.id];
         const pontuacao = calcularPontuacaoItem(valor_bruto, item.regra_pontuacao);
         const valor_numerico = parseFloat(valor_bruto);
@@ -121,7 +121,13 @@ export async function POST(
         };
       });
 
-    const scores = calcularScoresPorDominio(respostasComPontuacao, template.itens);
+    const scores = calcularScoresPorDominio(
+      respostasComPontuacao,
+      template.itens.map((item: any) => ({
+        dominioId: item.dominioId,
+        regra_pontuacao: item.regra_pontuacao,
+      }))
+    );
     const scoreTotal = calcularScoreTotal(scores);
 
     // Create a map from dominioId to dominio name
