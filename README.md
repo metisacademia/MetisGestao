@@ -58,6 +58,8 @@ cp .env.example .env
 - `DATABASE_URL`: Use a connection string **PostgreSQL do Supabase** (prefira a URL de pooling para uso na Vercel).
 - `JWT_SECRET`: Chave secreta forte para assinar tokens JWT.
 
+> ℹ️ O Prisma 7 lê o datasource a partir de `prisma.config.ts`, que consome `DATABASE_URL` do ambiente (use a URL de pooling do Supabase). Sem essa variável definida, apenas um placeholder local é usado em ferramentas de desenvolvimento.
+
 ⚠️ **Importante**: Gere uma chave forte e aleatória para produção. Nunca use valores padrão.
 
 4. **Configure o banco de dados**
