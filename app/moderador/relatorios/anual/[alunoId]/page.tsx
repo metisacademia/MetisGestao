@@ -207,7 +207,7 @@ export default function RelatorioAnualPage() {
         )}
 
         <div className="text-center text-xs text-muted-foreground print:mt-8">
-          <p>Relatório gerado em {new Date().toLocaleDateString('pt-BR')}</p>
+          <p suppressHydrationWarning>Relatório gerado em {new Date().toLocaleDateString('pt-BR')}</p>
           <p>Métis - Academia da Mente</p>
         </div>
       </div>

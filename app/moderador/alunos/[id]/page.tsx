@@ -28,7 +28,7 @@ interface Evento {
   id: string;
   data: string;
   titulo: string;
-  descricao?: string;
+  descricao?: string | null;
   tipo: 'SAUDE' | 'ROTINA' | 'TURMA' | 'OUTROS';
 }
 

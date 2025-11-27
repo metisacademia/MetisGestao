@@ -106,7 +106,7 @@ export default function AlunoLayout({
 
       <footer className="bg-[#173b5a] mt-8 py-4">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-xs text-[#cda465]">
+          <p className="text-xs text-[#cda465]" suppressHydrationWarning>
             © {new Date().getFullYear()} Métis – Academia da Mente
           </p>
         </div>

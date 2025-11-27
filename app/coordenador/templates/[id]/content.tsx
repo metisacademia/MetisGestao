@@ -18,7 +18,7 @@ interface Item {
   id: string;
   codigo_item: string;
   titulo: string;
-  descricao?: string;
+  descricao?: string | null;
   tipo_resposta: string;
   ordem: number;
   dominio: Dominio;
