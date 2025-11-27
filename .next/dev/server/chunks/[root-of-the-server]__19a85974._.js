@@ -195,6 +195,7 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 ;
 async function GET(request, { params }) {
     try {
+        const { id } = await params;
         const user = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$auth$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getUserFromToken"])();
         if (!user || user.perfil !== 'MODERADOR') {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
@@ -205,7 +206,7 @@ async function GET(request, { params }) {
         }
         const aluno = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].aluno.findFirst({
             where: {
-                id: params.id,
+                id,
                 turma: {
                     moderadorId: user.userId
                 }
