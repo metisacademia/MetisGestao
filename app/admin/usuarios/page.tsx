@@ -228,15 +228,25 @@ export default function UsuariosPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             {newPassword ? (
-              <AlertDialogAction onClick={() => setResetDialogOpen(false)}>
+              <Button onClick={() => setResetDialogOpen(false)}>
                 Entendido
-              </AlertDialogAction>
+              </Button>
             ) : (
               <>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleResetSenha}>
-                  Gerar Nova Senha
-                </AlertDialogAction>
+                <Button 
+                  onClick={handleResetSenha}
+                  disabled={resettingId !== null}
+                >
+                  {resettingId ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Gerando...
+                    </>
+                  ) : (
+                    'Gerar Nova Senha'
+                  )}
+                </Button>
               </>
             )}
           </AlertDialogFooter>

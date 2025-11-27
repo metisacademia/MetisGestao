@@ -14,7 +14,7 @@ if (!JWT_SECRET) {
 export interface JWTPayload {
   userId: string;
   email: string;
-  perfil: 'ADMIN' | 'MODERADOR' | 'ALUNO';
+  perfil: 'ADMIN' | 'COORDENADOR' | 'MODERADOR' | 'ALUNO';
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -78,6 +78,26 @@ export async function getUserFromToken(request?: any): Promise<JWTPayload | null
   
   if (!token && request) {
     const authHeader = request.headers?.get?.('authorization') || request.headers?.['authorization'];
+    if (authHeader?.startsWith('Bearer ')) {
+      token = authHeader.slice(7);
+    }
+  }
+  
+  if (!token) return null;
+  return verifyToken(token);
+}
+
+export async function verifyAuth(request: any): Promise<JWTPayload | null> {
+  let token: string | undefined;
+  
+  const cookieHeader = request.headers?.get?.('cookie') || '';
+  const tokenMatch = cookieHeader.match(/auth-token=([^;]+)/);
+  if (tokenMatch) {
+    token = tokenMatch[1];
+  }
+  
+  if (!token) {
+    const authHeader = request.headers?.get?.('authorization');
     if (authHeader?.startsWith('Bearer ')) {
       token = authHeader.slice(7);
     }

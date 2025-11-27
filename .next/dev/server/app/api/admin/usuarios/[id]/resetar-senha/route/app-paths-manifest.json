@@ -1,0 +1,3 @@
+{
+  "/api/admin/usuarios/[id]/resetar-senha/route": "app/api/admin/usuarios/[id]/resetar-senha/route.js"
+}
