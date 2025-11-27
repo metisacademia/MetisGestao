@@ -6,6 +6,7 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 const databaseUrl = process.env.DATABASE_URL
+const placeholderConnectionString = 'postgresql://postgres:postgres@localhost:5432/postgres'
 const connectionString = (() => {
   if (databaseUrl) return databaseUrl
 
@@ -18,7 +19,7 @@ const connectionString = (() => {
       'Configure the Supabase pooled connection string in production environments.'
   )
 
-  return 'postgresql://postgres:postgres@localhost:5432/postgres'
+  return placeholderConnectionString
 })()
 
 const adapter = new PrismaPg({
