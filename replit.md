@@ -260,6 +260,38 @@ Students with accounts can access a simplified, friendly report:
 **Utility Functions:**
 - lib/recomendacoes-aluno.ts: Generates recommendations based on weak domains
 
+### User Management Enhancements (November 2025)
+
+**User Profiles:**
+- ADMIN: Full access to all features
+- COORDENADOR: Full admin access EXCEPT user management
+- MODERADOR: Access to assigned classes and evaluations
+- ALUNO: Student portal with read-only reports
+
+**Admin User Creation (/admin/usuarios/novo):**
+- Can create COORDENADOR, MODERADOR, or ALUNO accounts
+- ALUNO requires selecting an existing student record
+- Auto-generates email: firstname@metis
+- Shows generated password once with copy button
+
+**Password Management:**
+- All users can change their password at /[area]/meu-perfil
+- Admin can reset any user's password at /admin/usuarios
+- Reset generates random 8-char password shown once
+- Warning: password not displayed again after closing dialog
+
+**Coordinator Area (/coordenador/*):**
+- Same layout as admin area
+- Access to: Turmas, Templates, Domínios, Relatórios, Dashboard
+- NO access to: Usuários management
+- Sidebar excludes "Usuários" link
+
+**Login Formats:**
+- admin@metis: Admin account
+- coordenador@metis: Coordinator account
+- moderador@metis: Moderator account
+- firstname@metis: Student account (linked to Aluno record)
+
 ## Evaluation Methodology (AVALIAÇÃO MÉTIS)
 The system follows the Métis cognitive assessment methodology with 6 sections:
 1. **Fluência Verbal** - List writers/painters/singers (scored by ranges)
