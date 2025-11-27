@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   Users, 
@@ -49,38 +50,52 @@ export function Sidebar({ perfil }: SidebarProps) {
   };
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen">
-      <div className="p-6 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-primary">Métis</h1>
-        <p className="text-sm text-muted-foreground">Academia da Mente</p>
+    <div className="w-64 bg-[#173b5a] flex flex-col h-screen">
+      <div className="p-4 border-b border-[#2a5580]">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 relative bg-[#f8f1e7] rounded-lg flex items-center justify-center overflow-hidden">
+            <Image 
+              src="/logo-metis-light.jpg" 
+              alt="Métis Logo" 
+              width={48}
+              height={48}
+              className="object-contain"
+            />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-[#f8f1e7]">Métis</h1>
+            <p className="text-xs text-[#cda465]">Academia da Mente</p>
+          </div>
+        </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {links.map((link) => {
           const Icon = link.icon;
-          const isActive = pathname === link.href || pathname?.startsWith(link.href + '/');
+          const isActive = pathname === link.href || 
+            (link.href !== '/admin' && pathname?.startsWith(link.href + '/'));
           
           return (
             <Link key={link.href} href={link.href}>
               <div
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all ${
                   isActive
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-[#cda465] text-[#173b5a]'
+                    : 'text-[#f8f1e7] hover:bg-[#2a5580]'
                 }`}
               >
                 <Icon className="w-5 h-5" />
-                <span className="font-medium">{link.label}</span>
+                <span className={`text-sm ${isActive ? 'font-semibold' : 'font-medium'}`}>{link.label}</span>
               </div>
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-3 border-t border-[#2a5580]">
         <Button
-          variant="outline"
-          className="w-full justify-start gap-3"
+          variant="ghost"
+          className="w-full justify-start gap-3 text-[#f8f1e7] hover:bg-[#2a5580] hover:text-[#f8f1e7]"
           onClick={handleLogout}
         >
           <LogOut className="w-5 h-5" />

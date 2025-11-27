@@ -87,7 +87,10 @@ export async function POST(request: NextRequest) {
 
     const scoresPorDominio = calcularScoresPorDominio(
       respostasComPontuacao,
-      template.itens.map((item) => item.dominio)
+      template.itens.map((item) => ({
+        dominioId: item.dominioId,
+        regra_pontuacao: item.regra_pontuacao,
+      }))
     );
 
     const scoreTotal = calcularScoreTotal(scoresPorDominio);

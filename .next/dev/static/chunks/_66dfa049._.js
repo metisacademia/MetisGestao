@@ -162,123 +162,278 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$
 'use client';
 ;
 ;
+const CORES = {
+    total: '#173b5a',
+    fluencia: '#cda465',
+    cultura: '#aa7552',
+    interpretacao: '#323256',
+    atencao: '#ce9976',
+    auto_percepcao: '#0b0b28'
+};
+function CustomTooltip({ active, payload, label }) {
+    if (active && payload && payload.length) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "bg-white p-3 rounded-lg shadow-lg border border-gray-200",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    className: "font-semibold text-gray-800 mb-2",
+                    children: label
+                }, void 0, false, {
+                    fileName: "[project]/components/graficos/grafico-evolucao.tsx",
+                    lineNumber: 38,
+                    columnNumber: 9
+                }, this),
+                payload.map((entry, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        className: "text-sm",
+                        style: {
+                            color: entry.color
+                        },
+                        children: [
+                            entry.name,
+                            ": ",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "font-medium",
+                                children: Number(entry.value).toFixed(1)
+                            }, void 0, false, {
+                                fileName: "[project]/components/graficos/grafico-evolucao.tsx",
+                                lineNumber: 41,
+                                columnNumber: 27
+                            }, this)
+                        ]
+                    }, index, true, {
+                        fileName: "[project]/components/graficos/grafico-evolucao.tsx",
+                        lineNumber: 40,
+                        columnNumber: 11
+                    }, this))
+            ]
+        }, void 0, true, {
+            fileName: "[project]/components/graficos/grafico-evolucao.tsx",
+            lineNumber: 37,
+            columnNumber: 7
+        }, this);
+    }
+    return null;
+}
+_c = CustomTooltip;
 function GraficoEvolucao({ dados }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$ResponsiveContainer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ResponsiveContainer"], {
         width: "100%",
         height: 350,
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$chart$2f$LineChart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LineChart"], {
             data: dados,
+            margin: {
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5
+            },
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$CartesianGrid$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CartesianGrid"], {
-                    strokeDasharray: "3 3"
+                    strokeDasharray: "3 3",
+                    stroke: "#e5e7eb"
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 23,
+                    lineNumber: 54,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$XAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["XAxis"], {
-                    dataKey: "mes_ano"
+                    dataKey: "mes_ano",
+                    tick: {
+                        fill: '#173b5a',
+                        fontSize: 12
+                    },
+                    axisLine: {
+                        stroke: '#173b5a'
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 24,
+                    lineNumber: 55,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$YAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["YAxis"], {
                     domain: [
                         0,
                         10
-                    ]
+                    ],
+                    tick: {
+                        fill: '#173b5a',
+                        fontSize: 12
+                    },
+                    axisLine: {
+                        stroke: '#173b5a'
+                    },
+                    tickFormatter: (value)=>value.toFixed(0)
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 25,
+                    lineNumber: 60,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Tooltip$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Tooltip"], {}, void 0, false, {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Tooltip$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Tooltip"], {
+                    content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CustomTooltip, {}, void 0, false, {
+                        fileName: "[project]/components/graficos/grafico-evolucao.tsx",
+                        lineNumber: 66,
+                        columnNumber: 27
+                    }, void 0)
+                }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 26,
+                    lineNumber: 66,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Legend$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Legend"], {}, void 0, false, {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Legend$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Legend"], {
+                    wrapperStyle: {
+                        paddingTop: 20
+                    },
+                    formatter: (value)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            style: {
+                                color: '#173b5a'
+                            },
+                            children: value
+                        }, void 0, false, {
+                            fileName: "[project]/components/graficos/grafico-evolucao.tsx",
+                            lineNumber: 69,
+                            columnNumber: 33
+                        }, void 0)
+                }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 27,
+                    lineNumber: 67,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
                     type: "monotone",
                     dataKey: "score_total",
-                    stroke: "#8884d8",
+                    stroke: CORES.total,
                     name: "Total",
-                    strokeWidth: 2
+                    strokeWidth: 3,
+                    dot: {
+                        fill: CORES.total,
+                        strokeWidth: 2,
+                        r: 4
+                    },
+                    activeDot: {
+                        r: 6,
+                        fill: CORES.total
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 28,
+                    lineNumber: 71,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
                     type: "monotone",
                     dataKey: "score_fluencia",
-                    stroke: "#82ca9d",
-                    name: "Fluência"
+                    stroke: CORES.fluencia,
+                    name: "Fluência",
+                    strokeWidth: 2,
+                    dot: {
+                        fill: CORES.fluencia,
+                        strokeWidth: 2,
+                        r: 3
+                    },
+                    activeDot: {
+                        r: 5,
+                        fill: CORES.fluencia
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 29,
+                    lineNumber: 80,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
                     type: "monotone",
                     dataKey: "score_cultura",
-                    stroke: "#ffc658",
-                    name: "Cultura"
+                    stroke: CORES.cultura,
+                    name: "Cultura",
+                    strokeWidth: 2,
+                    dot: {
+                        fill: CORES.cultura,
+                        strokeWidth: 2,
+                        r: 3
+                    },
+                    activeDot: {
+                        r: 5,
+                        fill: CORES.cultura
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 30,
+                    lineNumber: 89,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
                     type: "monotone",
                     dataKey: "score_interpretacao",
-                    stroke: "#ff7c7c",
-                    name: "Interpretação"
+                    stroke: CORES.interpretacao,
+                    name: "Interpretação",
+                    strokeWidth: 2,
+                    dot: {
+                        fill: CORES.interpretacao,
+                        strokeWidth: 2,
+                        r: 3
+                    },
+                    activeDot: {
+                        r: 5,
+                        fill: CORES.interpretacao
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 31,
+                    lineNumber: 98,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
                     type: "monotone",
                     dataKey: "score_atencao",
-                    stroke: "#a28cff",
-                    name: "Atenção"
+                    stroke: CORES.atencao,
+                    name: "Atenção",
+                    strokeWidth: 2,
+                    dot: {
+                        fill: CORES.atencao,
+                        strokeWidth: 2,
+                        r: 3
+                    },
+                    activeDot: {
+                        r: 5,
+                        fill: CORES.atencao
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 32,
+                    lineNumber: 107,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$cartesian$2f$Line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Line"], {
                     type: "monotone",
                     dataKey: "score_auto_percepcao",
-                    stroke: "#ff8c42",
-                    name: "Auto-percepção"
+                    stroke: CORES.auto_percepcao,
+                    name: "Auto-percepção",
+                    strokeWidth: 2,
+                    dot: {
+                        fill: CORES.auto_percepcao,
+                        strokeWidth: 2,
+                        r: 3
+                    },
+                    activeDot: {
+                        r: 5,
+                        fill: CORES.auto_percepcao
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-                    lineNumber: 33,
+                    lineNumber: 116,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-            lineNumber: 22,
+            lineNumber: 53,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/graficos/grafico-evolucao.tsx",
-        lineNumber: 21,
+        lineNumber: 52,
         columnNumber: 5
     }, this);
 }
-_c = GraficoEvolucao;
-var _c;
-__turbopack_context__.k.register(_c, "GraficoEvolucao");
+_c1 = GraficoEvolucao;
+var _c, _c1;
+__turbopack_context__.k.register(_c, "CustomTooltip");
+__turbopack_context__.k.register(_c1, "GraficoEvolucao");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
@@ -386,80 +541,173 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$Radar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/polar/Radar.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Legend$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/component/Legend.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$ResponsiveContainer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/component/ResponsiveContainer.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Tooltip$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/recharts/es6/component/Tooltip.js [app-client] (ecmascript)");
 'use client';
 ;
 ;
+const CORES = {
+    aluno: '#173b5a',
+    media: '#cda465'
+};
+function CustomTooltip({ active, payload }) {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "bg-white p-3 rounded-lg shadow-lg border border-gray-200",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    className: "font-semibold text-gray-800 mb-2",
+                    children: data.dominio
+                }, void 0, false, {
+                    fileName: "[project]/components/graficos/grafico-radar.tsx",
+                    lineNumber: 33,
+                    columnNumber: 9
+                }, this),
+                payload.map((entry, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        className: "text-sm",
+                        style: {
+                            color: entry.color
+                        },
+                        children: [
+                            entry.name,
+                            ": ",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "font-medium",
+                                children: Number(entry.value).toFixed(1)
+                            }, void 0, false, {
+                                fileName: "[project]/components/graficos/grafico-radar.tsx",
+                                lineNumber: 36,
+                                columnNumber: 27
+                            }, this)
+                        ]
+                    }, index, true, {
+                        fileName: "[project]/components/graficos/grafico-radar.tsx",
+                        lineNumber: 35,
+                        columnNumber: 11
+                    }, this))
+            ]
+        }, void 0, true, {
+            fileName: "[project]/components/graficos/grafico-radar.tsx",
+            lineNumber: 32,
+            columnNumber: 7
+        }, this);
+    }
+    return null;
+}
+_c = CustomTooltip;
 function GraficoRadar({ dados, mostrarMedia = false }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$ResponsiveContainer$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ResponsiveContainer"], {
         width: "100%",
         height: 400,
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$chart$2f$RadarChart$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["RadarChart"], {
             data: dados,
+            margin: {
+                top: 20,
+                right: 30,
+                bottom: 20,
+                left: 30
+            },
             children: [
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$PolarGrid$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PolarGrid"], {}, void 0, false, {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$PolarGrid$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PolarGrid"], {
+                    stroke: "#e5e7eb"
+                }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-radar.tsx",
-                    lineNumber: 20,
+                    lineNumber: 49,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$PolarAngleAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PolarAngleAxis"], {
-                    dataKey: "dominio"
+                    dataKey: "dominio",
+                    tick: {
+                        fill: '#173b5a',
+                        fontSize: 12
+                    }
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-radar.tsx",
-                    lineNumber: 21,
+                    lineNumber: 50,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$PolarRadiusAxis$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PolarRadiusAxis"], {
                     domain: [
                         0,
                         10
-                    ]
+                    ],
+                    tick: {
+                        fill: '#173b5a',
+                        fontSize: 10
+                    },
+                    tickFormatter: (value)=>value.toFixed(0)
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-radar.tsx",
-                    lineNumber: 22,
+                    lineNumber: 54,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Tooltip$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Tooltip"], {
+                    content: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CustomTooltip, {}, void 0, false, {
+                        fileName: "[project]/components/graficos/grafico-radar.tsx",
+                        lineNumber: 59,
+                        columnNumber: 27
+                    }, void 0)
+                }, void 0, false, {
+                    fileName: "[project]/components/graficos/grafico-radar.tsx",
+                    lineNumber: 59,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$Radar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radar"], {
                     name: "Aluno",
                     dataKey: "aluno",
-                    stroke: "#8884d8",
-                    fill: "#8884d8",
-                    fillOpacity: 0.6
+                    stroke: CORES.aluno,
+                    fill: CORES.aluno,
+                    fillOpacity: 0.5,
+                    strokeWidth: 2
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-radar.tsx",
-                    lineNumber: 23,
+                    lineNumber: 60,
                     columnNumber: 9
                 }, this),
                 mostrarMedia && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$polar$2f$Radar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radar"], {
-                    name: "Média",
+                    name: "Média da Turma",
                     dataKey: "media",
-                    stroke: "#82ca9d",
-                    fill: "#82ca9d",
-                    fillOpacity: 0.6
+                    stroke: CORES.media,
+                    fill: CORES.media,
+                    fillOpacity: 0.3,
+                    strokeWidth: 2
                 }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-radar.tsx",
-                    lineNumber: 25,
+                    lineNumber: 69,
                     columnNumber: 11
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Legend$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Legend"], {}, void 0, false, {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$recharts$2f$es6$2f$component$2f$Legend$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Legend"], {
+                    formatter: (value)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            style: {
+                                color: '#173b5a'
+                            },
+                            children: value
+                        }, void 0, false, {
+                            fileName: "[project]/components/graficos/grafico-radar.tsx",
+                            lineNumber: 79,
+                            columnNumber: 33
+                        }, void 0)
+                }, void 0, false, {
                     fileName: "[project]/components/graficos/grafico-radar.tsx",
-                    lineNumber: 27,
+                    lineNumber: 78,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/graficos/grafico-radar.tsx",
-            lineNumber: 19,
+            lineNumber: 48,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/graficos/grafico-radar.tsx",
-        lineNumber: 18,
+        lineNumber: 47,
         columnNumber: 5
     }, this);
 }
-_c = GraficoRadar;
-var _c;
-__turbopack_context__.k.register(_c, "GraficoRadar");
+_c1 = GraficoRadar;
+var _c, _c1;
+__turbopack_context__.k.register(_c, "CustomTooltip");
+__turbopack_context__.k.register(_c1, "GraficoRadar");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }

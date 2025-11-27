@@ -263,6 +263,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../../app/api/admin/recalcular-scores/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/recalcular-scores">> = Specific
+  const handler = {} as typeof import("../../../app/api/admin/recalcular-scores/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../app/api/admin/relatorios/aluno/[alunoId]/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/admin/relatorios/aluno/[alunoId]">> = Specific

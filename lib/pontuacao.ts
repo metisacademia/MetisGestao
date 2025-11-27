@@ -31,6 +31,32 @@ type RegraPontuacao =
   | RegraPontuacaoMapa
   | RegraPontuacaoAlternativaCorreta;
 
+export function calcularPontuacaoMaximaItem(regra_pontuacao_json: string): number {
+  try {
+    const regra: RegraPontuacao = JSON.parse(regra_pontuacao_json);
+
+    switch (regra.tipo) {
+      case 'faixas': {
+        return Math.max(...regra.faixas.map((f) => f.pontos));
+      }
+      case 'sim_nao': {
+        return Math.max(regra.sim, regra.nao);
+      }
+      case 'mapa': {
+        return Math.max(...Object.values(regra.mapa));
+      }
+      case 'alternativa_correta': {
+        return Math.max(regra.pontos_correta, regra.pontos_errada);
+      }
+      default:
+        return 0;
+    }
+  } catch (error) {
+    console.error('Erro ao calcular pontuação máxima:', error);
+    return 0;
+  }
+}
+
 export function calcularPontuacaoItem(
   valor_bruto: string,
   regra_pontuacao_json: string
@@ -88,6 +114,11 @@ interface RespostaComDominio {
   pontuacao_item: number;
 }
 
+interface ItemComRegra {
+  dominioId: string;
+  regra_pontuacao: string;
+}
+
 interface ScoresPorDominio {
   [dominioId: string]: {
     total: number;
@@ -98,14 +129,23 @@ interface ScoresPorDominio {
 
 export function calcularScoresPorDominio(
   respostas: RespostaComDominio[],
-  dominios: Array<{ id: string; pontuacao_maxima: number }>
+  itensDoTemplate: ItemComRegra[]
 ): ScoresPorDominio {
   const scores: ScoresPorDominio = {};
 
-  dominios.forEach((dominio) => {
-    scores[dominio.id] = {
+  const pontuacaoMaximaPorDominio: Record<string, number> = {};
+  itensDoTemplate.forEach((item) => {
+    const maxItem = calcularPontuacaoMaximaItem(item.regra_pontuacao);
+    if (!pontuacaoMaximaPorDominio[item.dominioId]) {
+      pontuacaoMaximaPorDominio[item.dominioId] = 0;
+    }
+    pontuacaoMaximaPorDominio[item.dominioId] += maxItem;
+  });
+
+  Object.keys(pontuacaoMaximaPorDominio).forEach((dominioId) => {
+    scores[dominioId] = {
       total: 0,
-      pontuacao_maxima: dominio.pontuacao_maxima,
+      pontuacao_maxima: pontuacaoMaximaPorDominio[dominioId],
       score_0a10: 0,
     };
   });
@@ -118,8 +158,8 @@ export function calcularScoresPorDominio(
 
   Object.keys(scores).forEach((dominioId) => {
     const dominio = scores[dominioId];
-    if (dominio.total > 0 && dominio.pontuacao_maxima > 0) {
-      dominio.score_0a10 = (dominio.total / dominio.pontuacao_maxima) * 10;
+    if (dominio.pontuacao_maxima > 0) {
+      dominio.score_0a10 = Math.min((dominio.total / dominio.pontuacao_maxima) * 10, 10);
     }
   });
 
