@@ -35,7 +35,7 @@ export default function FormularioTurma({
   const [dia_semana, setDiaSemana] = useState(turmaParaEditar?.dia_semana || '');
   const [horario, setHorario] = useState(turmaParaEditar?.horario || '');
   const [turno, setTurno] = useState(turmaParaEditar?.turno || 'MANHA');
-  const [moderadorId, setModeradorId] = useState(turmaParaEditar?.moderadorId || '');
+  const [moderadorId, setModeradorId] = useState(turmaParaEditar?.moderadorId ?? 'all');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -43,6 +43,12 @@ export default function FormularioTurma({
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (moderadorId === 'all') {
+      setError('Selecione um moderador para a turma.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const url = turmaParaEditar
@@ -68,7 +74,7 @@ export default function FormularioTurma({
       setDiaSemana('');
       setHorario('');
       setTurno('MANHA');
-      setModeradorId('');
+      setModeradorId('all');
 
       onSubmit?.();
     } catch (err) {
@@ -149,7 +155,9 @@ export default function FormularioTurma({
                 required
                 disabled={loading}
               >
-                <option value="">Selecione um moderador</option>
+                <option value="all" disabled>
+                  Selecione um moderador
+                </option>
                 {moderadores.map((mod) => (
                   <option key={mod.id} value={mod.id}>
                     {mod.nome}

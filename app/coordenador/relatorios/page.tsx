@@ -77,8 +77,8 @@ export default function RelatoriosPage() {
   const [loadingTurma, setLoadingTurma] = useState(false);
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [alunos, setAlunos] = useState<Aluno[]>([]);
-  const [selectedAluno, setSelectedAluno] = useState('');
-  const [selectedTurma, setSelectedTurma] = useState('');
+  const [selectedAluno, setSelectedAluno] = useState('all');
+  const [selectedTurma, setSelectedTurma] = useState('all');
   const [periodo, setPeriodo] = useState<Periodo>('6m');
   const [metricas, setMetricas] = useState<MetricasVisiveis>(METRICAS_INICIAIS);
   const [dados, setDados] = useState<DadosCompletos | null>(null);
@@ -108,7 +108,7 @@ export default function RelatoriosPage() {
 
   useEffect(() => {
     async function carregarDadosAluno() {
-      if (!selectedAluno) {
+      if (selectedAluno === 'all') {
         setDados(null);
         return;
       }
@@ -130,7 +130,7 @@ export default function RelatoriosPage() {
 
   useEffect(() => {
     async function carregarDadosTurma() {
-      if (!selectedTurma) {
+      if (selectedTurma === 'all') {
         setDadosComparacao([]);
         return;
       }
@@ -155,11 +155,12 @@ export default function RelatoriosPage() {
   }, [selectedTurma]);
 
   const alunoSelecionado = useMemo(() => {
+    if (selectedAluno === 'all') return undefined;
     return alunos.find((a) => a.id === selectedAluno);
   }, [alunos, selectedAluno]);
 
   const handleExportarCSV = () => {
-    if (selectedAluno) {
+    if (selectedAluno && selectedAluno !== 'all') {
       window.open(`/api/coordenador/relatorios/exportar/aluno/${selectedAluno}`, '_blank');
     }
   };
@@ -181,7 +182,7 @@ export default function RelatoriosPage() {
             Análise de desempenho e evolução dos alunos
           </p>
         </div>
-        {selectedAluno && dados && (
+        {selectedAluno && selectedAluno !== 'all' && dados && (
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleExportarCSV}>
               <Download className="w-4 h-4 mr-2" />
@@ -207,7 +208,9 @@ export default function RelatoriosPage() {
                 onChange={(e) => setSelectedAluno(e.target.value)}
                 className="w-full border border-input rounded-md px-3 py-2 bg-white"
               >
-                <option value="">Selecione um aluno...</option>
+                <option value="all" disabled>
+                  Selecione um aluno...
+                </option>
                 {alunos.map((aluno) => (
                   <option key={aluno.id} value={aluno.id}>
                     {aluno.nome} - {aluno.turma?.nome_turma || ''}
@@ -215,12 +218,14 @@ export default function RelatoriosPage() {
                 ))}
               </select>
             </div>
-            {selectedAluno && <FiltroPeriodo value={periodo} onChange={setPeriodo} />}
+            {selectedAluno && selectedAluno !== 'all' && (
+              <FiltroPeriodo value={periodo} onChange={setPeriodo} />
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {selectedAluno && loadingDados && (
+      {selectedAluno && selectedAluno !== 'all' && loadingDados && (
         <Card>
           <CardContent className="py-12 flex items-center justify-center">
             <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
@@ -229,7 +234,7 @@ export default function RelatoriosPage() {
         </Card>
       )}
 
-      {selectedAluno && !loadingDados && dados && dados.evolucao.length === 0 && (
+      {selectedAluno && selectedAluno !== 'all' && !loadingDados && dados && dados.evolucao.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
             <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
@@ -241,7 +246,7 @@ export default function RelatoriosPage() {
         </Card>
       )}
 
-      {selectedAluno && !loadingDados && dados && dados.evolucao.length > 0 && (
+      {selectedAluno && selectedAluno !== 'all' && !loadingDados && dados && dados.evolucao.length > 0 && (
         <>
           <CardsResumo dados={dados.cardsResumo} />
 
@@ -298,7 +303,7 @@ export default function RelatoriosPage() {
         </>
       )}
 
-      {!selectedAluno && (
+      {(selectedAluno === 'all' || !selectedAluno) && (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">
@@ -326,7 +331,9 @@ export default function RelatoriosPage() {
               onChange={(e) => setSelectedTurma(e.target.value)}
               className="w-full border border-input rounded-md px-3 py-2 bg-white"
             >
-              <option value="">Selecione uma turma...</option>
+              <option value="all" disabled>
+                Selecione uma turma...
+              </option>
               {turmas.map((turma) => (
                 <option key={turma.id} value={turma.id}>
                   {turma.nome_turma}
@@ -335,14 +342,14 @@ export default function RelatoriosPage() {
             </select>
           </div>
 
-          {selectedTurma && loadingTurma && (
+          {selectedTurma && selectedTurma !== 'all' && loadingTurma && (
             <div className="py-8 flex items-center justify-center">
               <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
               <span className="text-muted-foreground">Carregando dados da turma...</span>
             </div>
           )}
 
-          {selectedTurma && !loadingTurma && dadosComparacao.length === 0 && (
+          {selectedTurma && selectedTurma !== 'all' && !loadingTurma && dadosComparacao.length === 0 && (
             <div className="py-8 text-center">
               <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
               <p className="text-lg font-medium">Nenhuma avaliação na turma</p>
@@ -352,7 +359,7 @@ export default function RelatoriosPage() {
             </div>
           )}
 
-          {selectedTurma && !loadingTurma && dadosComparacao.length > 0 && (
+          {selectedTurma && selectedTurma !== 'all' && !loadingTurma && dadosComparacao.length > 0 && (
             <div>
               <GraficoBarras dados={dadosComparacao} titulo="Score Total" />
             </div>

@@ -40,7 +40,7 @@ export default function FormularioItem({
   const [titulo, setTitulo] = useState(itemParaEditar?.titulo || '');
   const [descricao, setDescricao] = useState(itemParaEditar?.descricao || '');
   const [tipo_resposta, setTipoResposta] = useState(itemParaEditar?.tipo_resposta || 'NUMERO');
-  const [dominioId, setDominioId] = useState('');
+  const [dominioId, setDominioId] = useState('all');
   const [ordem, setOrdem] = useState(itemParaEditar?.ordem || 0);
   const [ativo, setAtivo] = useState(itemParaEditar?.ativo ?? true);
   const [error, setError] = useState('');
@@ -50,6 +50,12 @@ export default function FormularioItem({
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (dominioId === 'all') {
+      setError('Selecione um domínio cognitivo.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const url = itemParaEditar
@@ -83,7 +89,7 @@ export default function FormularioItem({
       setTitulo('');
       setDescricao('');
       setTipoResposta('NUMERO');
-      setDominioId('');
+      setDominioId('all');
       setOrdem(0);
       setAtivo(true);
 
@@ -169,7 +175,9 @@ export default function FormularioItem({
                 required
                 disabled={loading}
               >
-                <option value="">Selecione um domínio</option>
+                <option value="all" disabled>
+                  Selecione um domínio
+                </option>
                 {dominios.map((dominio) => (
                   <option key={dominio.id} value={dominio.id}>
                     {dominio.nome}

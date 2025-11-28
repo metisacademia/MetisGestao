@@ -69,7 +69,7 @@ export default function ModeradorRelatoriosPage() {
   const [loading, setLoading] = useState(true);
   const [loadingDados, setLoadingDados] = useState(false);
   const [alunos, setAlunos] = useState<Aluno[]>([]);
-  const [selectedAluno, setSelectedAluno] = useState('');
+  const [selectedAluno, setSelectedAluno] = useState('all');
   const [periodo, setPeriodo] = useState<Periodo>('6m');
   const [metricas, setMetricas] = useState<MetricasVisiveis>(METRICAS_INICIAIS);
   const [dados, setDados] = useState<DadosCompletos | null>(null);
@@ -93,7 +93,7 @@ export default function ModeradorRelatoriosPage() {
 
   useEffect(() => {
     async function carregarDados() {
-      if (!selectedAluno) {
+      if (selectedAluno === 'all') {
         setDados(null);
         return;
       }
@@ -114,11 +114,12 @@ export default function ModeradorRelatoriosPage() {
   }, [selectedAluno, periodo]);
 
   const alunoSelecionado = useMemo(() => {
+    if (selectedAluno === 'all') return undefined;
     return alunos.find((a) => a.id === selectedAluno);
   }, [alunos, selectedAluno]);
 
   const handleExportarCSV = () => {
-    if (selectedAluno) {
+    if (selectedAluno && selectedAluno !== 'all') {
       window.open(`/api/moderador/relatorios/exportar/aluno/${selectedAluno}`, '_blank');
     }
   };
@@ -140,7 +141,7 @@ export default function ModeradorRelatoriosPage() {
             Acompanhamento do desempenho dos alunos das suas turmas
           </p>
         </div>
-        {selectedAluno && dados && (
+        {selectedAluno && selectedAluno !== 'all' && dados && (
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleExportarCSV}>
               <Download className="w-4 h-4 mr-2" />
@@ -166,7 +167,9 @@ export default function ModeradorRelatoriosPage() {
                 onChange={(e) => setSelectedAluno(e.target.value)}
                 className="w-full border border-input rounded-md px-3 py-2 bg-white"
               >
-                <option value="">Selecione um aluno...</option>
+                <option value="all" disabled>
+                  Selecione um aluno...
+                </option>
                 {alunos.map((aluno) => (
                   <option key={aluno.id} value={aluno.id}>
                     {aluno.nome} - {aluno.turma.nome_turma}
@@ -174,12 +177,14 @@ export default function ModeradorRelatoriosPage() {
                 ))}
               </select>
             </div>
-            {selectedAluno && <FiltroPeriodo value={periodo} onChange={setPeriodo} />}
+            {selectedAluno && selectedAluno !== 'all' && (
+              <FiltroPeriodo value={periodo} onChange={setPeriodo} />
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {selectedAluno && loadingDados && (
+      {selectedAluno && selectedAluno !== 'all' && loadingDados && (
         <Card>
           <CardContent className="py-12 flex items-center justify-center">
             <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
@@ -188,7 +193,7 @@ export default function ModeradorRelatoriosPage() {
         </Card>
       )}
 
-      {selectedAluno && !loadingDados && dados && dados.evolucao.length === 0 && (
+      {selectedAluno && selectedAluno !== 'all' && !loadingDados && dados && dados.evolucao.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
             <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
@@ -200,7 +205,7 @@ export default function ModeradorRelatoriosPage() {
         </Card>
       )}
 
-      {selectedAluno && !loadingDados && dados && dados.evolucao.length > 0 && (
+      {selectedAluno && selectedAluno !== 'all' && !loadingDados && dados && dados.evolucao.length > 0 && (
         <>
           <CardsResumo dados={dados.cardsResumo} />
 
@@ -257,7 +262,7 @@ export default function ModeradorRelatoriosPage() {
         </>
       )}
 
-      {!selectedAluno && (
+      {(selectedAluno === 'all' || !selectedAluno) && (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">

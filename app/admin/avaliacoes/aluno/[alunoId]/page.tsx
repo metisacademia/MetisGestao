@@ -450,7 +450,7 @@ export default function AdminAvaliarAlunoPage() {
   };
 
   const renderCampo = (item: ItemTemplate) => {
-    const valor = respostas[item.id] || '';
+    const valor = respostas[item.id] || 'all';
     const pontos = pontuacoesPorItem[item.id];
     const isDisabled = avaliacaoStatus === 'CONCLUIDA';
 
@@ -540,7 +540,9 @@ export default function AdminAvaliarAlunoPage() {
               required
               disabled={isDisabled}
             >
-              <option value="">Selecione...</option>
+              <option value="all" disabled>
+                Selecione...
+              </option>
               {opcoes.map((opcao: any) => {
                 const pontosOpcao = regra?.tipo === 'mapa' ? regra.mapa[opcao] : null;
                 return (

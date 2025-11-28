@@ -40,7 +40,7 @@ export default function TemplatesContent({
   const [error, setError] = useState('');
 
   const [nome, setNome] = useState('');
-  const [mes, setMes] = useState('');
+  const [mes, setMes] = useState('all');
   const [ano, setAno] = useState(new Date().getFullYear().toString());
   const [ativo, setAtivo] = useState(true);
 
@@ -69,7 +69,7 @@ export default function TemplatesContent({
 
   const resetForm = () => {
     setNome('');
-    setMes('');
+    setMes('all');
     setAno(new Date().getFullYear().toString());
     setAtivo(true);
     setError('');
@@ -79,6 +79,12 @@ export default function TemplatesContent({
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (mes === 'all') {
+      setError('Selecione um mês de referência.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/coordenador/templates', {
@@ -155,7 +161,9 @@ export default function TemplatesContent({
                       required
                       disabled={loading}
                     >
-                      <option value="">Selecione</option>
+                      <option value="all" disabled>
+                        Selecione
+                      </option>
                       {meses.map((m) => (
                         <option key={m.value} value={m.value}>
                           {m.label}
