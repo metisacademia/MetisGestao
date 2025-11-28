@@ -178,7 +178,14 @@ export default function AlunosContent({
             <TableBody>
               {alunosPaginados.map((aluno) => (
                 <TableRow key={aluno.id}>
-                  <TableCell className="font-medium">{aluno.nome}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link
+                      href={`/admin/alunos/${aluno.id}`}
+                      className="text-primary hover:underline"
+                    >
+                      {aluno.nome}
+                    </Link>
+                  </TableCell>
                   <TableCell>{aluno.turma.nome_turma}</TableCell>
                   <TableCell className="text-muted-foreground">
                     {aluno.observacoes || '-'}
