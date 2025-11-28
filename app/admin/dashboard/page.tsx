@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  ChevronDown, 
-  ChevronRight, 
+import {
+  ChevronDown,
+  ChevronRight,
   ClipboardCheck, 
   Users, 
   AlertTriangle,
@@ -14,6 +14,15 @@ import {
   Loader2
 } from 'lucide-react';
 import Link from 'next/link';
+import {
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from 'recharts';
 
 interface Aluno {
   id: string;
@@ -49,6 +58,12 @@ interface DashboardData {
   mes: number;
   ano: number;
   estatisticasGerais: EstatisticasGerais;
+  periodoResumo: {
+    totalRealizadasPeriodo: number;
+    mediaGeralPontuacao: number;
+    pendentesMes: number;
+  };
+  evolucaoUltimosMeses: { mes: number; ano: number; label: string; total: number }[];
   turmas: TurmaEstatistica[];
 }
 
@@ -66,6 +81,13 @@ const meses = [
   { value: 11, label: 'Novembro' },
   { value: 12, label: 'Dezembro' },
 ];
+
+const periodoLabels: Record<'mes_atual' | 'ultimo_trimestre' | 'ultimo_semestre' | 'ano', string> = {
+  mes_atual: 'Mês atual',
+  ultimo_trimestre: 'Último trimestre',
+  ultimo_semestre: 'Último semestre',
+  ano: 'Ano',
+};
 
 function getStatusColor(status: string) {
   switch (status) {
@@ -97,18 +119,19 @@ export default function DashboardAvaliacoes() {
 
   const [mes, setMes] = useState(mesAtual);
   const [ano, setAno] = useState(anoAtual);
+  const [periodo, setPeriodo] = useState<'mes_atual' | 'ultimo_trimestre' | 'ultimo_semestre' | 'ano'>('mes_atual');
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedTurmas, setExpandedTurmas] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchData();
-  }, [mes, ano]);
+  }, [mes, ano, periodo]);
 
   async function fetchData() {
     setLoading(true);
     try {
-      const response = await fetch(`/api/admin/dashboard?mes=${mes}&ano=${ano}`);
+      const response = await fetch(`/api/admin/dashboard?mes=${mes}&ano=${ano}&periodo=${periodo}`);
       if (response.ok) {
         const result = await response.json();
         setData(result);
@@ -156,7 +179,7 @@ export default function DashboardAvaliacoes() {
   const { estatisticasGerais, turmas } = data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-2 md:px-0">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard de Avaliações</h1>
@@ -165,7 +188,22 @@ export default function DashboardAvaliacoes() {
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap justify-end">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">Período:</label>
+            <select
+              value={periodo}
+              onChange={(e) => setPeriodo(e.target.value as typeof periodo)}
+              className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              {Object.entries(periodoLabels).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700">Mês:</label>
             <select
@@ -198,24 +236,48 @@ export default function DashboardAvaliacoes() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Avaliações</CardTitle>
+            <CardTitle className="text-sm font-medium">Avaliações no período</CardTitle>
             <ClipboardCheck className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{estatisticasGerais.totalAvaliacoesMes}</div>
+            <div className="text-2xl font-bold">{data.periodoResumo.totalRealizadasPeriodo}</div>
             <p className="text-xs text-muted-foreground">
-              No mês de {meses.find(m => m.value === mes)?.label}
+              Período: {periodoLabels[periodo]}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conclusão Geral</CardTitle>
+            <CardTitle className="text-sm font-medium">Média geral de pontuação</CardTitle>
             <BarChart3 className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{data.periodoResumo.mediaGeralPontuacao}</div>
+            <p className="text-xs text-muted-foreground">Apenas avaliações concluídas</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avaliações pendentes</CardTitle>
+            <AlertTriangle className={`h-4 w-4 ${data.periodoResumo.pendentesMes > 0 ? 'text-red-600' : 'text-gray-400'}`} />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${data.periodoResumo.pendentesMes > 0 ? 'text-red-600' : ''}`}>
+              {data.periodoResumo.pendentesMes}
+            </div>
+            <p className="text-xs text-muted-foreground">Alunos sem avaliação no mês</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Conclusão geral</CardTitle>
+            <FileText className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{estatisticasGerais.percentualGeralConclusao}%</div>
@@ -224,35 +286,32 @@ export default function DashboardAvaliacoes() {
             </p>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Em Rascunho</CardTitle>
-            <FileText className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{estatisticasGerais.totalRascunhos}</div>
-            <p className="text-xs text-muted-foreground">
-              Avaliações em andamento
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className={estatisticasGerais.totalPendentes > 0 ? 'border-red-200 bg-red-50' : ''}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pendentes</CardTitle>
-            <AlertTriangle className={`h-4 w-4 ${estatisticasGerais.totalPendentes > 0 ? 'text-red-600' : 'text-gray-400'}`} />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${estatisticasGerais.totalPendentes > 0 ? 'text-red-600' : ''}`}>
-              {estatisticasGerais.totalPendentes}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Alunos sem avaliação
-            </p>
-          </CardContent>
-        </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Evolução de avaliações (últimos 6 meses)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4">
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={data.evolucaoUltimosMeses} margin={{ left: 8, right: 8 }}>
+                <CartesianGrid strokeDasharray="3 3" className="text-muted-foreground" />
+                <XAxis dataKey="label" className="text-xs" />
+                <YAxis allowDecimals={false} className="text-xs" />
+                <Tooltip
+                  formatter={(value: number) => [`${value} avaliação(ões)`, 'Total']}
+                  labelFormatter={(label) => `Mês ${label}`}
+                />
+                <Line type="monotone" dataKey="total" stroke="#2563eb" strokeWidth={2} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       {estatisticasGerais.totalPendentes > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
