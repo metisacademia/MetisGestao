@@ -1,9 +1,20 @@
-import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import bcrypt from 'bcryptjs';
+import {
+  PerfilUsuario,
+  Prisma,
+  PrismaClient,
+  TipoResposta,
+  Turno,
+} from '@prisma/client';
+
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL environment variable must be provided to run the seed');
+}
 
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
+  connectionString: databaseUrl,
 });
 
 const prisma = new PrismaClient({ adapter });
@@ -11,8 +22,8 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log('Iniciando seed do banco de dados...');
 
-  const adminPassword = await bcrypt.hash('admin123', 10);
-  const modPassword = await bcrypt.hash('mod123', 10);
+  const adminPassword = '$2b$10$LKZVbjXLwfmB7lFk8FNnFuM3JcDje4Xc5QQ4KVXoT7skX0dQ5mU2m';
+  const modPassword = '$2b$10$fcoWARp4y3qKMaAz29a07.7WwPgqhej65r1wqGTT16GvVj1rBzyFi';
 
   const admin = await prisma.usuario.upsert({
     where: { email: 'admin@metis.com' },
@@ -21,7 +32,7 @@ async function main() {
       nome: 'Administrador',
       email: 'admin@metis.com',
       senha_hash: adminPassword,
-      perfil: 'ADMIN',
+      perfil: PerfilUsuario.ADMIN,
     },
   });
   console.log('✓ Admin criado:', admin.email);
@@ -33,7 +44,7 @@ async function main() {
       nome: 'Maria Moderadora',
       email: 'moderador@metis.com',
       senha_hash: modPassword,
-      perfil: 'MODERADOR',
+      perfil: PerfilUsuario.MODERADOR,
     },
   });
   console.log('✓ Moderador criado:', moderador.email);
@@ -46,7 +57,7 @@ async function main() {
       nome_turma: 'Aurora – Segunda 18h',
       dia_semana: 'Segunda-feira',
       horario: '18:00',
-      turno: 'NOITE',
+      turno: Turno.NOITE,
       moderadorId: moderador.id,
     },
   });
@@ -60,7 +71,7 @@ async function main() {
       nome_turma: 'Véspera – Quarta 15h',
       dia_semana: 'Quarta-feira',
       horario: '15:00',
-      turno: 'TARDE',
+      turno: Turno.TARDE,
       moderadorId: moderador.id,
     },
   });
@@ -143,14 +154,14 @@ async function main() {
   });
   console.log('✓ Template de avaliação criado:', template.nome);
 
-  const itensTemplate = [
+  const itensTemplate: Prisma.ItemTemplateUncheckedCreateInput[] = [
     {
       templateId: template.id,
       dominioId: 'dominio-fluencia',
       codigo_item: 'Q1_escritores_qtd',
       titulo: 'Quantidade de escritores citados',
       descricao: 'Quantos escritores o aluno conseguiu citar em 1 minuto?',
-      tipo_resposta: 'NUMERO',
+      tipo_resposta: TipoResposta.NUMERO,
       ordem: 1,
       regra_pontuacao: JSON.stringify({
         tipo: 'faixas',
@@ -167,7 +178,7 @@ async function main() {
       codigo_item: 'Q2_cantores_qtd',
       titulo: 'Quantidade de cantores citados',
       descricao: 'Quantos cantores o aluno conseguiu citar em 1 minuto?',
-      tipo_resposta: 'NUMERO',
+      tipo_resposta: TipoResposta.NUMERO,
       ordem: 2,
       regra_pontuacao: JSON.stringify({
         tipo: 'faixas',
@@ -184,7 +195,7 @@ async function main() {
       codigo_item: 'Q3_capital_brasil',
       titulo: 'Qual a capital do Brasil?',
       descricao: 'Resposta correta: Brasília',
-      tipo_resposta: 'SIM_NAO',
+      tipo_resposta: TipoResposta.SIM_NAO,
       ordem: 3,
       regra_pontuacao: JSON.stringify({
         tipo: 'sim_nao',
@@ -198,7 +209,7 @@ async function main() {
       codigo_item: 'Q4_presidente_atual',
       titulo: 'Quem é o presidente atual do Brasil?',
       descricao: 'Resposta correta: Sim',
-      tipo_resposta: 'SIM_NAO',
+      tipo_resposta: TipoResposta.SIM_NAO,
       ordem: 4,
       regra_pontuacao: JSON.stringify({
         tipo: 'sim_nao',
@@ -212,7 +223,7 @@ async function main() {
       codigo_item: 'Q5_texto_compreensao',
       titulo: 'Compreendeu o texto apresentado?',
       descricao: 'Após leitura de um texto curto',
-      tipo_resposta: 'OPCAO_UNICA',
+      tipo_resposta: TipoResposta.OPCAO_UNICA,
       ordem: 5,
       config_opcoes: JSON.stringify(['Totalmente', 'Parcialmente', 'Pouco', 'Não compreendeu']),
       regra_pontuacao: JSON.stringify({
@@ -231,7 +242,7 @@ async function main() {
       codigo_item: 'Q6_encontrar_diferenca',
       titulo: 'Conseguiu encontrar as diferenças na imagem?',
       descricao: 'Número de diferenças encontradas (máximo 5)',
-      tipo_resposta: 'NUMERO',
+      tipo_resposta: TipoResposta.NUMERO,
       ordem: 6,
       regra_pontuacao: JSON.stringify({
         tipo: 'faixas',
@@ -248,7 +259,7 @@ async function main() {
       codigo_item: 'Q7_auto_avaliacao_memoria',
       titulo: 'Como você avalia sua memória?',
       descricao: 'Auto-percepção do aluno sobre sua memória',
-      tipo_resposta: 'ESCALA',
+      tipo_resposta: TipoResposta.ESCALA,
       ordem: 7,
       config_opcoes: JSON.stringify(['Excelente', 'Boa', 'Regular', 'Ruim', 'Muito ruim']),
       regra_pontuacao: JSON.stringify({
@@ -268,7 +279,7 @@ async function main() {
       codigo_item: 'Q8_auto_avaliacao_atencao',
       titulo: 'Como você avalia sua atenção?',
       descricao: 'Auto-percepção do aluno sobre sua atenção',
-      tipo_resposta: 'ESCALA',
+      tipo_resposta: TipoResposta.ESCALA,
       ordem: 8,
       config_opcoes: JSON.stringify(['Excelente', 'Boa', 'Regular', 'Ruim', 'Muito ruim']),
       regra_pontuacao: JSON.stringify({
