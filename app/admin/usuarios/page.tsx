@@ -8,7 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import Link from 'next/link';
 import { Plus, KeyRound, Loader2, Copy, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Usuario {
   id: string;
@@ -161,16 +161,17 @@ export default function UsuariosPage() {
               onChange={(e) => setBusca(e.target.value)}
               className="w-full sm:w-72"
             />
-            <Select
-              value={perfil}
-              onChange={(e) => setPerfil(e.target.value)}
-              className="w-full sm:w-48"
-            >
-              <option value="">Todos os perfis</option>
-              <option value="ADMIN">Admin</option>
-              <option value="COORDENADOR">Coordenador</option>
-              <option value="MODERADOR">Moderador</option>
-              <option value="ALUNO">Aluno</option>
+            <Select value={perfil} onValueChange={setPerfil}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Todos os perfis" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Todos os perfis</SelectItem>
+                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="COORDENADOR">Coordenador</SelectItem>
+                <SelectItem value="MODERADOR">Moderador</SelectItem>
+                <SelectItem value="ALUNO">Aluno</SelectItem>
+              </SelectContent>
             </Select>
           </div>
           <div className="text-sm text-muted-foreground">{usuariosFiltrados.length} usuário(s) encontrados</div>
