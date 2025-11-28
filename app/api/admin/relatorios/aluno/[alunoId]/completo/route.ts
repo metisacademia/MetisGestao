@@ -53,15 +53,53 @@ export async function GET(
       orderBy: [{ ano_referencia: 'asc' }, { mes_referencia: 'asc' }],
     });
 
-    const evolucao = avaliacoes.map((av: any) => ({
-      mes_ano: `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`,
-      score_total: av.score_total,
-      score_fluencia: av.score_fluencia_0a10,
-      score_cultura: av.score_cultura_0a10,
-      score_interpretacao: av.score_interpretacao_0a10,
-      score_atencao: av.score_atencao_0a10,
-      score_auto_percepcao: av.score_auto_percepcao_0a10,
-    }));
+    // Buscar avaliações da turma (excluindo o aluno atual) para calcular média
+    const avaliacoesTurmaPeriodo = await prisma.avaliacao.findMany({
+      where: {
+        turmaId: aluno.turmaId,
+        alunoId: { not: alunoId },
+        status: 'CONCLUIDA',
+        ...(dataInicio && {
+          OR: [
+            { ano_referencia: { gt: dataInicio.getFullYear() } },
+            {
+              ano_referencia: dataInicio.getFullYear(),
+              mes_referencia: { gte: dataInicio.getMonth() + 1 }
+            }
+          ]
+        })
+      },
+      orderBy: [{ ano_referencia: 'asc' }, { mes_referencia: 'asc' }],
+    });
+
+    // Calcular médias por mês da turma (excluindo o aluno)
+    const mediasPorMes = new Map<string, number[]>();
+    avaliacoesTurmaPeriodo.forEach((av: any) => {
+      const key = `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`;
+      if (!mediasPorMes.has(key)) {
+        mediasPorMes.set(key, []);
+      }
+      mediasPorMes.get(key)!.push(av.score_total);
+    });
+
+    const evolucao = avaliacoes.map((av: any) => {
+      const mesAno = `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`;
+      const scoresDoMes = mediasPorMes.get(mesAno) || [];
+      const mediaTurma = scoresDoMes.length > 0
+        ? scoresDoMes.reduce((a: number, b: number) => a + b, 0) / scoresDoMes.length
+        : null;
+
+      return {
+        mes_ano: mesAno,
+        score_total: av.score_total,
+        score_fluencia: av.score_fluencia_0a10,
+        score_cultura: av.score_cultura_0a10,
+        score_interpretacao: av.score_interpretacao_0a10,
+        score_atencao: av.score_atencao_0a10,
+        score_auto_percepcao: av.score_auto_percepcao_0a10,
+        media_turma: mediaTurma,
+      };
+    });
 
     const evolucaoComMediaMovel = evolucao.map((item: any, idx: any, arr: any) => {
       if (idx < 2) return { ...item, media_movel: item.score_total };
@@ -69,43 +107,42 @@ export async function GET(
       return { ...item, media_movel: soma / 3 };
     });
 
-    const ultimaAvaliacao = avaliacoes[avaliacoes.length - 1];
-    
+    // Radar com médias do período (não apenas última avaliação)
     let radar: Array<{ dominio: string; aluno: number; media?: number }> = [];
     let temMediaTurma = false;
 
-    if (ultimaAvaliacao) {
+    if (avaliacoes.length > 0) {
+      // Calcular média do aluno no período
+      const mediaAluno = {
+        fluencia: avaliacoes.reduce((s: any, a: any) => s + a.score_fluencia_0a10, 0) / avaliacoes.length,
+        cultura: avaliacoes.reduce((s: any, a: any) => s + a.score_cultura_0a10, 0) / avaliacoes.length,
+        interpretacao: avaliacoes.reduce((s: any, a: any) => s + a.score_interpretacao_0a10, 0) / avaliacoes.length,
+        atencao: avaliacoes.reduce((s: any, a: any) => s + a.score_atencao_0a10, 0) / avaliacoes.length,
+        auto_percepcao: avaliacoes.reduce((s: any, a: any) => s + a.score_auto_percepcao_0a10, 0) / avaliacoes.length,
+      };
+
       const alunoRadar = [
-        { dominio: 'Fluência', aluno: ultimaAvaliacao.score_fluencia_0a10 },
-        { dominio: 'Cultura', aluno: ultimaAvaliacao.score_cultura_0a10 },
-        { dominio: 'Interpretação', aluno: ultimaAvaliacao.score_interpretacao_0a10 },
-        { dominio: 'Atenção', aluno: ultimaAvaliacao.score_atencao_0a10 },
-        { dominio: 'Auto-percepção', aluno: ultimaAvaliacao.score_auto_percepcao_0a10 },
+        { dominio: 'Fluência', aluno: Number(mediaAluno.fluencia.toFixed(1)) },
+        { dominio: 'Cultura', aluno: Number(mediaAluno.cultura.toFixed(1)) },
+        { dominio: 'Interpretação', aluno: Number(mediaAluno.interpretacao.toFixed(1)) },
+        { dominio: 'Atenção', aluno: Number(mediaAluno.atencao.toFixed(1)) },
+        { dominio: 'Auto-percepção', aluno: Number(mediaAluno.auto_percepcao.toFixed(1)) },
       ];
 
-      const avaliacoesTurma = await prisma.avaliacao.findMany({
-        where: {
-          turmaId: aluno.turmaId,
-          mes_referencia: ultimaAvaliacao.mes_referencia,
-          ano_referencia: ultimaAvaliacao.ano_referencia,
-          status: 'CONCLUIDA',
-          alunoId: { not: alunoId },
-        },
-      });
-
-      if (avaliacoesTurma.length > 0) {
+      // Calcular média da turma no período (excluindo o aluno)
+      if (avaliacoesTurmaPeriodo.length > 0) {
         temMediaTurma = true;
         const mediaTurma = {
-          fluencia: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_fluencia_0a10, 0) / avaliacoesTurma.length,
-          cultura: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_cultura_0a10, 0) / avaliacoesTurma.length,
-          interpretacao: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_interpretacao_0a10, 0) / avaliacoesTurma.length,
-          atencao: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_atencao_0a10, 0) / avaliacoesTurma.length,
-          auto_percepcao: avaliacoesTurma.reduce((s: any, a: any) => s + a.score_auto_percepcao_0a10, 0) / avaliacoesTurma.length,
+          fluencia: avaliacoesTurmaPeriodo.reduce((s: any, a: any) => s + a.score_fluencia_0a10, 0) / avaliacoesTurmaPeriodo.length,
+          cultura: avaliacoesTurmaPeriodo.reduce((s: any, a: any) => s + a.score_cultura_0a10, 0) / avaliacoesTurmaPeriodo.length,
+          interpretacao: avaliacoesTurmaPeriodo.reduce((s: any, a: any) => s + a.score_interpretacao_0a10, 0) / avaliacoesTurmaPeriodo.length,
+          atencao: avaliacoesTurmaPeriodo.reduce((s: any, a: any) => s + a.score_atencao_0a10, 0) / avaliacoesTurmaPeriodo.length,
+          auto_percepcao: avaliacoesTurmaPeriodo.reduce((s: any, a: any) => s + a.score_auto_percepcao_0a10, 0) / avaliacoesTurmaPeriodo.length,
         };
 
         radar = alunoRadar.map((item: any, idx: any) => ({
           ...item,
-          media: [mediaTurma.fluencia, mediaTurma.cultura, mediaTurma.interpretacao, mediaTurma.atencao, mediaTurma.auto_percepcao][idx],
+          media: Number([mediaTurma.fluencia, mediaTurma.cultura, mediaTurma.interpretacao, mediaTurma.atencao, mediaTurma.auto_percepcao][idx].toFixed(1)),
         }));
       } else {
         radar = alunoRadar;
@@ -202,10 +239,31 @@ export async function GET(
       periodoMeses,
     });
 
+    // Tabela detalhada de avaliações (ordenada da mais recente para a mais antiga)
+    const tabelaAvaliacoes = [...avaliacoes]
+      .reverse()
+      .map((av: any) => ({
+        mes_ano: `${String(av.mes_referencia).padStart(2, '0')}/${av.ano_referencia}`,
+        data_aplicacao: av.data_aplicacao.toISOString(),
+        score_total: av.score_total,
+        score_fluencia_0a10: av.score_fluencia_0a10,
+        score_cultura_0a10: av.score_cultura_0a10,
+        score_interpretacao_0a10: av.score_interpretacao_0a10,
+        score_atencao_0a10: av.score_atencao_0a10,
+        score_auto_percepcao_0a10: av.score_auto_percepcao_0a10,
+      }));
+
     return NextResponse.json({
-      aluno: { id: aluno.id, nome: aluno.nome, turma: aluno.turma.nome_turma },
+      aluno: {
+        id: aluno.id,
+        nome: aluno.nome,
+        turma: aluno.turma.nome_turma,
+        data_nascimento: aluno.data_nascimento?.toISOString() || null,
+        observacoes: aluno.observacoes || null,
+      },
       evolucao: evolucaoComEventos,
       radar,
+      radarPeriodo: periodo,
       temMediaTurma,
       cardsResumo,
       presenca: {
@@ -221,6 +279,7 @@ export async function GET(
         tipo: e.tipo,
       })),
       resumoTexto,
+      tabelaAvaliacoes,
     });
   } catch (error) {
     console.error('Erro ao gerar relatório completo:', error);

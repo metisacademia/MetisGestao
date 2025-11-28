@@ -10,6 +10,7 @@ import { GraficoRadar } from '@/components/graficos/grafico-radar';
 import { ResumoAnalitico } from '@/components/relatorios/resumo-analitico';
 import { Loader2, AlertCircle, ArrowLeft, Printer, Download } from 'lucide-react';
 import Link from 'next/link';
+import { exportToCSV } from '@/lib/csv-utils';
 
 interface DadosAnuais {
   aluno: { id: string; nome: string; turma: string };
@@ -65,9 +66,30 @@ export default function RelatorioAnualPage() {
   };
 
   const handleExportarCSV = () => {
-    if (alunoId) {
-      window.open(`/api/admin/relatorios/exportar/aluno/${alunoId}`, '_blank');
-    }
+    if (!dados) return;
+
+    const csvData = dados.evolucaoTrimestral.map(item => ({
+      mes_ano: item.mes_ano,
+      score_total: item.score_total.toFixed(2),
+      score_fluencia: item.score_fluencia.toFixed(2),
+      score_cultura: item.score_cultura.toFixed(2),
+      score_interpretacao: item.score_interpretacao.toFixed(2),
+      score_atencao: item.score_atencao.toFixed(2),
+      score_auto_percepcao: item.score_auto_percepcao.toFixed(2),
+    }));
+
+    const headers = {
+      mes_ano: 'Mês/Ano',
+      score_total: 'Score Total',
+      score_fluencia: 'Fluência',
+      score_cultura: 'Cultura',
+      score_interpretacao: 'Interpretação',
+      score_atencao: 'Atenção',
+      score_auto_percepcao: 'Auto-Percepção',
+    };
+
+    const filename = `relatorio_aluno_${dados.aluno.nome.replace(/\s+/g, '_')}_${dados.ano}_${new Date().toISOString().split('T')[0]}.csv`;
+    exportToCSV(csvData, filename, headers);
   };
 
   if (loading) {

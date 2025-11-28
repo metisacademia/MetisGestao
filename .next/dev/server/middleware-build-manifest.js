@@ -1,23 +1,48 @@
 globalThis.__BUILD_MANIFEST = {
   "pages": {
-    "/_app": []
+    "/_app": [
+      "static/chunks/b0146_next_dist_compiled_ecc661db._.js",
+      "static/chunks/b0146_next_dist_shared_lib_ebc0b8f9._.js",
+      "static/chunks/b0146_next_dist_client_e15983ba._.js",
+      "static/chunks/b0146_next_dist_b7e7de1a._.js",
+      "static/chunks/b0146_next_app_83a76976.js",
+      "static/chunks/[next]_entry_page-loader_ts_8c1b38e7._.js",
+      "static/chunks/b0146_react-dom_192ab166._.js",
+      "static/chunks/b0146_d03e7e5a._.js",
+      "static/chunks/[root-of-the-server]__6953ee36._.js",
+      "static/chunks/MetisGestao_pages__app_2da965e7._.js",
+      "static/chunks/turbopack-MetisGestao_pages__app_56ef1cc3._.js"
+    ],
+    "/_error": [
+      "static/chunks/b0146_next_dist_compiled_ecc661db._.js",
+      "static/chunks/b0146_next_dist_shared_lib_c3890659._.js",
+      "static/chunks/b0146_next_dist_client_e15983ba._.js",
+      "static/chunks/b0146_next_dist_52b6c837._.js",
+      "static/chunks/b0146_next_error_79280832.js",
+      "static/chunks/[next]_entry_page-loader_ts_30c82bc3._.js",
+      "static/chunks/b0146_react-dom_192ab166._.js",
+      "static/chunks/b0146_d03e7e5a._.js",
+      "static/chunks/[root-of-the-server]__dfd37052._.js",
+      "static/chunks/MetisGestao_pages__error_2da965e7._.js",
+      "static/chunks/turbopack-MetisGestao_pages__error_a18b8fe3._.js"
+    ]
   },
   "devFiles": [],
   "polyfillFiles": [
-    "static/chunks/node_modules_next_dist_build_polyfills_polyfill-nomodule.js"
+    "static/chunks/b0146_next_dist_build_polyfills_polyfill-nomodule.js"
   ],
   "lowPriorityFiles": [],
   "rootMainFiles": [
-    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_bae88007._.js",
-    "static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
-    "static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
-    "static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
-    "static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
-    "static/chunks/node_modules_next_dist_client_aaee43fe._.js",
-    "static/chunks/node_modules_next_dist_7a8122d0._.js",
-    "static/chunks/node_modules_@swc_helpers_cjs_d80fb378._.js",
-    "static/chunks/_a0ff3932._.js",
-    "static/chunks/turbopack-_45210fd5._.js"
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_1c9c71df._.js",
+    "static/chunks/b0146_next_dist_compiled_react-dom_7fcc9064._.js",
+    "static/chunks/b0146_next_dist_compiled_react-server-dom-turbopack_0a4afaee._.js",
+    "static/chunks/b0146_next_dist_compiled_next-devtools_index_e802f405.js",
+    "static/chunks/b0146_next_dist_compiled_3f7767cc._.js",
+    "static/chunks/b0146_next_dist_client_1c99da0e._.js",
+    "static/chunks/b0146_next_dist_a26526c8._.js",
+    "static/chunks/b0146_@swc_helpers_cjs_99463a41._.js",
+    "static/chunks/MetisGestao_a0ff3932._.js",
+    "static/chunks/turbopack-MetisGestao_f655094b._.js"
   ]
 };
 globalThis.__BUILD_MANIFEST.lowPriorityFiles = [

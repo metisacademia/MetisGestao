@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { GraficoEvolucaoAvancado } from '@/components/relatorios/grafico-evolucao-avancado';
+import { GraficoEvolucaoComTurma } from '@/components/relatorios/grafico-evolucao-com-turma';
 import { GraficoRadar } from '@/components/graficos/grafico-radar';
 import { GraficoBarras } from '@/components/graficos/grafico-barras';
 import { GraficoPresenca } from '@/components/relatorios/grafico-presenca';
@@ -13,7 +14,8 @@ import { ToggleMetricas, type MetricasVisiveis } from '@/components/relatorios/t
 import { CardsResumo } from '@/components/relatorios/cards-resumo';
 import { LinhaTempoEventos } from '@/components/relatorios/linha-tempo-eventos';
 import { ResumoAnalitico } from '@/components/relatorios/resumo-analitico';
-import { Loader2, AlertCircle, Download, Calendar, Users } from 'lucide-react';
+import { TabelaAvaliacoesDetalhada } from '@/components/relatorios/tabela-avaliacoes-detalhada';
+import { Loader2, AlertCircle, Download, Calendar, Users, User } from 'lucide-react';
 import Link from 'next/link';
 
 interface Aluno {
@@ -31,7 +33,13 @@ interface Turma {
 }
 
 interface DadosCompletos {
-  aluno: { id: string; nome: string; turma: string };
+  aluno: {
+    id: string;
+    nome: string;
+    turma: string;
+    data_nascimento?: string | null;
+    observacoes?: string | null;
+  };
   evolucao: Array<{
     mes_ano: string;
     score_total: number;
@@ -41,9 +49,11 @@ interface DadosCompletos {
     score_atencao: number;
     score_auto_percepcao: number;
     media_movel?: number;
+    media_turma?: number | null;
     evento?: { titulo: string; tipo: string };
   }>;
   radar: Array<{ dominio: string; aluno: number; media?: number }>;
+  radarPeriodo: string;
   temMediaTurma: boolean;
   cardsResumo: Array<{
     dominio: string;
@@ -59,6 +69,16 @@ interface DadosCompletos {
   };
   eventos: Array<{ id: string; data: string; titulo: string; descricao?: string; tipo: 'SAUDE' | 'ROTINA' | 'TURMA' | 'OUTROS' }>;
   resumoTexto: string;
+  tabelaAvaliacoes: Array<{
+    mes_ano: string;
+    data_aplicacao: string;
+    score_total: number;
+    score_fluencia_0a10: number;
+    score_cultura_0a10: number;
+    score_interpretacao_0a10: number;
+    score_atencao_0a10: number;
+    score_auto_percepcao_0a10: number;
+  }>;
 }
 
 const METRICAS_INICIAIS: MetricasVisiveis = {
@@ -248,20 +268,57 @@ export default function RelatoriosPage() {
 
       {selectedAluno && selectedAluno !== 'all' && !loadingDados && dados && dados.evolucao.length > 0 && (
         <>
+          {/* Student Header Card */}
+          <Card className="bg-[#f8f1e7] border-[#cda465]">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Informações do Aluno
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Nome</p>
+                  <p className="font-semibold text-[#173b5a]">{dados.aluno.nome}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Turma</p>
+                  <p className="font-semibold text-[#173b5a]">{dados.aluno.turma}</p>
+                </div>
+                {dados.aluno.data_nascimento && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">Data de Nascimento</p>
+                    <p className="font-semibold text-[#173b5a]">
+                      {new Date(dados.aluno.data_nascimento).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                )}
+                {dados.aluno.observacoes && (
+                  <div className="md:col-span-2">
+                    <p className="text-sm text-muted-foreground">Observações</p>
+                    <p className="text-sm">{dados.aluno.observacoes}</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           <CardsResumo dados={dados.cardsResumo} />
 
           <ResumoAnalitico texto={dados.resumoTexto} />
 
           <Card>
             <CardHeader>
-              <CardTitle>Evolução do Aluno</CardTitle>
+              <CardTitle>Evolução do Score Total</CardTitle>
               <CardDescription>
-                Acompanhamento mensal dos scores por domínio cognitivo
+                Acompanhamento mensal do score total com comparação à média da turma.
+                {dados.evolucao.some((d) => d.media_turma !== null) &&
+                  ' Linha pontilhada = média da turma (excluindo o aluno)'}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <ToggleMetricas metricas={metricas} onChange={setMetricas} />
-              <GraficoEvolucaoAvancado dados={dados.evolucao} metricas={metricas} />
+            <CardContent>
+              <GraficoEvolucaoComTurma dados={dados.evolucao} />
             </CardContent>
           </Card>
 
@@ -269,7 +326,7 @@ export default function RelatoriosPage() {
             <CardHeader>
               <CardTitle>Perfil de Domínios Cognitivos</CardTitle>
               <CardDescription>
-                Distribuição dos scores por domínio (última avaliação)
+                Média do aluno por domínio cognitivo no período selecionado
                 {dados.temMediaTurma && ' - comparado com a média da turma'}
               </CardDescription>
             </CardHeader>
@@ -300,6 +357,18 @@ export default function RelatoriosPage() {
           )}
 
           <LinhaTempoEventos eventos={dados.eventos} />
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Avaliações Detalhadas</CardTitle>
+              <CardDescription>
+                Histórico completo de avaliações no período selecionado
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TabelaAvaliacoesDetalhada dados={dados.tabelaAvaliacoes} />
+            </CardContent>
+          </Card>
         </>
       )}
 

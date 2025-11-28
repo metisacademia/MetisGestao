@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import FormularioItem from '@/components/FormularioItem';
-import { Loader2, Users, CheckCircle2 } from 'lucide-react';
+import { Loader2, Users, CheckCircle2, ChevronUp, ChevronDown } from 'lucide-react';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import { useToast } from '@/components/ui/use-toast';
 
 interface Dominio {
   id: string;
@@ -62,6 +64,10 @@ export default function TemplateContent({
   const [itens, setItens] = useState<Item[]>(template.itens);
   const [mostraFormulario, setMostraFormulario] = useState(false);
   const [itemParaEditar, setItemParaEditar] = useState<ItemParaEditar | null>(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [itemParaDeletar, setItemParaDeletar] = useState<{ id: string; titulo: string } | null>(null);
+  const [salvandoOrdem, setSalvandoOrdem] = useState(false);
+  const { toast } = useToast();
   
   const [dialogAberto, setDialogAberto] = useState(false);
   const [turmas, setTurmas] = useState<Turma[]>([]);
@@ -114,19 +120,103 @@ export default function TemplateContent({
     setMostraFormulario(true);
   };
 
-  const handleDeletar = async (id: string) => {
-    if (!confirm('Tem certeza que deseja deletar este item?')) return;
+  const handleDeletar = (item: { id: string; titulo: string }) => {
+    setItemParaDeletar(item);
+    setConfirmDialogOpen(true);
+  };
+
+  const confirmarDelecao = async () => {
+    if (!itemParaDeletar) return;
 
     try {
-      const response = await fetch(`/api/coordenador/templates/${template.id}/itens/${id}`, {
+      const response = await fetch(`/api/coordenador/templates/${template.id}/itens/${itemParaDeletar.id}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
+        toast({
+          variant: 'success',
+          title: 'Sucesso!',
+          description: `Item "${itemParaDeletar.titulo}" foi excluído com sucesso.`,
+        });
         await handleRecarregarItens();
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao excluir',
+          description: 'Não foi possível excluir o item. Tente novamente.',
+        });
       }
     } catch (error) {
       console.error('Erro ao deletar item:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao excluir',
+        description: 'Ocorreu um erro ao tentar excluir o item. Tente novamente.',
+      });
+    } finally {
+      setItemParaDeletar(null);
+    }
+  };
+
+  const moveItemUp = async (item: Item, index: number) => {
+    if (index === 0) return; // Já é o primeiro
+
+    const novosItens = [...itens];
+    [novosItens[index - 1], novosItens[index]] = [novosItens[index], novosItens[index - 1]];
+    setItens(novosItens);
+
+    await salvarOrdem(novosItens);
+  };
+
+  const moveItemDown = async (item: Item, index: number) => {
+    if (index === itens.length - 1) return; // Já é o último
+
+    const novosItens = [...itens];
+    [novosItens[index], novosItens[index + 1]] = [novosItens[index + 1], novosItens[index]];
+    setItens(novosItens);
+
+    await salvarOrdem(novosItens);
+  };
+
+  const salvarOrdem = async (novosItens: Item[]) => {
+    setSalvandoOrdem(true);
+    try {
+      const response = await fetch(`/api/coordenador/templates/${template.id}/itens/reorder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ itemIds: novosItens.map((item) => item.id) }),
+      });
+
+      if (response.ok) {
+        const itensAtualizados = await response.json();
+        setItens(itensAtualizados);
+        toast({
+          variant: 'success',
+          title: 'Ordem atualizada!',
+          description: 'A ordem dos itens foi salva com sucesso.',
+        });
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao salvar',
+          description: errorData.error || 'Não foi possível salvar a nova ordem.',
+        });
+        // Recarregar itens em caso de erro
+        await handleRecarregarItens();
+      }
+    } catch (error) {
+      console.error('Erro ao salvar ordem:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao salvar',
+        description: 'Ocorreu um erro ao tentar salvar a ordem.',
+      });
+      await handleRecarregarItens();
+    } finally {
+      setSalvandoOrdem(false);
     }
   };
 
@@ -206,7 +296,6 @@ export default function TemplateContent({
           dominios={dominios}
           onSubmit={handleRecarregarItens}
           itemParaEditar={itemParaEditar || undefined}
-          apiBasePath="/api/coordenador"
         />
       )}
 
@@ -365,51 +454,84 @@ export default function TemplateContent({
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Título</TableHead>
-                <TableHead>Domínio</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
+                  <TableRow>
+                    <TableHead>Ordem</TableHead>
+                    <TableHead>Código</TableHead>
+                    <TableHead>Título</TableHead>
+                    <TableHead>Domínio</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
             </TableHeader>
             <TableBody>
-              {itens.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.codigo_item}</TableCell>
-                  <TableCell>{item.titulo}</TableCell>
-                  <TableCell>{item.dominio.nome}</TableCell>
-                  <TableCell>{item.tipo_resposta}</TableCell>
-                  <TableCell>
-                    {item.ativo ? (
-                      <span className="text-green-600 text-sm">Ativo</span>
-                    ) : (
-                      <span className="text-red-600 text-sm">Inativo</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="space-x-2">
-                    <Button
-                      onClick={() => handleEditar(item)}
-                      size="sm"
-                      variant="outline"
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      onClick={() => handleDeletar(item.id)}
-                      size="sm"
-                      variant="destructive"
-                    >
-                      Deletar
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                {itens.map((item, index) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="w-24">
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => moveItemUp(item, index)}
+                          disabled={index === 0 || salvandoOrdem}
+                          title="Mover para cima"
+                          className="h-8 w-8 p-0"
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => moveItemDown(item, index)}
+                          disabled={index === itens.length - 1 || salvandoOrdem}
+                          title="Mover para baixo"
+                          className="h-8 w-8 p-0"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">{item.codigo_item}</TableCell>
+                    <TableCell>{item.titulo}</TableCell>
+                    <TableCell>{item.dominio.nome}</TableCell>
+                    <TableCell>{item.tipo_resposta}</TableCell>
+                    <TableCell>
+                      {item.ativo ? (
+                        <span className="text-green-600 text-sm">Ativo</span>
+                      ) : (
+                        <span className="text-red-600 text-sm">Inativo</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="space-x-2">
+                      <Button
+                        onClick={() => handleEditar(item)}
+                        size="sm"
+                        variant="outline"
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        onClick={() => handleDeletar({ id: item.id, titulo: item.titulo })}
+                        size="sm"
+                        variant="destructive"
+                      >
+                        Deletar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={confirmDialogOpen}
+        onOpenChange={setConfirmDialogOpen}
+        onConfirm={confirmarDelecao}
+        title="Confirmar exclusão"
+        description={`Tem certeza que deseja excluir o item "${itemParaDeletar?.titulo}"? Esta ação não pode ser desfeita.`}
+      />
     </>
   );
 }

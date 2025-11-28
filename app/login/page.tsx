@@ -8,7 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
-export default function LoginPage() {
+interface LoginPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function LoginPage(props: LoginPageProps) {
+  const searchParams = props?.searchParams || {};
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');

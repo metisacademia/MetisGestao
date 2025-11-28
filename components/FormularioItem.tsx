@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 
 interface Dominio {
   id: string;
@@ -45,6 +46,7 @@ export default function FormularioItem({
   const [ativo, setAtivo] = useState(itemParaEditar?.ativo ?? true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,8 +95,21 @@ export default function FormularioItem({
       setOrdem(0);
       setAtivo(true);
 
+      toast({
+        variant: 'success',
+        title: 'Sucesso!',
+        description: itemParaEditar 
+          ? 'Item atualizado com sucesso!'
+          : 'Item cadastrado com sucesso!',
+      });
+
       onSubmit?.();
     } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao salvar',
+        description: 'Ocorreu um erro ao tentar salvar o item. Tente novamente.',
+      });
       setError('Erro ao conectar com o servidor');
       setLoading(false);
     }

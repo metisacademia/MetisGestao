@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
-import { Plus, KeyRound, Loader2, Copy, Check } from 'lucide-react';
+import { Plus, KeyRound, Loader2, Copy, Check, Download } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { exportToCSV, generateCSVFilename,formatDateForCSV } from '@/lib/csv-utils';
 
 interface Usuario {
   id: string;
@@ -127,6 +128,26 @@ export default function UsuariosPage() {
     }
   };
 
+  const handleExportCSV = () => {
+    const csvData = usuariosFiltrados.map(usuario => ({
+      id: usuario.id,
+      nome: usuario.nome,
+      email: usuario.email,
+      perfil: perfilLabels[usuario.perfil] || usuario.perfil,
+      criado_em: formatDateForCSV(usuario.criado_em),
+    }));
+
+    const headers = {
+      id: 'ID',
+      nome: 'Nome',
+      email: 'E-mail',
+      perfil: 'Perfil',
+      criado_em: 'Cadastrado em',
+    };
+
+    exportToCSV(csvData, generateCSVFilename('usuarios_metis'), headers);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -145,12 +166,18 @@ export default function UsuariosPage() {
               Gerencie usuários do sistema
             </p>
           </div>
-          <Button asChild>
-            <Link href="/admin/usuarios/novo">
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Usuário
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleExportCSV}>
+              <Download className="w-4 h-4 mr-2" />
+              Exportar CSV
+            </Button>
+            <Button asChild>
+              <Link href="/admin/usuarios/novo">
+                <Plus className="w-4 h-4 mr-2" />
+                Novo Usuário
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

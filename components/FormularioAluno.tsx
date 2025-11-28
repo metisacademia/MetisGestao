@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 
 interface Turma {
   id: string;
@@ -40,6 +41,7 @@ export default function FormularioAluno({
   const [observacoes, setObservacoes] = useState(alunoParaEditar?.observacoes || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,8 +84,21 @@ export default function FormularioAluno({
       setDataNascimento('');
       setObservacoes('');
 
+      toast({
+        variant: 'success',
+        title: 'Sucesso!',
+        description: alunoParaEditar 
+          ? 'Aluno atualizado com sucesso!'
+          : 'Aluno cadastrado com sucesso!',
+      });
+
       onSubmit?.();
     } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao salvar',
+        description: 'Ocorreu um erro ao tentar salvar o aluno. Tente novamente.',
+      });
       setError('Erro ao conectar com o servidor');
       setLoading(false);
     }

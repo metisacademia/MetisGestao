@@ -51,3 +51,4 @@ prisma/.env
 *.tmp
 .cache/
 temp/
+.next/

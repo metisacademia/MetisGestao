@@ -7,7 +7,26 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import FormularioItem from '@/components/FormularioItem';
-import { Loader2, Users, CheckCircle2 } from 'lucide-react';
+import { Loader2, Users, CheckCircle2, GripVertical } from 'lucide-react';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Dominio {
   id: string;
@@ -52,6 +71,69 @@ interface Turma {
   };
 }
 
+// Componente para linha ordenável
+function SortableRow({ item, index, onEdit, onDelete }: { item: Item; index: number; onEdit: (item: Item) => void; onDelete: (item: { id: string; titulo: string }) => void }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 1 : 0,
+    opacity: isDragging ? 0.5 : 1,
+    position: 'relative' as 'relative',
+  };
+
+  return (
+    <TableRow ref={setNodeRef} style={style}>
+      <TableCell className="w-12">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="cursor-grab"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4 text-muted-foreground" />
+        </Button>
+      </TableCell>
+      <TableCell className="font-medium">{item.codigo_item}</TableCell>
+      <TableCell>{item.titulo}</TableCell>
+      <TableCell>{item.dominio.nome}</TableCell>
+      <TableCell>{item.tipo_resposta}</TableCell>
+      <TableCell>
+        {item.ativo ? (
+          <span className="text-green-600 text-sm">Ativo</span>
+        ) : (
+          <span className="text-red-600 text-sm">Inativo</span>
+        )}
+      </TableCell>
+      <TableCell className="space-x-2">
+        <Button
+          onClick={() => onEdit(item)}
+          size="sm"
+          variant="outline"
+        >
+          Editar
+        </Button>
+        <Button
+          onClick={() => onDelete({ id: item.id, titulo: item.titulo })}
+          size="sm"
+          variant="destructive"
+        >
+          Deletar
+        </Button>
+      </TableCell>
+    </TableRow>
+  );
+}
+
 export default function TemplateContent({
   template,
   dominios,
@@ -62,6 +144,10 @@ export default function TemplateContent({
   const [itens, setItens] = useState<Item[]>(template.itens);
   const [mostraFormulario, setMostraFormulario] = useState(false);
   const [itemParaEditar, setItemParaEditar] = useState<ItemParaEditar | null>(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [itemParaDeletar, setItemParaDeletar] = useState<{ id: string; titulo: string } | null>(null);
+  const [salvandoOrdem, setSalvandoOrdem] = useState(false);
+  const { toast } = useToast();
   
   const [dialogAberto, setDialogAberto] = useState(false);
   const [turmas, setTurmas] = useState<Turma[]>([]);
@@ -74,6 +160,13 @@ export default function TemplateContent({
     totalAlunos: number;
     turmasProcessadas: number;
   } | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     if (dialogAberto && turmas.length === 0) {
@@ -114,19 +207,99 @@ export default function TemplateContent({
     setMostraFormulario(true);
   };
 
-  const handleDeletar = async (id: string) => {
-    if (!confirm('Tem certeza que deseja deletar este item?')) return;
+  const handleDeletar = (item: { id: string; titulo: string }) => {
+    setItemParaDeletar(item);
+    setConfirmDialogOpen(true);
+  };
+
+  const confirmarDelecao = async () => {
+    if (!itemParaDeletar) return;
 
     try {
-      const response = await fetch(`/api/admin/templates/${template.id}/itens/${id}`, {
+      const response = await fetch(`/api/admin/templates/${template.id}/itens/${itemParaDeletar.id}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
+        toast({
+          variant: 'success',
+          title: 'Sucesso!',
+          description: `Item "${itemParaDeletar.titulo}" foi excluído com sucesso.`,
+        });
         await handleRecarregarItens();
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao excluir',
+          description: 'Não foi possível excluir o item. Tente novamente.',
+        });
       }
     } catch (error) {
       console.error('Erro ao deletar item:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao excluir',
+        description: 'Ocorreu um erro ao tentar excluir o item. Tente novamente.',
+      });
+    } finally {
+      setItemParaDeletar(null);
+    }
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setItens((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        
+        const newItems = arrayMove(items, oldIndex, newIndex);
+        
+        // Salvar nova ordem no backend
+        salvarOrdem(newItems);
+        
+        return newItems;
+      });
+    }
+  };
+
+  const salvarOrdem = async (novosItens: Item[]) => {
+    setSalvandoOrdem(true);
+    try {
+      const response = await fetch(`/api/admin/templates/${template.id}/itens/reorder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ itemIds: novosItens.map((item) => item.id) }),
+      });
+
+      if (response.ok) {
+        toast({
+          variant: 'success',
+          title: 'Ordem atualizada!',
+          description: 'A ordem dos itens foi salva com sucesso.',
+        });
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao salvar',
+          description: errorData.error || 'Não foi possível salvar a nova ordem.',
+        });
+        // Recarregar itens em caso de erro
+        await handleRecarregarItens();
+      }
+    } catch (error) {
+      console.error('Erro ao salvar ordem:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao salvar',
+        description: 'Ocorreu um erro ao tentar salvar a ordem.',
+      });
+      await handleRecarregarItens();
+    } finally {
+      setSalvandoOrdem(false);
     }
   };
 
@@ -362,53 +535,51 @@ export default function TemplateContent({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Título</TableHead>
-                <TableHead>Domínio</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {itens.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.codigo_item}</TableCell>
-                  <TableCell>{item.titulo}</TableCell>
-                  <TableCell>{item.dominio.nome}</TableCell>
-                  <TableCell>{item.tipo_resposta}</TableCell>
-                  <TableCell>
-                    {item.ativo ? (
-                      <span className="text-green-600 text-sm">Ativo</span>
-                    ) : (
-                      <span className="text-red-600 text-sm">Inativo</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="space-x-2">
-                    <Button
-                      onClick={() => handleEditar(item)}
-                      size="sm"
-                      variant="outline"
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      onClick={() => handleDeletar(item.id)}
-                      size="sm"
-                      variant="destructive"
-                    >
-                      Deletar
-                    </Button>
-                  </TableCell>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-12"></TableHead>
+                  <TableHead>Código</TableHead>
+                  <TableHead>Título</TableHead>
+                  <TableHead>Domínio</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                <SortableContext
+                  items={itens.map((item) => item.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {itens.map((item, index) => (
+                    <SortableRow
+                      key={item.id}
+                      item={item}
+                      index={index}
+                      onEdit={handleEditar}
+                      onDelete={handleDeletar}
+                    />
+                  ))}
+                </SortableContext>
+              </TableBody>
+            </Table>
+          </DndContext>
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={confirmDialogOpen}
+        onOpenChange={setConfirmDialogOpen}
+        onConfirm={confirmarDelecao}
+        title="Confirmar exclusão"
+        description={`Tem certeza que deseja excluir o item "${itemParaDeletar?.titulo}"? Esta ação não pode ser desfeita.`}
+      />
     </>
   );
 }

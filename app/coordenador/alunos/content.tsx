@@ -7,6 +7,8 @@ import FormularioAluno from '@/components/FormularioAluno';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import Link from 'next/link';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import { useToast } from '@/components/ui/use-toast';
 
 interface Aluno {
   id: string;
@@ -40,6 +42,9 @@ export default function AlunosContent({
   const [alunos, setAlunos] = useState<Aluno[]>(alunosIniciais);
   const [mostraFormulario, setMostraFormulario] = useState(false);
   const [alunoParaEditar, setAlunoParaEditar] = useState<AlunoParaEditar | null>(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [alunoParaDeletar, setAlunoParaDeletar] = useState<{ id: string; nome: string } | null>(null);
+  const { toast } = useToast();
 
   const handleRecarregarAlunos = async () => {
     const response = await fetch('/api/coordenador/alunos');
@@ -64,19 +69,42 @@ export default function AlunosContent({
     setMostraFormulario(true);
   };
 
-  const handleDeletar = async (id: string) => {
-    if (!confirm('Tem certeza que deseja deletar este aluno?')) return;
+  const handleDeletar = async (aluno: { id: string; nome: string }) => {
+    setAlunoParaDeletar(aluno);
+    setConfirmDialogOpen(true);
+  };
+
+  const confirmarDelecao = async () => {
+    if (!alunoParaDeletar) return;
 
     try {
-      const response = await fetch(`/api/coordenador/alunos/${id}`, {
+      const response = await fetch(`/api/coordenador/alunos/${alunoParaDeletar.id}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
+        toast({
+          variant: 'success',
+          title: 'Sucesso!',
+          description: `Aluno "${alunoParaDeletar.nome}" foi excluído com sucesso.`,
+        });
         await handleRecarregarAlunos();
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao excluir',
+          description: 'Não foi possível excluir o aluno. Tente novamente.',
+        });
       }
     } catch (error) {
       console.error('Erro ao deletar aluno:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao excluir',
+        description: 'Ocorreu um erro ao tentar excluir o aluno. Tente novamente.',
+      });
+    } finally {
+      setAlunoParaDeletar(null);
     }
   };
 
@@ -87,6 +115,13 @@ export default function AlunosContent({
 
   return (
     <>
+      <ConfirmDialog
+        open={confirmDialogOpen}
+        onOpenChange={setConfirmDialogOpen}
+        onConfirm={confirmarDelecao}
+        title="Confirmar exclusão"
+        description={`Tem certeza que deseja excluir o aluno "${alunoParaDeletar?.nome}"? Esta ação não pode ser desfeita.`}
+      />
       {mostraFormulario && (
         <FormularioAluno
           turmas={turmas}
@@ -152,7 +187,7 @@ export default function AlunosContent({
                       Editar
                     </Button>
                     <Button
-                      onClick={() => handleDeletar(aluno.id)}
+                      onClick={() => handleDeletar({ id: aluno.id, nome: aluno.nome })}
                       size="sm"
                       variant="destructive"
                     >

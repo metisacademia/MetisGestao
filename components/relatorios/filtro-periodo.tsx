@@ -2,7 +2,7 @@
 
 import { Label } from '@/components/ui/label';
 
-export type Periodo = '3m' | '6m' | '12m' | 'all';
+export type Periodo = '1m' | '3m' | '6m' | '12m' | 'all';
 
 interface FiltroPeriodoProps {
   value: Periodo;
@@ -10,9 +10,10 @@ interface FiltroPeriodoProps {
 }
 
 const OPCOES: { value: Periodo; label: string }[] = [
+  { value: '1m', label: 'Último mês' },
   { value: '3m', label: 'Últimos 3 meses' },
   { value: '6m', label: 'Últimos 6 meses' },
-  { value: '12m', label: 'Últimos 12 meses' },
+  { value: '12m', label: 'Último ano' },
   { value: 'all', label: 'Todo o histórico' },
 ];
 

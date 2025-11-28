@@ -4,14 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import { FileText, ArrowLeft } from 'lucide-react';
+
+import TurmaFilters from '@/components/avaliacoes/TurmaFilters';
 
 export default async function AdminTurmaAvaliacoesPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ mes?: string; ano?: string }>;
 }) {
   const { id } = await params;
+  const { mes, ano } = await searchParams;
   
   const turma = await prisma.turma.findUnique({
     where: { id },
@@ -29,8 +34,8 @@ export default async function AdminTurmaAvaliacoesPage({
     redirect('/admin/avaliacoes');
   }
 
-  const mesAtual = new Date().getMonth() + 1;
-  const anoAtual = new Date().getFullYear();
+  const mesAtual = mes ? parseInt(mes) : new Date().getMonth() + 1;
+  const anoAtual = ano ? parseInt(ano) : new Date().getFullYear();
 
   const avaliacoesMesAtual = await prisma.avaliacao.groupBy({
     by: ['alunoId'],
@@ -45,30 +50,43 @@ export default async function AdminTurmaAvaliacoesPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">{turma.nome_turma}</h1>
-        <p className="text-muted-foreground mt-2">
-          {turma.dia_semana} • {turma.horario} • {turma.turno}
-        </p>
-        <p className="text-sm text-muted-foreground mt-1">
-          Moderador: {turma.moderador.nome}
-        </p>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/admin/avaliacoes">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+        </Button>
+        <div>
+          <h1 className="text-3xl font-bold">{turma.nome_turma}</h1>
+          <p className="text-muted-foreground mt-1">
+            {turma.dia_semana} • {turma.horario} • {turma.turno}
+          </p>
+        </div>
       </div>
+
+      <TurmaFilters />
 
       <Card>
         <CardHeader>
-          <CardTitle>Alunos da Turma</CardTitle>
-          <CardDescription>
-            Total: {turma.alunos.length} aluno(s) • Mês de referência: {String(mesAtual).padStart(2, '0')}/{anoAtual}
-          </CardDescription>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Alunos da Turma</CardTitle>
+              <CardDescription>
+                Referência: {String(mesAtual).padStart(2, '0')}/{anoAtual} • Total: {turma.alunos.length} aluno(s)
+              </CardDescription>
+            </div>
+            <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+              Moderador: {turma.moderador.nome}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Nome</TableHead>
-                <TableHead>Status (Mês Atual)</TableHead>
-                <TableHead>Ações</TableHead>
+                <TableHead>Status ({String(mesAtual).padStart(2, '0')}/{anoAtual})</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,26 +97,33 @@ export default async function AdminTurmaAvaliacoesPage({
                     <TableCell className="font-medium">{aluno.nome}</TableCell>
                     <TableCell>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        className={`px-2 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1 ${
                           jaAvaliado
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                            ? 'bg-green-100 text-green-800 border border-green-200'
+                            : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
                         }`}
                       >
-                        {jaAvaliado ? 'Avaliado' : 'Pendente'}
+                        {jaAvaliado ? 'Avaliado ✓' : 'Pendente'}
                       </span>
                     </TableCell>
-                    <TableCell>
-                      <Button asChild variant="outline" size="sm">
-                        <Link href={`/admin/avaliacoes/aluno/${aluno.id}?mes=${mesAtual}&ano=${anoAtual}`}>
+                    <TableCell className="text-right">
+                      <Button asChild variant={jaAvaliado ? "outline" : "default"} size="sm">
+                        <Link href={`/admin/avaliacoes/aluno/${aluno.id}?mes=${mesAtual}&ano=${anoAtual}&turmaId=${turma.id}`}>
                           <FileText className="w-4 h-4 mr-2" />
-                          {jaAvaliado ? 'Ver Avaliação' : 'Lançar Avaliação'}
+                          {jaAvaliado ? 'Ver / Editar' : 'Avaliar'}
                         </Link>
                       </Button>
                     </TableCell>
                   </TableRow>
                 );
               })}
+              {turma.alunos.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                    Nenhum aluno cadastrado nesta turma.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>

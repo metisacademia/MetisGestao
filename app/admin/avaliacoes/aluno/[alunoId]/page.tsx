@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Save, Check, ChevronDown, ChevronRight, ChevronUp, Target, CheckCircle2, Circle, ArrowUp, ArrowDown, AlertTriangle, RotateCcw, ArrowRight } from 'lucide-react';
+import { Loader2, Save, Check, ChevronDown, ChevronRight, ChevronUp, Target, CheckCircle2, Circle, ArrowUp, ArrowDown, AlertTriangle, RotateCcw, ArrowRight, ArrowLeft } from 'lucide-react';
 import { apiCall } from '@/lib/api-client';
 import { calcularPontuacaoItem } from '@/lib/pontuacao';
 import * as Collapsible from '@radix-ui/react-collapsible';
+import HistoricoAvaliacoes from '@/components/avaliacoes/HistoricoAvaliacoes';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ItemTemplate {
   id: string;
@@ -61,6 +63,7 @@ function parseRegraPontuacao(regraJson: string): any {
     return null;
   }
 }
+
 
 function renderGabarito(item: ItemTemplate) {
   const regra = parseRegraPontuacao(item.regra_pontuacao);
@@ -178,6 +181,7 @@ export default function AdminAvaliarAlunoPage() {
   
   const [salvouComSucesso, setSalvouComSucesso] = useState(false);
   const [proximoAluno, setProximoAluno] = useState<ProximoAluno | null>(null);
+  const [alunoAnterior, setAlunoAnterior] = useState<ProximoAluno | null>(null);
   const [carregandoProximo, setCarregandoProximo] = useState(false);
 
   useEffect(() => {
@@ -238,6 +242,7 @@ export default function AdminAvaliarAlunoPage() {
     }
 
     carregarDados();
+    buscarProximoEAnteriorAluno();
   }, [alunoId, mes, ano]);
 
   const domainGroups = useMemo<DomainGroup[]>(() => {
@@ -301,7 +306,8 @@ export default function AdminAvaliarAlunoPage() {
 
   const totalItens = template?.itens.length || 0;
 
-  const buscarProximoAluno = async () => {
+
+  const buscarProximoEAnteriorAluno = async () => {
     if (!aluno) return;
     
     setCarregandoProximo(true);
@@ -315,37 +321,67 @@ export default function AdminAvaliarAlunoPage() {
       const turmaData = await response.json();
       const alunos = turmaData.alunos || [];
       
-      const avaliacoesPromises = alunos.map((a: any) => 
-        fetch(`/api/admin/salvar-avaliacao?alunoId=${a.id}&mes=${mes}&ano=${ano}`)
-          .then(r => r.ok ? r.json().catch(() => null) : null)
-          .catch(() => null)
-      );
-      
-      const avaliacoes = await Promise.all(avaliacoesPromises);
-      
       const alunoAtualIdx = alunos.findIndex((a: any) => a.id === alunoId);
       
-      for (let i = alunoAtualIdx + 1; i < alunos.length; i++) {
-        const avaliacao = avaliacoes[i];
-        if (!avaliacao || avaliacao.status !== 'CONCLUIDA') {
-          setProximoAluno({ id: alunos[i].id, nome: alunos[i].nome });
-          return;
-        }
+      // Buscar próximo
+      if (alunoAtualIdx < alunos.length - 1) {
+        setProximoAluno({ id: alunos[alunoAtualIdx + 1].id, nome: alunos[alunoAtualIdx + 1].nome });
+      } else {
+        setProximoAluno(null);
+      }
+
+      // Buscar anterior
+      if (alunoAtualIdx > 0) {
+        setAlunoAnterior({ id: alunos[alunoAtualIdx - 1].id, nome: alunos[alunoAtualIdx - 1].nome });
+      } else {
+        setAlunoAnterior(null);
       }
       
-      for (let i = 0; i < alunoAtualIdx; i++) {
-        const avaliacao = avaliacoes[i];
-        if (!avaliacao || avaliacao.status !== 'CONCLUIDA') {
-          setProximoAluno({ id: alunos[i].id, nome: alunos[i].nome });
-          return;
-        }
-      }
-      
-      setProximoAluno(null);
     } catch (err) {
-      console.error('Erro ao buscar próximo aluno:', err);
+      console.error('Erro ao buscar alunos:', err);
     } finally {
       setCarregandoProximo(false);
+    }
+  };
+
+  const handleSalvarENavegar = async (direcao: 'proximo' | 'anterior') => {
+    setSaving(true);
+    setError('');
+
+    try {
+      const response = await apiCall(`/api/admin/salvar-avaliacao`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          alunoId,
+          templateId: template!.id,
+          mes_referencia: mes,
+          ano_referencia: ano,
+          data_aplicacao: dataRealizacao,
+          respostas,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao salvar avaliação');
+      }
+
+      const turmaId = turmaIdParam || aluno.turmaId || aluno.turma?.id;
+      if (direcao === 'proximo' && proximoAluno) {
+        router.push(`/admin/avaliacoes/aluno/${proximoAluno.id}?mes=${mes}&ano=${ano}&turmaId=${turmaId}`);
+      } else if (direcao === 'anterior' && alunoAnterior) {
+        router.push(`/admin/avaliacoes/aluno/${alunoAnterior.id}?mes=${mes}&ano=${ano}&turmaId=${turmaId}`);
+      } else {
+        setSalvouComSucesso(true);
+        setAvaliacaoStatus('CONCLUIDA');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+    } catch (err) {
+      setError('Erro ao salvar avaliação. Tente novamente.');
+      console.error(err);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -374,7 +410,7 @@ export default function AdminAvaliarAlunoPage() {
 
       setSalvouComSucesso(true);
       setAvaliacaoStatus('CONCLUIDA');
-      await buscarProximoAluno();
+      await buscarProximoEAnteriorAluno();
     } catch (err) {
       setError('Erro ao salvar avaliação. Tente novamente.');
       console.error(err);
@@ -914,27 +950,58 @@ export default function AdminAvaliarAlunoPage() {
             )}
 
             {avaliacaoStatus !== 'CONCLUIDA' && !salvouComSucesso && (
-              <div className="flex gap-3 sticky bottom-4 bg-background p-4 rounded-lg border shadow-lg">
-                <Button type="submit" disabled={saving} className="flex-1">
-                  {saving ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Salvando...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4 mr-2" />
-                      Salvar Avaliação ({totalRespondidos}/{totalItens} respondidos)
-                    </>
+              <div className="flex flex-col gap-3 sticky bottom-4 bg-background p-4 rounded-lg border shadow-lg">
+                <div className="flex gap-3">
+                  {alunoAnterior && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handleSalvarENavegar('anterior')}
+                      disabled={saving}
+                      className="flex-1"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Salvar e Anterior
+                    </Button>
                   )}
-                </Button>
+                  
+                  <Button type="submit" disabled={saving} className="flex-[2]">
+                    {saving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Salvar Avaliação ({totalRespondidos}/{totalItens})
+                      </>
+                    )}
+                  </Button>
+
+                  {proximoAluno && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handleSalvarENavegar('proximo')}
+                      disabled={saving}
+                      className="flex-1"
+                    >
+                      Salvar e Próximo
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )}
+                </div>
+                
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => router.back()}
                   disabled={saving}
+                  className="w-full"
                 >
-                  Cancelar
+                  Cancelar e Voltar
                 </Button>
               </div>
             )}

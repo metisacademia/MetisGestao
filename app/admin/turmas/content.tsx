@@ -8,8 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Download } from 'lucide-react';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { useToast } from '@/components/ui/use-toast';
+import { exportToCSV, generateCSVFilename, formatDateForCSV } from '@/lib/csv-utils';
 
 interface Turma {
   id: string;
@@ -140,6 +142,40 @@ export default function TurmasContent({
     setTurmaParaEditar(null);
   };
 
+  const handleExportCSV = () => {
+    const statusLabels = {
+      ABERTA: 'Aberta',
+      EM_ANDAMENTO: 'Em Andamento',
+      CONCLUIDA: 'Concluída',
+    };
+
+    const csvData = turmasFiltradas.map(turma => ({
+      id: turma.id,
+      nome_turma: turma.nome_turma,
+      moderador: turma.moderador.nome,
+      status: statusLabels[turma.status] || turma.status,
+      alunos: turma._count.alunos,
+      capacidade_maxima: turma.capacidade_maxima || '',
+      data_inicio: formatDateForCSV(turma.data_inicio),
+      data_fim: formatDateForCSV(turma.data_fim),
+      local: turma.local || '',
+    }));
+
+    const headers = {
+      id: 'ID',
+      nome_turma: 'Nome da Turma',
+      moderador: 'Moderador',
+      status: 'Status',
+      alunos: 'Alunos',
+      capacidade_maxima: 'Capacidade Máxima',
+      data_inicio: 'Data de Início',
+      data_fim: 'Data de Término',
+      local: 'Local',
+    };
+
+    exportToCSV(csvData, generateCSVFilename('turmas_metis'), headers);
+  };
+
   return (
     <>
       <ConfirmDialog
@@ -174,9 +210,15 @@ export default function TurmasContent({
       )}
 
       {!mostraFormulario && (
-        <Button onClick={() => setMostraFormulario(true)} className="w-full">
-          + Nova Turma
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleExportCSV} variant="outline" className="flex-1">
+            <Download className="w-4 h-4 mr-2" />
+            Exportar CSV
+          </Button>
+          <Button onClick={() => setMostraFormulario(true)} className="flex-1">
+            + Nova Turma
+          </Button>
+        </div>
       )}
 
       {mostraFormulario && (
