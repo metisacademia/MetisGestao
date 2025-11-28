@@ -45,7 +45,7 @@ export default function UsuariosPage() {
   const [newPassword, setNewPassword] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [busca, setBusca] = useState('');
-  const [perfil, setPerfil] = useState<string>('');
+  const [perfil, setPerfil] = useState<string>('all');
   const [pagina, setPagina] = useState(1);
   const itensPorPagina = 10;
 
@@ -63,7 +63,7 @@ export default function UsuariosPage() {
       const atendeBusca =
         usuario.nome.toLowerCase().includes(termo) ||
         usuario.email.toLowerCase().includes(termo);
-      const atendePerfil = perfil ? usuario.perfil === perfil : true;
+      const atendePerfil = perfil && perfil !== 'all' ? usuario.perfil === perfil : true;
       return atendeBusca && atendePerfil;
     });
   }, [usuarios, busca, perfil]);
@@ -166,7 +166,7 @@ export default function UsuariosPage() {
                 <SelectValue placeholder="Todos os perfis" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos os perfis</SelectItem>
+                <SelectItem value="all">Todos os perfis</SelectItem>
                 <SelectItem value="ADMIN">Admin</SelectItem>
                 <SelectItem value="COORDENADOR">Coordenador</SelectItem>
                 <SelectItem value="MODERADOR">Moderador</SelectItem>
