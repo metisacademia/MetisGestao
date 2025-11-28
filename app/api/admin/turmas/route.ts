@@ -17,11 +17,22 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { nome_turma, dia_semana, horario, turno, moderadorId } = await request.json();
+    const { 
+      nome_turma, 
+      dia_semana, 
+      horario, 
+      turno, 
+      moderadorId,
+      capacidade_maxima,
+      data_inicio,
+      data_fim,
+      status,
+      local,
+    } = await request.json();
 
-    if (!nome_turma || !dia_semana || !horario || !turno || !moderadorId) {
+    if (!nome_turma || !dia_semana || !horario || !turno || !moderadorId || !data_inicio) {
       return NextResponse.json(
-        { error: 'Todos os campos são obrigatórios' },
+        { error: 'Campos obrigatórios: nome_turma, dia_semana, horario, turno, moderadorId, data_inicio' },
         { status: 400 }
       );
     }
@@ -33,6 +44,11 @@ export async function POST(request: NextRequest) {
         horario,
         turno,
         moderadorId,
+        capacidade_maxima: capacidade_maxima || null,
+        data_inicio: data_inicio ? new Date(data_inicio) : new Date(),
+        data_fim: data_fim ? new Date(data_fim) : null,
+        status: status || 'ABERTA',
+        local: local || null,
       },
       include: { moderador: true },
     });
