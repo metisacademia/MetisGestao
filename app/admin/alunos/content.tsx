@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import FormularioAluno from '@/components/FormularioAluno';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Aluno {
   id: string;
@@ -38,8 +40,30 @@ export default function AlunosContent({
   turmas: Turma[];
 }) {
   const [alunos, setAlunos] = useState<Aluno[]>(alunosIniciais);
+  const [busca, setBusca] = useState('');
+  const [turmaSelecionada, setTurmaSelecionada] = useState<string>('all');
+  const [pagina, setPagina] = useState(1);
+  const itensPorPagina = 10;
   const [mostraFormulario, setMostraFormulario] = useState(false);
   const [alunoParaEditar, setAlunoParaEditar] = useState<AlunoParaEditar | null>(null);
+
+  useEffect(() => {
+    setPagina(1);
+  }, [busca, turmaSelecionada]);
+
+  const alunosFiltrados = useMemo(() => {
+    const termo = busca.toLowerCase();
+    return alunos.filter((aluno) => {
+      const atendeBusca = aluno.nome.toLowerCase().includes(termo);
+      const atendeTurma =
+        turmaSelecionada && turmaSelecionada !== 'all' ? aluno.turmaId === turmaSelecionada : true;
+      return atendeBusca && atendeTurma;
+    });
+  }, [alunos, busca, turmaSelecionada]);
+
+  const totalPaginas = Math.max(1, Math.ceil(alunosFiltrados.length / itensPorPagina));
+  const inicio = (pagina - 1) * itensPorPagina;
+  const alunosPaginados = alunosFiltrados.slice(inicio, inicio + itensPorPagina);
 
   const handleRecarregarAlunos = async () => {
     const response = await fetch('/api/admin/alunos');
@@ -107,11 +131,38 @@ export default function AlunosContent({
         </Button>
       )}
 
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+          <Input
+            placeholder="Buscar por nome do aluno"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="w-full sm:w-72"
+          />
+          <Select value={turmaSelecionada} onValueChange={setTurmaSelecionada}>
+            <SelectTrigger className="w-full sm:w-64">
+              <SelectValue placeholder="Todas as turmas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as turmas</SelectItem>
+              {turmas.map((turma) => (
+                <SelectItem key={turma.id} value={turma.id}>
+                  {turma.nome_turma}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {alunosFiltrados.length} aluno(s) encontrado(s)
+        </div>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>Lista de Alunos</CardTitle>
           <CardDescription>
-            Total: {alunos.length} aluno(s)
+            Total: {alunosFiltrados.length} aluno(s)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -125,7 +176,7 @@ export default function AlunosContent({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {alunos.map((aluno) => (
+              {alunosPaginados.map((aluno) => (
                 <TableRow key={aluno.id}>
                   <TableCell className="font-medium">{aluno.nome}</TableCell>
                   <TableCell>{aluno.turma.nome_turma}</TableCell>
@@ -158,6 +209,29 @@ export default function AlunosContent({
               ))}
             </TableBody>
           </Table>
+          <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
+            <div>
+              Página {pagina} de {totalPaginas}
+            </div>
+            <div className="space-x-2">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={pagina === 1}
+                onClick={() => setPagina((p) => Math.max(1, p - 1))}
+              >
+                Anterior
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={pagina === totalPaginas}
+                onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+              >
+                Próxima
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </>

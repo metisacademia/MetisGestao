@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  // The connection string is read from DATABASE_URL via prisma.config.ts for Prisma 7
 }
 
 enum PerfilUsuario {
