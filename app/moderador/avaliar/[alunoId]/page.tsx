@@ -129,7 +129,7 @@ export default function AvaliarAlunoPage() {
   };
 
   const renderCampo = (item: ItemTemplate) => {
-    const valor = respostas[item.id] || '';
+    const valor = respostas[item.id] || 'all';
 
     switch (item.tipo_resposta) {
       case 'NUMERO':
@@ -182,7 +182,9 @@ export default function AvaliarAlunoPage() {
             className="w-full border border-input rounded-md px-3 py-2"
             required
           >
-            <option value="">Selecione...</option>
+            <option value="all" disabled>
+              Selecione...
+            </option>
             {opcoes.map((opcao: string) => (
               <option key={opcao} value={opcao}>
                 {opcao}

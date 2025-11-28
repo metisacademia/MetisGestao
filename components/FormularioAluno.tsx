@@ -31,7 +31,7 @@ export default function FormularioAluno({
   apiBasePath = '/api/admin',
 }: FormularioAlunoProps) {
   const [nome, setNome] = useState(alunoParaEditar?.nome || '');
-  const [turmaId, setTurmaId] = useState(alunoParaEditar?.turmaId || '');
+  const [turmaId, setTurmaId] = useState(alunoParaEditar?.turmaId ?? 'all');
   const [data_nascimento, setDataNascimento] = useState(
     alunoParaEditar?.data_nascimento
       ? alunoParaEditar.data_nascimento.split('T')[0]
@@ -45,6 +45,12 @@ export default function FormularioAluno({
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (turmaId === 'all') {
+      setError('Selecione uma turma para o aluno.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const url = alunoParaEditar
@@ -72,7 +78,7 @@ export default function FormularioAluno({
 
       // Reset form
       setNome('');
-      setTurmaId('');
+      setTurmaId('all');
       setDataNascimento('');
       setObservacoes('');
 
@@ -108,18 +114,20 @@ export default function FormularioAluno({
 
             <div className="space-y-2">
               <Label htmlFor="turmaId">Turma</Label>
-              <select
-                id="turmaId"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                value={turmaId}
-                onChange={(e) => setTurmaId(e.target.value)}
-                required
-                disabled={loading}
-              >
-                <option value="">Selecione uma turma</option>
-                {turmas.map((turma) => (
-                  <option key={turma.id} value={turma.id}>
-                    {turma.nome_turma}
+            <select
+              id="turmaId"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              value={turmaId}
+              onChange={(e) => setTurmaId(e.target.value)}
+              required
+              disabled={loading}
+            >
+              <option value="all" disabled>
+                Selecione uma turma
+              </option>
+              {turmas.map((turma) => (
+                <option key={turma.id} value={turma.id}>
+                  {turma.nome_turma}
                   </option>
                 ))}
               </select>
