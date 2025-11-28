@@ -82,7 +82,7 @@ export default function TurmasContent({
   const turmasPaginadas = turmasFiltradas.slice(inicio, inicio + itensPorPagina);
 
   const handleRecarregarTurmas = async () => {
-    const response = await fetch('/api/coordenador/turmas');
+    const response = await fetch('/api/moderador/turmas');
     if (response.ok) {
       const dados = await response.json();
       setTurmas(dados);
@@ -105,7 +105,7 @@ export default function TurmasContent({
     if (!turmaParaDeletar) return;
 
     try {
-      const response = await fetch(`/api/coordenador/turmas/${turmaParaDeletar.id}`, {
+      const response = await fetch(`/api/moderador/turmas/${turmaParaDeletar.id}`, {
         method: 'DELETE',
       });
 
