@@ -65,13 +65,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check for duplicate email
     const existingUser = await prisma.usuario.findUnique({
       where: { email },
     });
 
     if (existingUser) {
       return NextResponse.json(
-        { error: 'Este email já está em uso' },
+        { error: 'Este email já está em uso. Por favor, escolha outro email.' },
         { status: 400 }
       );
     }

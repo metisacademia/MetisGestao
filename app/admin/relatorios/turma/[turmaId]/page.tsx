@@ -107,11 +107,12 @@ export default function RelatorioTurmaPage() {
   const handleExportCSV = () => {
     if (!dados) return;
 
-    const periodLabels = {
+    const periodLabels: Record<Periodo, string> = {
       '1m': 'ultimo_mes',
       '3m': 'ultimos_3_meses',
       '6m': 'ultimos_6_meses',
-      '1y': 'ultimo_ano',
+      '12m': 'ultimo_ano',
+      'all': 'todo_historico',
     };
 
     const csvData = dados.comparacao.map(item => ({
@@ -223,7 +224,7 @@ export default function RelatorioTurmaPage() {
           </CardHeader>
           <CardContent>
             <GraficoRadar
-              dados={dados.radarTurma.map((d) => ({ dominio: d.dominio, aluno: d.media }))}
+              dados={dados.radarTurma.map((d) => ({ dominio: d.dominio, aluno: d.aluno }))}
               mostrarMedia={false}
             />
           </CardContent>

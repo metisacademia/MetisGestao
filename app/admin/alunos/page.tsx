@@ -3,7 +3,19 @@ import AlunosContent from './content';
 
 export default async function AlunosPage() {
   const alunos = await prisma.aluno.findMany({
-    include: { turma: true },
+    select: {
+      id: true,
+      nome: true,
+      turmaId: true,
+      data_nascimento: true,
+      observacoes: true,
+      turma: {
+        select: {
+          id: true,
+          nome_turma: true,
+        },
+      },
+    },
     orderBy: { nome: 'asc' },
   });
 

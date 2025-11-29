@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Link from 'next/link';
-import { FileText, ArrowLeft } from 'lucide-react';
+import { FileText, ArrowLeft, AlertCircle } from 'lucide-react';
 
 import TurmaFilters from '@/components/avaliacoes/TurmaFilters';
 
@@ -17,18 +17,83 @@ export default async function AdminTurmaAvaliacoesPage({
 }) {
   const { id } = await params;
   const { mes, ano } = await searchParams;
-  
-  const turma = await prisma.turma.findUnique({
-    where: { id },
-    include: {
-      alunos: {
-        orderBy: { nome: 'asc' },
+
+  // Validate ID format (should be UUID)
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!id || !uuidRegex.test(id)) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/admin/avaliacoes">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          </Button>
+          <h1 className="text-3xl font-bold">Erro: ID Inválido</h1>
+        </div>
+        <Card>
+          <CardContent className="py-12">
+            <div className="flex flex-col items-center justify-center text-center gap-4">
+              <AlertCircle className="w-12 h-12 text-red-500" />
+              <div>
+                <h3 className="text-lg font-semibold">ID de turma inválido</h3>
+                <p className="text-muted-foreground mt-2">
+                  O ID fornecido não é válido. Por favor, verifique o link e tente novamente.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  let turma;
+  try {
+    turma = await prisma.turma.findUnique({
+      where: { id },
+      include: {
+        alunos: {
+          orderBy: { nome: 'asc' },
+        },
+        moderador: {
+          select: { nome: true },
+        },
       },
-      moderador: {
-        select: { nome: true },
-      },
-    },
-  });
+    });
+  } catch (error) {
+    console.error('Erro ao buscar turma:', error);
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/admin/avaliacoes">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          </Button>
+          <h1 className="text-3xl font-bold">Erro ao Carregar Turma</h1>
+        </div>
+        <Card>
+          <CardContent className="py-12">
+            <div className="flex flex-col items-center justify-center text-center gap-4">
+              <AlertCircle className="w-12 h-12 text-red-500" />
+              <div>
+                <h3 className="text-lg font-semibold">Erro ao carregar dados da turma</h3>
+                <p className="text-muted-foreground mt-2">
+                  Ocorreu um erro ao buscar os dados da turma no banco de dados.
+                </p>
+                {process.env.NODE_ENV === 'development' && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {error instanceof Error ? error.message : 'Erro desconhecido'}
+                  </p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!turma) {
     redirect('/admin/avaliacoes');

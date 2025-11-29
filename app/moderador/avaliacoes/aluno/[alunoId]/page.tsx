@@ -312,7 +312,7 @@ export default function ModeradorAvaliarAlunoPage() {
     
     setCarregandoProximo(true);
     try {
-      const turmaId = turmaIdParam || aluno.turmaId || aluno.turma?.id;
+      const turmaId = turmaIdParam || aluno?.turmaId || aluno?.turma?.id;
       if (!turmaId) return;
       
       const response = await fetch(`/api/moderador/turmas/${turmaId}`);
@@ -366,7 +366,7 @@ export default function ModeradorAvaliarAlunoPage() {
         throw new Error('Erro ao salvar avaliação');
       }
 
-      const turmaId = turmaIdParam || aluno.turmaId || aluno.turma?.id;
+      const turmaId = turmaIdParam || aluno?.turmaId || aluno?.turma?.id;
       if (direcao === 'proximo' && proximoAluno) {
         router.push(`/moderador/avaliacoes/aluno/${proximoAluno.id}?mes=${mes}&ano=${ano}&turmaId=${turmaId}`);
       } else if (direcao === 'anterior' && alunoAnterior) {

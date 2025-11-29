@@ -17,7 +17,19 @@ export async function GET(
 
     const aluno = await prisma.aluno.findUnique({
       where: { id: alunoId },
-      include: { turma: true },
+      select: {
+        id: true,
+        nome: true,
+        turmaId: true,
+        data_nascimento: true,
+        observacoes: true,
+        turma: {
+          select: {
+            id: true,
+            nome_turma: true,
+          },
+        },
+      },
     });
 
     if (!aluno) {

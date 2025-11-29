@@ -7,6 +7,22 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 
+// Helper functions for date/time formatting without timezone issues
+function formatDateForInput(date: Date | string | null): string {
+  if (!date) return '';
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function normalizeTime(time: string): string {
+  if (!time) return '';
+  // If time is "18:00:00", convert to "18:00"
+  return time.substring(0, 5);
+}
+
 interface Usuario {
   id: string;
   nome: string;
@@ -39,17 +55,17 @@ export default function FormularioTurma({
 }: FormularioTurmaProps) {
   const [nome_turma, setNomeTurma] = useState(turmaParaEditar?.nome_turma || '');
   const [dia_semana, setDiaSemana] = useState(turmaParaEditar?.dia_semana || '');
-  const [horario, setHorario] = useState(turmaParaEditar?.horario || '');
+  const [horario, setHorario] = useState(normalizeTime(turmaParaEditar?.horario || ''));
   const [turno, setTurno] = useState(turmaParaEditar?.turno || 'MANHA');
   const [moderadorId, setModeradorId] = useState(turmaParaEditar?.moderadorId ?? 'all');
   const [capacidade_maxima, setCapacidadeMaxima] = useState<string>(
     turmaParaEditar?.capacidade_maxima?.toString() || ''
   );
   const [data_inicio, setDataInicio] = useState(
-    turmaParaEditar?.data_inicio ? new Date(turmaParaEditar.data_inicio).toISOString().split('T')[0] : ''
+    formatDateForInput(turmaParaEditar?.data_inicio || null)
   );
   const [data_fim, setDataFim] = useState(
-    turmaParaEditar?.data_fim ? new Date(turmaParaEditar.data_fim).toISOString().split('T')[0] : ''
+    formatDateForInput(turmaParaEditar?.data_fim || null)
   );
   const [status, setStatus] = useState<'ABERTA' | 'EM_ANDAMENTO' | 'CONCLUIDA'>(
     turmaParaEditar?.status || 'ABERTA'
@@ -79,14 +95,14 @@ export default function FormularioTurma({
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          nome_turma, 
-          dia_semana, 
-          horario, 
-          turno, 
+        body: JSON.stringify({
+          nome_turma,
+          dia_semana,
+          horario,
+          turno,
           moderadorId,
           capacidade_maxima: capacidade_maxima ? parseInt(capacidade_maxima) : null,
-          data_inicio: data_inicio || undefined,
+          data_inicio: data_inicio || null,
           data_fim: data_fim || null,
           status,
           local: local || null,
@@ -100,34 +116,39 @@ export default function FormularioTurma({
         return;
       }
 
-      // Reset form
-      setNomeTurma('');
-      setDiaSemana('');
-      setHorario('');
-      setTurno('MANHA');
-      setModeradorId('all');
-      setCapacidadeMaxima('');
-      setDataInicio('');
-      setDataFim('');
-      setStatus('ABERTA');
-      setLocal('');
-
       toast({
-        variant: 'success',
         title: 'Sucesso!',
-        description: turmaParaEditar 
+        description: turmaParaEditar
           ? 'Turma atualizada com sucesso!'
-          : 'Turma cadastrada com sucesso!',
+          : 'Turma criada com sucesso!',
       });
 
+      // Reset form only if creating new turma (not editing)
+      if (!turmaParaEditar) {
+        setNomeTurma('');
+        setDiaSemana('');
+        setHorario('');
+        setTurno('MANHA');
+        setModeradorId('all');
+        setCapacidadeMaxima('');
+        setDataInicio('');
+        setDataFim('');
+        setStatus('ABERTA');
+        setLocal('');
+      }
+
+      setLoading(false);
       onSubmit?.();
     } catch (err) {
+      const errorMessage = 'Ocorreu um erro ao tentar salvar a turma. Tente novamente.';
       toast({
         variant: 'destructive',
         title: 'Erro ao salvar',
-        description: 'Ocorreu um erro ao tentar salvar a turma. Tente novamente.',
+        description: errorMessage,
       });
-      setError('Erro ao conectar com o servidor');
+      setError(errorMessage);
+      setLoading(false);
+    } finally {
       setLoading(false);
     }
   };

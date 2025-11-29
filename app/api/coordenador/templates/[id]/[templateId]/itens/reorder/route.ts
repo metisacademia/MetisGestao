@@ -4,7 +4,7 @@ import { verifyAuth } from '@/lib/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { templateId: string } }
+  { params }: { params: Promise<{ id: string; templateId: string }> }
 ) {
   try {
     const user = await verifyAuth(request);
@@ -12,6 +12,7 @@ export async function POST(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const { templateId } = await params;
     const { itemIds } = await request.json();
 
     if (!Array.isArray(itemIds) || itemIds.length === 0) {
@@ -34,7 +35,7 @@ export async function POST(
     // Retornar itens atualizados
     const itensAtualizados = await prisma.itemTemplate.findMany({
       where: {
-        templateId: params.templateId,
+        templateId,
       },
       include: {
         dominio: true,

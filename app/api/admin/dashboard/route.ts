@@ -29,7 +29,9 @@ export async function GET(request: NextRequest) {
     periodStart.setDate(1);
 
     const turmas = await prisma.turma.findMany({
-      include: {
+      select: {
+        id: true,
+        nome_turma: true,
         moderador: {
           select: {
             id: true,

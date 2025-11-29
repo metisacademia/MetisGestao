@@ -4,8 +4,16 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const alunos = await prisma.aluno.findMany({
-      include: {
-        turma: true,
+      select: {
+        id: true,
+        nome: true,
+        turmaId: true,
+        turma: {
+          select: {
+            id: true,
+            nome_turma: true,
+          },
+        },
       },
       orderBy: { nome: 'asc' },
     });

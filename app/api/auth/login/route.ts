@@ -26,6 +26,14 @@ export async function POST(request: NextRequest) {
 
     const isValidPassword = await verifyPassword(senha, usuario.senha_hash);
 
+    console.log('Login Debug:', {
+      email,
+      providedPasswordLength: senha.length,
+      storedHashLength: usuario.senha_hash.length,
+      isValidPassword,
+      storedHashStart: usuario.senha_hash.substring(0, 10)
+    });
+
     if (!isValidPassword) {
       return NextResponse.json(
         { error: 'Credenciais inválidas' },

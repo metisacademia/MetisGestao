@@ -116,7 +116,7 @@ export default function AlunoDetalheContent({ detalhes }: { detalhes: AlunoDetal
                 </RadarChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-muted-foreground text-sm">Sem dados de domínio ainda.</p>
+              <div className="text-muted-foreground text-sm">Sem dados de domínio ainda.</div>
             )}
           </CardContent>
         </Card>
@@ -130,7 +130,7 @@ export default function AlunoDetalheContent({ detalhes }: { detalhes: AlunoDetal
           </CardHeader>
           <CardContent>
             {avaliacoes.length === 0 ? (
-              <p className="text-muted-foreground text-sm">Nenhuma avaliação encontrada</p>
+              <div className="text-muted-foreground text-sm">Nenhuma avaliação encontrada</div>
             ) : (
               <Table>
                 <TableHeader>
@@ -171,7 +171,7 @@ export default function AlunoDetalheContent({ detalhes }: { detalhes: AlunoDetal
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-muted-foreground text-sm">Sem avaliações para exibir o gráfico.</p>
+              <div className="text-muted-foreground text-sm">Sem avaliações para exibir o gráfico.</div>
             )}
           </CardContent>
         </Card>

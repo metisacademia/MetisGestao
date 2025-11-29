@@ -41,7 +41,7 @@ export default function FormularioItem({
   const [titulo, setTitulo] = useState(itemParaEditar?.titulo || '');
   const [descricao, setDescricao] = useState(itemParaEditar?.descricao || '');
   const [tipo_resposta, setTipoResposta] = useState(itemParaEditar?.tipo_resposta || 'NUMERO');
-  const [dominioId, setDominioId] = useState('all');
+  const [dominioId, setDominioId] = useState('');
   const [ordem, setOrdem] = useState(itemParaEditar?.ordem || 0);
   const [ativo, setAtivo] = useState(itemParaEditar?.ativo ?? true);
   const [error, setError] = useState('');
@@ -53,11 +53,7 @@ export default function FormularioItem({
     setError('');
     setLoading(true);
 
-    if (dominioId === 'all') {
-      setError('Selecione um domínio cognitivo.');
-      setLoading(false);
-      return;
-    }
+    // Validation will be handled by backend Zod schema
 
     try {
       const url = itemParaEditar
@@ -76,6 +72,7 @@ export default function FormularioItem({
           dominioId,
           ordem,
           ativo,
+          regra_pontuacao: JSON.stringify({}), // Default rule
         }),
       });
 
@@ -86,31 +83,37 @@ export default function FormularioItem({
         return;
       }
 
-      // Reset form
-      setCodigoItem('');
-      setTitulo('');
-      setDescricao('');
-      setTipoResposta('NUMERO');
-      setDominioId('all');
-      setOrdem(0);
-      setAtivo(true);
-
+      // Success toast
       toast({
-        variant: 'success',
         title: 'Sucesso!',
-        description: itemParaEditar 
+        description: itemParaEditar
           ? 'Item atualizado com sucesso!'
-          : 'Item cadastrado com sucesso!',
+          : 'Item criado com sucesso!',
       });
 
+      // Reset form only if creating new item (not editing)
+      if (!itemParaEditar) {
+        setCodigoItem('');
+        setTitulo('');
+        setDescricao('');
+        setTipoResposta('NUMERO');
+        setDominioId('');
+        setOrdem(0);
+        setAtivo(true);
+      }
+
+      setLoading(false);
       onSubmit?.();
     } catch (err) {
+      const errorMessage = 'Ocorreu um erro ao tentar salvar o item. Tente novamente.';
       toast({
         variant: 'destructive',
         title: 'Erro ao salvar',
-        description: 'Ocorreu um erro ao tentar salvar o item. Tente novamente.',
+        description: errorMessage,
       });
-      setError('Erro ao conectar com o servidor');
+      setError(errorMessage);
+      setLoading(false);
+    } finally {
       setLoading(false);
     }
   };
@@ -190,7 +193,7 @@ export default function FormularioItem({
                 required
                 disabled={loading}
               >
-                <option value="all" disabled>
+                <option value="">
                   Selecione um domínio
                 </option>
                 {dominios.map((dominio) => (

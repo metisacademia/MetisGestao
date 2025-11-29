@@ -87,9 +87,15 @@ export async function getAuthToken(): Promise<string | undefined> {
   return cookieStore.get('auth-token')?.value;
 }
 
+/**
+ * Get authenticated user from token (cookie or Authorization header)
+ * @param request Optional NextRequest object to check Authorization header
+ * @returns JWTPayload if authenticated, null otherwise
+ */
 export async function getUserFromToken(request?: any): Promise<JWTPayload | null> {
   let token = await getAuthToken();
 
+  // Fallback to Authorization header if no cookie
   if (!token && request) {
     const authHeader = request.headers?.get?.('authorization') || request.headers?.['authorization'];
     if (authHeader?.startsWith('Bearer ')) {
@@ -101,22 +107,36 @@ export async function getUserFromToken(request?: any): Promise<JWTPayload | null
   return verifyToken(token);
 }
 
-export async function verifyAuth(request: any): Promise<JWTPayload | null> {
-  let token: string | undefined;
+/**
+ * Role-based access control helper
+ * Use this instead of manual auth checks in API routes
+ * @param allowedRoles Array of roles that can access the resource
+ * @returns Async function that validates request and returns user
+ * @throws ApiError if unauthorized or forbidden
+ *
+ * @example
+ * const user = await requireAuth(['ADMIN'])(request);
+ */
+export function requireAuth(allowedRoles: Array<'ADMIN' | 'COORDENADOR' | 'MODERADOR' | 'ALUNO'>) {
+  return async (request: any): Promise<JWTPayload> => {
+    const user = await getUserFromToken(request);
 
-  const cookieHeader = request.headers?.get?.('cookie') || '';
-  const tokenMatch = cookieHeader.match(/auth-token=([^;]+)/);
-  if (tokenMatch) {
-    token = tokenMatch[1];
-  }
-
-  if (!token) {
-    const authHeader = request.headers?.get?.('authorization');
-    if (authHeader?.startsWith('Bearer ')) {
-      token = authHeader.slice(7);
+    if (!user) {
+      throw new Error('Não autenticado');
     }
-  }
 
-  if (!token) return null;
-  return verifyToken(token);
+    if (!allowedRoles.includes(user.perfil)) {
+      throw new Error('Sem permissão para acessar este recurso');
+    }
+
+    return user;
+  };
+}
+
+/**
+ * @deprecated Use getUserFromToken() instead. This function is kept for backward compatibility.
+ * Will be removed in future versions.
+ */
+export async function verifyAuth(request: any): Promise<JWTPayload | null> {
+  return getUserFromToken(request);
 }

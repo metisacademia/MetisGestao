@@ -4,7 +4,19 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const turmas = await prisma.turma.findMany({
-      include: { moderador: true },
+      select: {
+        id: true,
+        nome_turma: true,
+        dia_semana: true,
+        horario: true,
+        turno: true,
+        moderador: {
+          select: {
+            id: true,
+            nome: true,
+          },
+        },
+      },
       orderBy: { nome_turma: 'asc' },
     });
 

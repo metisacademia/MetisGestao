@@ -4,7 +4,7 @@ import { verifyAuth } from '@/lib/auth';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string; templateId: string }> }
 ) {
   try {
     const user = await verifyAuth(request);
@@ -12,6 +12,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const { id } = await params;
     const { ativo } = await request.json();
 
     if (typeof ativo !== 'boolean') {
@@ -22,7 +23,7 @@ export async function PATCH(
     }
 
     const template = await prisma.templateAvaliacao.update({
-      where: { id: params.id },
+      where: { id },
       data: { ativo },
       include: {
         _count: { select: { itens: true } },

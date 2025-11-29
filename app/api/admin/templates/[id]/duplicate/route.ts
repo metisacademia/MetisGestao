@@ -4,7 +4,7 @@ import { verifyAuth } from '@/lib/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAuth(request);
@@ -12,9 +12,11 @@ export async function POST(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     // Buscar template original com todos os itens
     const templateOriginal = await prisma.templateAvaliacao.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         itens: true,
       },

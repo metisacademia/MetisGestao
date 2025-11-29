@@ -19,7 +19,12 @@ export async function GET(request: NextRequest) {
 
     // Buscar todas as turmas
     const turmas = await prisma.turma.findMany({
-      include: {
+      select: {
+        id: true,
+        nome_turma: true,
+        dia_semana: true,
+        horario: true,
+        turno: true,
         _count: {
           select: { alunos: true },
         },

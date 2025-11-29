@@ -44,12 +44,12 @@ export default function NovoUsuarioPage() {
   }, [perfil]);
 
   useEffect(() => {
+    // Auto-fill only the name when an aluno is selected (for convenience)
     if (perfil === 'ALUNO' && alunoId) {
       const alunoSelecionado = alunosSemConta.find(a => a.id === alunoId);
       if (alunoSelecionado) {
-        const primeiroNome = alunoSelecionado.nome.split(' ')[0].toLowerCase();
         setNome(alunoSelecionado.nome);
-        setEmail(`${primeiroNome}@metis`);
+        // Do NOT auto-fill email - user must enter it manually to avoid duplicates
       }
     }
   }, [alunoId, alunosSemConta, perfil]);
@@ -195,16 +195,16 @@ export default function NovoUsuarioPage() {
               <Label htmlFor="email">Email de Acesso *</Label>
               <Input
                 id="email"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={perfil === 'ALUNO' ? 'nome@metis' : 'usuario@metis'}
+                placeholder={perfil === 'ALUNO' ? 'primeironome@metis' : 'usuario@metis'}
                 required
-                disabled={perfil === 'ALUNO' && !!alunoId}
               />
               <p className="text-sm text-muted-foreground">
-                {perfil === 'ALUNO' 
-                  ? 'Para alunos, use o formato: primeironome@metis'
-                  : 'Use o formato: cargo@metis (ex: coordenador@metis)'
+                {perfil === 'ALUNO'
+                  ? 'Digite um email único para este aluno (ex: joao@metis)'
+                  : 'Digite o email de acesso (ex: coordenador@metis)'
                 }
               </p>
             </div>
