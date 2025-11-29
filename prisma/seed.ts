@@ -50,33 +50,41 @@ async function main() {
   });
   console.log('✓ Moderador criado:', moderador.email);
 
-  const turmaAurora = await prisma.turma.upsert({
-    where: { id: 'turma-aurora-1' },
-    update: {},
-    create: {
-      id: 'turma-aurora-1',
-      nome_turma: 'Aurora – Segunda 18h',
-      dia_semana: 'Segunda-feira',
-      horario: '18:00',
-      turno: Turno.NOITE,
-      moderadorId: moderador.id,
-    },
+  let turmaAurora = await prisma.turma.findFirst({
+    where: { nome_turma: 'Aurora – Segunda 18h' },
   });
-  console.log('✓ Turma criada:', turmaAurora.nome_turma);
+  if (!turmaAurora) {
+    turmaAurora = await prisma.turma.create({
+      data: {
+        nome_turma: 'Aurora – Segunda 18h',
+        dia_semana: 'Segunda-feira',
+        horario: '18:00',
+        turno: Turno.NOITE,
+        moderadorId: moderador.id,
+      },
+    });
+    console.log('✓ Turma criada:', turmaAurora.nome_turma);
+  } else {
+    console.log('✓ Turma já existe:', turmaAurora.nome_turma);
+  }
 
-  const turmaVespera = await prisma.turma.upsert({
-    where: { id: 'turma-vespera-1' },
-    update: {},
-    create: {
-      id: 'turma-vespera-1',
-      nome_turma: 'Véspera – Quarta 15h',
-      dia_semana: 'Quarta-feira',
-      horario: '15:00',
-      turno: Turno.TARDE,
-      moderadorId: moderador.id,
-    },
+  let turmaVespera = await prisma.turma.findFirst({
+    where: { nome_turma: 'Véspera – Quarta 15h' },
   });
-  console.log('✓ Turma criada:', turmaVespera.nome_turma);
+  if (!turmaVespera) {
+    turmaVespera = await prisma.turma.create({
+      data: {
+        nome_turma: 'Véspera – Quarta 15h',
+        dia_semana: 'Quarta-feira',
+        horario: '15:00',
+        turno: Turno.TARDE,
+        moderadorId: moderador.id,
+      },
+    });
+    console.log('✓ Turma criada:', turmaVespera.nome_turma);
+  } else {
+    console.log('✓ Turma já existe:', turmaVespera.nome_turma);
+  }
 
   const alunos = [
     { nome: 'João Silva', turmaId: turmaAurora.id },
@@ -87,78 +95,88 @@ async function main() {
   ];
 
   for (const alunoData of alunos) {
-    await prisma.aluno.upsert({
-      where: { id: `aluno-${alunoData.nome.toLowerCase().replace(/\s+/g, '-')}` },
-      update: {},
-      create: {
-        id: `aluno-${alunoData.nome.toLowerCase().replace(/\s+/g, '-')}`,
-        ...alunoData,
-        observacoes: 'Aluno participativo',
-      },
+    const existing = await prisma.aluno.findFirst({
+      where: { nome: alunoData.nome, turmaId: alunoData.turmaId },
     });
+    if (!existing) {
+      await prisma.aluno.create({
+        data: {
+          ...alunoData,
+          observacoes: 'Aluno participativo',
+        },
+      });
+    }
   }
-  console.log(`✓ ${alunos.length} alunos criados`);
+  console.log(`✓ ${alunos.length} alunos verificados/criados`);
 
   const dominios = [
     {
-      id: 'dominio-fluencia',
       nome: 'Fluência verbal',
       descricao: 'Capacidade de produzir palavras rapidamente',
       pontuacao_maxima: 10,
     },
     {
-      id: 'dominio-cultura',
       nome: 'Cultura & memória semântica',
       descricao: 'Conhecimento geral e memória de fatos',
       pontuacao_maxima: 10,
     },
     {
-      id: 'dominio-interpretacao',
       nome: 'Interpretação',
       descricao: 'Compreensão e análise de informações',
       pontuacao_maxima: 10,
     },
     {
-      id: 'dominio-atencao',
       nome: 'Atenção visual',
       descricao: 'Foco e concentração em estímulos visuais',
       pontuacao_maxima: 10,
     },
     {
-      id: 'dominio-auto-percepcao',
       nome: 'Auto-percepção',
       descricao: 'Consciência sobre o próprio desempenho',
       pontuacao_maxima: 10,
     },
   ];
 
+  const dominiosMap: Record<string, string> = {};
   for (const dominioData of dominios) {
-    await prisma.dominioCognitivo.upsert({
-      where: { id: dominioData.id },
-      update: {},
-      create: dominioData,
+    let dominio = await prisma.dominioCognitivo.findFirst({
+      where: { nome: dominioData.nome },
     });
+    if (!dominio) {
+      dominio = await prisma.dominioCognitivo.create({
+        data: dominioData,
+      });
+    }
+    dominiosMap[dominioData.nome] = dominio.id;
   }
-  console.log(`✓ ${dominios.length} domínios cognitivos criados`);
+  console.log(`✓ ${dominios.length} domínios cognitivos verificados/criados`);
 
-  const template = await prisma.templateAvaliacao.upsert({
-    where: { id: 'template-nov-2025' },
-    update: {},
-    create: {
-      id: 'template-nov-2025',
-      nome: 'Avaliação Cognitiva Padrão – Novembro/2025',
+  let template = await prisma.templateAvaliacao.findFirst({
+    where: {
       mes_referencia: 11,
       ano_referencia: 2025,
       ativo: true,
-      observacoes: 'Template de exemplo para novembro de 2025',
     },
   });
-  console.log('✓ Template de avaliação criado:', template.nome);
+  if (!template) {
+    template = await prisma.templateAvaliacao.create({
+      data: {
+        nome: 'Avaliação Cognitiva Padrão – Novembro/2025',
+        mes_referencia: 11,
+        ano_referencia: 2025,
+        ativo: true,
+        observacoes: 'Template de exemplo para novembro de 2025',
+      },
+    });
+    console.log('✓ Template de avaliação criado:', template.nome);
+  } else {
+    console.log('✓ Template de avaliação já existe:', template.nome);
+  }
 
   const itensTemplate: Prisma.ItemTemplateUncheckedCreateInput[] = [
     {
       templateId: template.id,
-      dominioId: 'dominio-fluencia',
+      dominioId: dominiosMap['Fluência verbal'],
       codigo_item: 'Q1_escritores_qtd',
       titulo: 'Quantidade de escritores citados',
       descricao: 'Quantos escritores o aluno conseguiu citar em 1 minuto?',
@@ -175,7 +193,7 @@ async function main() {
     },
     {
       templateId: template.id,
-      dominioId: 'dominio-fluencia',
+      dominioId: dominiosMap['Fluência verbal'],
       codigo_item: 'Q2_cantores_qtd',
       titulo: 'Quantidade de cantores citados',
       descricao: 'Quantos cantores o aluno conseguiu citar em 1 minuto?',
@@ -192,7 +210,7 @@ async function main() {
     },
     {
       templateId: template.id,
-      dominioId: 'dominio-cultura',
+      dominioId: dominiosMap['Cultura & memória semântica'],
       codigo_item: 'Q3_capital_brasil',
       titulo: 'Qual a capital do Brasil?',
       descricao: 'Resposta correta: Brasília',
@@ -206,7 +224,7 @@ async function main() {
     },
     {
       templateId: template.id,
-      dominioId: 'dominio-cultura',
+      dominioId: dominiosMap['Cultura & memória semântica'],
       codigo_item: 'Q4_presidente_atual',
       titulo: 'Quem é o presidente atual do Brasil?',
       descricao: 'Resposta correta: Sim',
@@ -220,7 +238,7 @@ async function main() {
     },
     {
       templateId: template.id,
-      dominioId: 'dominio-interpretacao',
+      dominioId: dominiosMap['Interpretação'],
       codigo_item: 'Q5_texto_compreensao',
       titulo: 'Compreendeu o texto apresentado?',
       descricao: 'Após leitura de um texto curto',
@@ -239,7 +257,7 @@ async function main() {
     },
     {
       templateId: template.id,
-      dominioId: 'dominio-atencao',
+      dominioId: dominiosMap['Atenção visual'],
       codigo_item: 'Q6_encontrar_diferenca',
       titulo: 'Conseguiu encontrar as diferenças na imagem?',
       descricao: 'Número de diferenças encontradas (máximo 5)',
@@ -256,7 +274,7 @@ async function main() {
     },
     {
       templateId: template.id,
-      dominioId: 'dominio-auto-percepcao',
+      dominioId: dominiosMap['Auto-percepção'],
       codigo_item: 'Q7_auto_avaliacao_memoria',
       titulo: 'Como você avalia sua memória?',
       descricao: 'Auto-percepção do aluno sobre sua memória',
@@ -276,7 +294,7 @@ async function main() {
     },
     {
       templateId: template.id,
-      dominioId: 'dominio-auto-percepcao',
+      dominioId: dominiosMap['Auto-percepção'],
       codigo_item: 'Q8_auto_avaliacao_atencao',
       titulo: 'Como você avalia sua atenção?',
       descricao: 'Auto-percepção do aluno sobre sua atenção',
@@ -297,16 +315,19 @@ async function main() {
   ];
 
   for (const itemData of itensTemplate) {
-    await prisma.itemTemplate.upsert({
-      where: { id: `item-${itemData.codigo_item}` },
-      update: {},
-      create: {
-        id: `item-${itemData.codigo_item}`,
-        ...itemData,
+    const existing = await prisma.itemTemplate.findFirst({
+      where: {
+        templateId: itemData.templateId,
+        codigo_item: itemData.codigo_item,
       },
     });
+    if (!existing) {
+      await prisma.itemTemplate.create({
+        data: itemData,
+      });
+    }
   }
-  console.log(`✓ ${itensTemplate.length} itens de template criados`);
+  console.log(`✓ ${itensTemplate.length} itens de template verificados/criados`);
 
   console.log('\n✅ Seed concluído com sucesso!');
   console.log('\n📝 Credenciais de acesso:');

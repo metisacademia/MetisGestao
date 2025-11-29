@@ -15,6 +15,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/components/ui/use-toast';
+import { Trash2 } from 'lucide-react';
 
 interface Dominio {
   id: string;
@@ -24,15 +36,21 @@ interface Dominio {
 }
 
 export default function DominiosPage() {
+  const { toast } = useToast();
   const [dominios, setDominios] = useState<Dominio[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [pontuacaoMaxima, setPontuacaoMaxima] = useState('10');
+
+  // Delete confirmation dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [dominioToDelete, setDominioToDelete] = useState<Dominio | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const carregarDominios = async () => {
     try {
@@ -96,6 +114,51 @@ export default function DominiosPage() {
     setDialogOpen(open);
     if (!open) {
       resetForm();
+    }
+  };
+
+  const handleDeleteClick = (dominio: Dominio) => {
+    setDominioToDelete(dominio);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!dominioToDelete) return;
+
+    setDeleteLoading(true);
+    try {
+      const response = await fetch(`/api/admin/dominios/${dominioToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: 'Erro ao excluir',
+          description: data.error || 'Não foi possível excluir o domínio',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: 'Domínio excluído com sucesso',
+      });
+
+      await carregarDominios();
+      setDeleteDialogOpen(false);
+      setDominioToDelete(null);
+    } catch (error) {
+      console.error('Erro ao deletar domínio:', error);
+      toast({
+        title: 'Erro',
+        description: 'Erro ao conectar com o servidor',
+        variant: 'destructive',
+      });
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -213,12 +276,13 @@ export default function DominiosPage() {
                 <TableHead>Nome</TableHead>
                 <TableHead>Descrição</TableHead>
                 <TableHead>Pontuação Máxima</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {dominios.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center text-muted-foreground">
+                  <TableCell colSpan={4} className="text-center text-muted-foreground">
                     Nenhum domínio cadastrado
                   </TableCell>
                 </TableRow>
@@ -230,6 +294,16 @@ export default function DominiosPage() {
                       {dominio.descricao || '-'}
                     </TableCell>
                     <TableCell>{dominio.pontuacao_maxima}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteClick(dominio)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -237,6 +311,30 @@ export default function DominiosPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir o domínio "{dominioToDelete?.nome}"?
+              <br />
+              <br />
+              Essa ação não poderá ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteLoading}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={deleteLoading}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {deleteLoading ? 'Excluindo...' : 'Excluir'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
